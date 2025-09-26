@@ -39,4 +39,20 @@
       </app-book-list>
     </div>
   </section>
+
+  <!-- Book Details Modal -->
+  <div class="book-details-modal" 
+       [class.show]="showBookDetails"
+       *ngIf="showBookDetails">
+    <div class="modal-backdrop" (click)="onBookDetailsClose()"></div>
+    <div class="modal-content">
+      <app-book-details
+        [book]="selectedBook"
+        [isLoading]="false"
+        (closed)="onBookDetailsClose()"
+        (favoriteToggled)="onBookDetailsFavoriteToggled($event)"
+        (previewRequested)="onBookPreviewRequested($event)">
+      </app-book-details>
+    </div>
+  </div>
 </div>

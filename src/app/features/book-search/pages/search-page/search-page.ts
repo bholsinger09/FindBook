@@ -4,9 +4,11 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { SearchFormComponent } from '../../components/search-form/search-form';
 import { BookListComponent } from '../../components/book-list/book-list';
+import { BookDetailsComponent } from '../../components/book-details/book-details';
 import { BookService } from '../../../../core/services/book.service';
 import { Book, BookSearchParams, BookSearchResult } from '../../../../core/models';
 import { Observable } from 'rxjs';
@@ -19,8 +21,10 @@ import { Observable } from 'rxjs';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
+    MatDialogModule,
     SearchFormComponent,
-    BookListComponent
+    BookListComponent,
+    BookDetailsComponent
   ],
   templateUrl: './search-page.html',
   styleUrl: './search-page.scss'
@@ -30,8 +34,13 @@ export class SearchPage implements OnInit {
   isLoading = false;
   currentSearchTerm = '';
   favoriteBookIds: Set<string> = new Set();
+  selectedBook: Book | null = null;
+  showBookDetails = false;
 
-  constructor(private bookService: BookService) { }
+  constructor(
+    private bookService: BookService,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
     console.log('SearchPage component initialized');
@@ -63,7 +72,8 @@ export class SearchPage implements OnInit {
 
   onBookSelected(book: Book): void {
     console.log('Book selected:', book);
-    // TODO: Navigate to book details page
+    this.selectedBook = book;
+    this.showBookDetails = true;
   }
 
   onFavoriteToggled(book: Book): void {
@@ -74,6 +84,21 @@ export class SearchPage implements OnInit {
     }
     // TODO: Persist favorites to local storage
     console.log('Favorites updated:', Array.from(this.favoriteBookIds));
+  }
+
+  onBookDetailsClose(): void {
+    this.showBookDetails = false;
+    this.selectedBook = null;
+  }
+
+  onBookDetailsFavoriteToggled(book: Book): void {
+    this.onFavoriteToggled(book);
+  }
+
+  onBookPreviewRequested(book: Book): void {
+    if (book.webReaderLink) {
+      window.open(book.webReaderLink, '_blank', 'noopener,noreferrer');
+    }
   }
 
   private loadPopularBooks(): void {
