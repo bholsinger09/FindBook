@@ -21,7 +21,10 @@
     "e2e": "cypress run",
     "e2e:open": "cypress open",
     "e2e:dev": "concurrently \"npm start\" \"cypress open\"",
-    "test:all": "npm run test:unit && npm run e2e"
+    "test:all": "npm run test:unit && npm run e2e",
+    "deploy:gh": "ng build --configuration production --base-href=/FindBook/ && npx angular-cli-ghpages --dir=dist/findbook-app",
+    "deploy:vercel": "vercel --prod",
+    "deploy:netlify": "npm run build:prod && netlify deploy --prod --dir=dist/findbook-app"
   },
   "prettier": {
     "printWidth": 100,
@@ -55,6 +58,7 @@
     "@angular/cli": "^20.3.3",
     "@angular/compiler-cli": "^20.3.0",
     "@types/jasmine": "~5.1.0",
+    "angular-cli-ghpages": "^2.0.3",
     "concurrently": "^9.2.1",
     "cypress": "^15.3.0",
     "jasmine-core": "~5.9.0",
