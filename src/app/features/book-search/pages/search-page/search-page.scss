@@ -1,0 +1,264 @@
+.search-page-container {
+    min-height: 100vh;
+    background-color: #fafafa;
+}
+
+// Page Header
+.page-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    .toolbar-title {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        font-size: 1.2em;
+
+        mat-icon {
+            margin-right: 8px;
+        }
+    }
+
+    .spacer {
+        flex: 1 1 auto;
+    }
+
+    .toolbar-subtitle {
+        font-size: 0.9em;
+        opacity: 0.9;
+        font-style: italic;
+    }
+}
+
+// Search Section
+.search-section {
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    color: white;
+    padding: 48px 16px;
+
+    .search-container {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .search-title {
+        font-size: 2.5em;
+        font-weight: 300;
+        margin: 0 0 16px 0;
+
+        @media (max-width: 768px) {
+            font-size: 2em;
+        }
+    }
+
+    .search-subtitle {
+        font-size: 1.1em;
+        opacity: 0.9;
+        margin: 0 0 32px 0;
+
+        @media (max-width: 768px) {
+            font-size: 1em;
+        }
+    }
+}
+
+// Results Section
+.results-section {
+    padding: 32px 16px;
+
+    .results-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .results-summary {
+        margin-bottom: 32px;
+
+        h2 {
+            font-size: 1.8em;
+            font-weight: 400;
+            margin: 0 0 8px 0;
+            color: #333;
+        }
+
+        .results-count {
+            color: #666;
+            margin: 0;
+            font-size: 0.9em;
+        }
+    }
+}
+
+// Books Grid
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+.book-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .book-title {
+        font-size: 1.1em;
+        font-weight: 500;
+        line-height: 1.3;
+        margin-bottom: 4px;
+    }
+
+    .book-authors {
+        color: #666;
+        font-size: 0.9em;
+    }
+
+    .book-thumbnail {
+        max-height: 200px;
+        object-fit: cover;
+        margin: 16px auto;
+        display: block;
+    }
+
+    .book-content {
+        .book-description {
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #555;
+            margin: 0;
+        }
+    }
+
+    .book-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 16px;
+    }
+}
+
+// No Results
+.no-results {
+    text-align: center;
+    padding: 48px 16px;
+    color: #666;
+
+    .no-results-icon {
+        font-size: 4em;
+        width: 1em;
+        height: 1em;
+        opacity: 0.5;
+        margin-bottom: 16px;
+    }
+
+    h3 {
+        font-size: 1.5em;
+        font-weight: 400;
+        margin: 0 0 8px 0;
+    }
+
+    p {
+        margin: 0;
+        font-size: 0.9em;
+    }
+}
+
+// Loading Section
+.loading-section {
+    padding: 48px 16px;
+
+    .loading-container {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .loading-card {
+        .loading-content {
+            text-align: center;
+            padding: 32px;
+
+            .loading-icon {
+                font-size: 3em;
+                width: 1em;
+                height: 1em;
+                color: #2196f3;
+                margin-bottom: 16px;
+                animation: spin 2s linear infinite;
+            }
+
+            h3 {
+                font-size: 1.3em;
+                font-weight: 400;
+                margin: 0 0 8px 0;
+                color: #333;
+            }
+
+            p {
+                margin: 0;
+                color: #666;
+                font-size: 0.9em;
+            }
+        }
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .search-section {
+        padding: 32px 16px;
+    }
+
+    .results-section {
+        padding: 24px 16px;
+    }
+
+    .loading-section {
+        padding: 32px 16px;
+    }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+    .book-card {
+        border: 2px solid #333;
+    }
+
+    .results-summary h2 {
+        color: #000;
+    }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+    .book-card {
+        transition: none;
+
+        &:hover {
+            transform: none;
+        }
+    }
+
+    .loading-icon {
+        animation: none;
+    }
+}

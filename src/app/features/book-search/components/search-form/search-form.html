@@ -1,0 +1,44 @@
+<div class="search-form-container">
+    <!-- Loading Progress Bar -->
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate" class="search-progress">
+    </mat-progress-bar>
+
+    <!-- Search Form -->
+    <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="search-form" role="search">
+
+        <mat-form-field class="search-field" appearance="outline">
+            <mat-label>Search for books</mat-label>
+
+            <!-- Search Input -->
+            <input matInput formControlName="searchTerm" placeholder="Enter book title, author, or keywords..."
+                class="search-input" aria-label="Search for books" (keydown.enter)="onSubmit()">
+
+            <!-- Search Icon -->
+            <mat-icon matPrefix>search</mat-icon>
+
+            <!-- Clear Button -->
+            <button *ngIf="hasSearchTerm" mat-icon-button matSuffix type="button" class="clear-button"
+                aria-label="Clear search" (click)="clearSearch()">
+                <mat-icon>close</mat-icon>
+            </button>
+
+            <!-- Error Messages -->
+            <mat-error *ngIf="searchTermControl?.touched && searchTermControl?.errors" class="error-message"
+                id="search-error" role="alert">
+                {{ getErrorMessage() }}
+            </mat-error>
+        </mat-form-field>
+
+        <!-- Search Button -->
+        <button mat-raised-button color="primary" type="submit" class="search-button"
+            [disabled]="searchForm.invalid || isLoading" aria-label="Submit search">
+
+            <mat-icon *ngIf="!isLoading">search</mat-icon>
+            <mat-icon *ngIf="isLoading">hourglass_empty</mat-icon>
+
+            <span class="button-text">
+                {{ isLoading ? 'Searching...' : 'Search Books' }}
+            </span>
+        </button>
+    </form>
+</div>

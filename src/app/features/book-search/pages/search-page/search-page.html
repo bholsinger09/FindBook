@@ -1,0 +1,107 @@
+<div class="search-page-container">
+    <h1>FindBook - Search for Books</h1>
+    <p>This is a test to see if the component is loading</p>
+
+    <!-- Page Header -->
+    <mat-toolbar class="page-header" color="primary">
+        <span class="toolbar-title">
+            <mat-icon>library_books</mat-icon>
+            FindBook
+        </span>
+        <span class="spacer"></span>
+        <span class="toolbar-subtitle" *ngIf="currentSearchTerm">
+            Searching for: "{{ currentSearchTerm }}"
+        </span>
+    </mat-toolbar>
+
+    <!-- Search Form Section -->
+    <section class="search-section" aria-label="Book search">
+        <div class="search-container">
+            <h1 class="search-title">Discover Your Next Great Read</h1>
+            <p class="search-subtitle">
+                Search through millions of books by title, author, ISBN, or keywords.
+            </p>
+
+            <app-search-form [isLoading]="isLoading" (searchSubmitted)="onSearchSubmitted($event)"
+                (searchCleared)="onSearchCleared()">
+            </app-search-form>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section" *ngIf="searchResult$ | async as result">
+        <div class="results-container">
+            <!-- Results Summary -->
+            <div class="results-summary">
+                <h2>
+                    <ng-container *ngIf="currentSearchTerm; else popularBooks">
+                        Search Results
+                    </ng-container>
+                    <ng-template #popularBooks>
+                        Popular Books
+                    </ng-template>
+                </h2>
+
+                <p class="results-count">
+                    Showing {{ result.books.length }} of {{ result.totalItems }} books
+                </p>
+            </div>
+
+            <!-- Books Grid (Placeholder) -->
+            <div class="books-grid">
+                <mat-card *ngFor="let book of result.books; trackBy: trackByBookId" class="book-card">
+
+                    <mat-card-header>
+                        <mat-card-title class="book-title">
+                            {{ book.title }}
+                        </mat-card-title>
+                        <mat-card-subtitle class="book-authors">
+                            {{ book.authors?.join(', ') || 'Unknown Author' }}
+                        </mat-card-subtitle>
+                    </mat-card-header>
+
+                    <img *ngIf="book.imageLinks?.thumbnail" mat-card-image [src]="book.imageLinks?.thumbnail"
+                        [alt]="book.title + ' cover image'" class="book-thumbnail">
+
+                    <mat-card-content class="book-content">
+                        <p class="book-description">
+                            {{ book.description | slice:0:150 }}
+                            <span *ngIf="book.description && book.description.length > 150">...</span>
+                        </p>
+                    </mat-card-content>
+
+                    <mat-card-actions class="book-actions">
+                        <button mat-button color="primary">
+                            VIEW DETAILS
+                        </button>
+                        <button mat-icon-button aria-label="Add to favorites">
+                            <mat-icon>favorite_border</mat-icon>
+                        </button>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+
+            <!-- No Results Message -->
+            <div *ngIf="result.books.length === 0" class="no-results">
+                <mat-icon class="no-results-icon">search_off</mat-icon>
+                <h3>No books found</h3>
+                <p>Try adjusting your search terms or browse our popular books above.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading State -->
+    <section *ngIf="isLoading" class="loading-section">
+        <div class="loading-container">
+            <mat-card class="loading-card">
+                <mat-card-content>
+                    <div class="loading-content">
+                        <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+                        <h3>Searching for books...</h3>
+                        <p>Please wait while we find the best matches for you.</p>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </section>
+</div>
