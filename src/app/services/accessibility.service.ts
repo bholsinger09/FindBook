@@ -17,21 +17,25 @@ export interface AccessibilityState {
 export class AccessibilityService {
   private readonly ACCESS_STORAGE_KEY = 'findbook-accessibility-preferences';
   
-  private accessibilityState = new BehaviorSubject<AccessibilityState>({
-    highContrast: false,
-    reducedMotion: this.hasReducedMotion(),
-    largeText: false,
-    keyboardNavigation: false,
-    screenReader: this.hasScreenReader()
-  });
-
-  public readonly accessibilityState$ = this.accessibilityState.asObservable();
+  private accessibilityState: BehaviorSubject<AccessibilityState>;
+  public readonly accessibilityState$: Observable<AccessibilityState>;
 
   constructor(
     private focusMonitor: FocusMonitor,
     private liveAnnouncer: LiveAnnouncer,
     private platform: Platform
   ) {
+    // Initialize state after services are available
+    this.accessibilityState = new BehaviorSubject<AccessibilityState>({
+      highContrast: false,
+      reducedMotion: this.hasReducedMotion(),
+      largeText: false,
+      keyboardNavigation: false,
+      screenReader: this.hasScreenReader()
+    });
+    
+    this.accessibilityState$ = this.accessibilityState.asObservable();
+    
     this.loadUserPreferences();
     this.detectKeyboardNavigation();
   }
@@ -149,47 +153,61 @@ export class AccessibilityService {
   }
 
   private hasReducedMotion(): boolean {
-    if (!this.platform.isBrowser) return false;
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      if (!this.platform?.isBrowser) return false;
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch (error) {
+      console.warn('Error detecting reduced motion preference:', error);
+      return false;
+    }
   }
 
   private hasScreenReader(): boolean {
-    if (!this.platform.isBrowser) return false;
-    // Simple heuristic - check for common screen reader indicators
-    return !!(
-      (window as any).speechSynthesis ||
-      navigator.userAgent.includes('NVDA') ||
-      navigator.userAgent.includes('JAWS') ||
-      navigator.userAgent.includes('VoiceOver')
-    );
+    try {
+      if (!this.platform?.isBrowser) return false;
+      // Simple heuristic - check for common screen reader indicators
+      return !!(
+        (window as any).speechSynthesis ||
+        navigator.userAgent.includes('NVDA') ||
+        navigator.userAgent.includes('JAWS') ||
+        navigator.userAgent.includes('VoiceOver')
+      );
+    } catch (error) {
+      console.warn('Error detecting screen reader:', error);
+      return false;
+    }
   }
 
   private detectKeyboardNavigation(): void {
-    if (!this.platform.isBrowser) return;
+    try {
+      if (!this.platform?.isBrowser) return;
     
-    let keyboardUsed = false;
-    
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Tab') {
-        keyboardUsed = true;
-        const current = this.accessibilityState.value;
-        if (!current.keyboardNavigation) {
-          this.updateAccessibilityState({ ...current, keyboardNavigation: true });
-          this.applyKeyboardNavigationStyles(true);
+      let keyboardUsed = false;
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+          keyboardUsed = true;
+          const current = this.accessibilityState.value;
+          if (!current.keyboardNavigation) {
+            this.updateAccessibilityState({ ...current, keyboardNavigation: true });
+            this.applyKeyboardNavigationStyles(true);
+          }
         }
-      }
-    });
-    
-    document.addEventListener('mousedown', () => {
-      if (keyboardUsed) {
-        keyboardUsed = false;
-        const current = this.accessibilityState.value;
-        if (current.keyboardNavigation) {
-          this.updateAccessibilityState({ ...current, keyboardNavigation: false });
-          this.applyKeyboardNavigationStyles(false);
+      });
+      
+      document.addEventListener('mousedown', () => {
+        if (keyboardUsed) {
+          keyboardUsed = false;
+          const current = this.accessibilityState.value;
+          if (current.keyboardNavigation) {
+            this.updateAccessibilityState({ ...current, keyboardNavigation: false });
+            this.applyKeyboardNavigationStyles(false);
+          }
         }
-      }
-    });
+      });
+    } catch (error) {
+      console.warn('Error setting up keyboard navigation detection:', error);
+    }
   }
 
   private updateAccessibilityState(newState: AccessibilityState): void {
@@ -198,7 +216,7 @@ export class AccessibilityService {
   }
 
   private loadUserPreferences(): void {
-    if (!this.platform.isBrowser) return;
+    if (!this.platform?.isBrowser) return;
     
     try {
       const saved = localStorage.getItem(this.ACCESS_STORAGE_KEY);
@@ -215,7 +233,7 @@ export class AccessibilityService {
   }
 
   private saveUserPreferences(state: AccessibilityState): void {
-    if (!this.platform.isBrowser) return;
+    if (!this.platform?.isBrowser) return;
     
     try {
       localStorage.setItem(this.ACCESS_STORAGE_KEY, JSON.stringify(state));
@@ -232,7 +250,7 @@ export class AccessibilityService {
   }
 
   private applyHighContrastStyles(enabled: boolean): void {
-    if (!this.platform.isBrowser) return;
+    if (!this.platform?.isBrowser) return;
     
     if (enabled) {
       document.body.classList.add('high-contrast');
@@ -242,7 +260,7 @@ export class AccessibilityService {
   }
 
   private applyLargeTextStyles(enabled: boolean): void {
-    if (!this.platform.isBrowser) return;
+    if (!this.platform?.isBrowser) return;
     
     if (enabled) {
       document.body.classList.add('large-text');
@@ -252,7 +270,7 @@ export class AccessibilityService {
   }
 
   private applyReducedMotionStyles(enabled: boolean): void {
-    if (!this.platform.isBrowser) return;
+    if (!this.platform?.isBrowser) return;
     
     if (enabled) {
       document.body.classList.add('reduced-motion');
@@ -262,7 +280,7 @@ export class AccessibilityService {
   }
 
   private applyKeyboardNavigationStyles(enabled: boolean): void {
-    if (!this.platform.isBrowser) return;
+    if (!this.platform?.isBrowser) return;
     
     if (enabled) {
       document.body.classList.add('keyboard-navigation');
