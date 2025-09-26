@@ -58,12 +58,29 @@
   font-size: 125% !important;
 }
 
-.large-text h1 { font-size: 3rem !important; }
-.large-text h2 { font-size: 2.5rem !important; }
-.large-text h3 { font-size: 2rem !important; }
-.large-text h4 { font-size: 1.75rem !important; }
-.large-text h5 { font-size: 1.5rem !important; }
-.large-text h6 { font-size: 1.25rem !important; }
+.large-text h1 {
+  font-size: 3rem !important;
+}
+
+.large-text h2 {
+  font-size: 2.5rem !important;
+}
+
+.large-text h3 {
+  font-size: 2rem !important;
+}
+
+.large-text h4 {
+  font-size: 1.75rem !important;
+}
+
+.large-text h5 {
+  font-size: 1.5rem !important;
+}
+
+.large-text h6 {
+  font-size: 1.25rem !important;
+}
 
 .large-text p,
 .large-text span,
@@ -263,8 +280,13 @@ a:not(.btn):not(.card):focus {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .reduced-motion .loading::after {
@@ -274,12 +296,13 @@ a:not(.btn):not(.card):focus {
 
 /* Responsive Accessibility */
 @media (max-width: 768px) {
+
   .large-text button,
   .large-text .btn {
     min-height: 56px !important;
     font-size: 1.5rem !important;
   }
-  
+
   .large-text input,
   .large-text textarea,
   .large-text select {
@@ -290,6 +313,7 @@ a:not(.btn):not(.card):focus {
 
 /* Prefers Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

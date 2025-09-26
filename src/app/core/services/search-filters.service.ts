@@ -70,7 +70,7 @@ export class SearchFiltersService {
     { code: 'ko', name: 'Korean' }
   ];
 
-  constructor() {}
+  constructor() { }
 
   /**
    * Get current filters
@@ -143,14 +143,14 @@ export class SearchFiltersService {
   toggleCategory(category: string): void {
     const current = this.getCurrentFilters();
     const categories = [...current.categories];
-    
+
     const index = categories.indexOf(category);
     if (index > -1) {
       categories.splice(index, 1);
     } else {
       categories.push(category);
     }
-    
+
     this.updateFilters({ categories });
   }
 
@@ -160,14 +160,14 @@ export class SearchFiltersService {
   toggleLanguage(languageCode: string): void {
     const current = this.getCurrentFilters();
     const languages = [...current.languages];
-    
+
     const index = languages.indexOf(languageCode);
     if (index > -1) {
       languages.splice(index, 1);
     } else {
       languages.push(languageCode);
     }
-    
+
     this.updateFilters({ languages });
   }
 
@@ -275,7 +275,7 @@ export class SearchFiltersService {
    */
   buildApiOrderBy(): string {
     const sortBy = this.getCurrentFilters().sortBy;
-    
+
     switch (sortBy) {
       case 'newest':
         return 'newest';
@@ -308,14 +308,14 @@ export class SearchFiltersService {
     // Published date filter
     if (book.publishedDate) {
       const publishedYear = parseInt(book.publishedDate.substring(0, 4));
-      
+
       if (filters.publishedAfter) {
         const afterYear = parseInt(filters.publishedAfter);
         if (publishedYear < afterYear) {
           return false;
         }
       }
-      
+
       if (filters.publishedBefore) {
         const beforeYear = parseInt(filters.publishedBefore);
         if (publishedYear > beforeYear) {
@@ -348,7 +348,7 @@ export class SearchFiltersService {
     }
 
     if (filters.languages.length > 0) {
-      const langNames = filters.languages.map(code => 
+      const langNames = filters.languages.map(code =>
         this.SUPPORTED_LANGUAGES.find(lang => lang.code === code)?.name || code
       );
       summary.push(`Languages: ${langNames.join(', ')}`);

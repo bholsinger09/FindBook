@@ -12,34 +12,34 @@ export interface AccessibilityIssue {
   providedIn: 'root'
 })
 export class AccessibilityTestingService {
-  
+
   /**
    * Run comprehensive accessibility tests on the current page
    */
   runAccessibilityAudit(): AccessibilityIssue[] {
     const issues: AccessibilityIssue[] = [];
-    
+
     // Check for missing alt text on images
     issues.push(...this.checkImageAltText());
-    
+
     // Check for proper heading structure
     issues.push(...this.checkHeadingStructure());
-    
+
     // Check for proper form labels
     issues.push(...this.checkFormLabels());
-    
+
     // Check for keyboard accessibility
     issues.push(...this.checkKeyboardAccessibility());
-    
+
     // Check for color contrast (basic check)
     issues.push(...this.checkColorContrast());
-    
+
     // Check for ARIA attributes
     issues.push(...this.checkAriaAttributes());
-    
+
     // Check for focus management
     issues.push(...this.checkFocusManagement());
-    
+
     return issues;
   }
 
@@ -49,10 +49,10 @@ export class AccessibilityTestingService {
   private checkImageAltText(): AccessibilityIssue[] {
     const issues: AccessibilityIssue[] = [];
     const images = document.querySelectorAll('img');
-    
+
     images.forEach(img => {
       const altText = img.getAttribute('alt');
-      
+
       if (altText === null) {
         issues.push({
           element: img,
@@ -65,7 +65,7 @@ export class AccessibilityTestingService {
         // Empty alt is acceptable for decorative images, but check context
         const parentButton = img.closest('button');
         const parentLink = img.closest('a');
-        
+
         if (parentButton && !parentButton.getAttribute('aria-label')) {
           issues.push({
             element: img,
@@ -75,7 +75,7 @@ export class AccessibilityTestingService {
             suggestion: 'Add aria-label to button or meaningful alt text to image'
           });
         }
-        
+
         if (parentLink && !parentLink.textContent?.trim()) {
           issues.push({
             element: img,
@@ -87,7 +87,7 @@ export class AccessibilityTestingService {
         }
       }
     });
-    
+
     return issues;
   }
 
@@ -98,10 +98,10 @@ export class AccessibilityTestingService {
     const issues: AccessibilityIssue[] = [];
     const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
     let previousLevel = 0;
-    
+
     headings.forEach((heading, index) => {
       const currentLevel = parseInt(heading.tagName.charAt(1));
-      
+
       if (index === 0 && currentLevel !== 1) {
         issues.push({
           element: heading as HTMLElement,
@@ -111,7 +111,7 @@ export class AccessibilityTestingService {
           suggestion: 'Use h1 for the main page heading'
         });
       }
-      
+
       if (currentLevel > previousLevel + 1) {
         issues.push({
           element: heading as HTMLElement,
@@ -121,10 +121,10 @@ export class AccessibilityTestingService {
           suggestion: 'Use headings in sequential order'
         });
       }
-      
+
       previousLevel = currentLevel;
     });
-    
+
     return issues;
   }
 
@@ -134,33 +134,33 @@ export class AccessibilityTestingService {
   private checkFormLabels(): AccessibilityIssue[] {
     const issues: AccessibilityIssue[] = [];
     const inputs = document.querySelectorAll('input, textarea, select');
-    
+
     inputs.forEach(input => {
       const inputElement = input as HTMLInputElement;
       const id = inputElement.id;
       const ariaLabel = inputElement.getAttribute('aria-label');
       const ariaLabelledby = inputElement.getAttribute('aria-labelledby');
-      
+
       // Skip if input type doesn't need a label
       if (inputElement.type === 'hidden' || inputElement.type === 'submit' || inputElement.type === 'button') {
         return;
       }
-      
+
       let hasLabel = false;
-      
+
       if (id) {
         const label = document.querySelector(`label[for="${id}"]`);
         if (label) hasLabel = true;
       }
-      
+
       if (ariaLabel || ariaLabelledby) {
         hasLabel = true;
       }
-      
+
       // Check for parent label
       const parentLabel = inputElement.closest('label');
       if (parentLabel) hasLabel = true;
-      
+
       if (!hasLabel) {
         issues.push({
           element: inputElement,
@@ -171,7 +171,7 @@ export class AccessibilityTestingService {
         });
       }
     });
-    
+
     return issues;
   }
 
@@ -180,17 +180,17 @@ export class AccessibilityTestingService {
    */
   private checkKeyboardAccessibility(): AccessibilityIssue[] {
     const issues: AccessibilityIssue[] = [];
-    
+
     // Check for clickable elements that aren't focusable
     const clickables = document.querySelectorAll('[onclick], [ng-click]');
     clickables.forEach(element => {
       const htmlElement = element as HTMLElement;
       const tabIndex = htmlElement.tabIndex;
       const tagName = htmlElement.tagName.toLowerCase();
-      
+
       // Elements that are naturally focusable
       const naturallyFocusable = ['a', 'button', 'input', 'select', 'textarea'];
-      
+
       if (!naturallyFocusable.includes(tagName) && tabIndex < 0) {
         issues.push({
           element: htmlElement,
@@ -201,7 +201,7 @@ export class AccessibilityTestingService {
         });
       }
     });
-    
+
     // Check for positive tabindex values (anti-pattern)
     const positiveTabIndex = document.querySelectorAll('[tabindex]:not([tabindex="0"]):not([tabindex="-1"])');
     positiveTabIndex.forEach(element => {
@@ -216,7 +216,7 @@ export class AccessibilityTestingService {
         });
       }
     });
-    
+
     return issues;
   }
 
@@ -225,21 +225,21 @@ export class AccessibilityTestingService {
    */
   private checkColorContrast(): AccessibilityIssue[] {
     const issues: AccessibilityIssue[] = [];
-    
+
     // This is a simplified check - real implementation would need more sophisticated color analysis
     const textElements = document.querySelectorAll('p, span, div, h1, h2, h3, h4, h5, h6, a, button, label');
-    
+
     textElements.forEach(element => {
       const htmlElement = element as HTMLElement;
       const style = getComputedStyle(htmlElement);
       const color = style.color;
       const backgroundColor = style.backgroundColor;
-      
+
       // Skip if colors are not set or transparent
       if (color === 'rgba(0, 0, 0, 0)' || backgroundColor === 'rgba(0, 0, 0, 0)') {
         return;
       }
-      
+
       // Very basic check - would need proper color contrast calculation in real implementation
       if (color === backgroundColor) {
         issues.push({
@@ -251,7 +251,7 @@ export class AccessibilityTestingService {
         });
       }
     });
-    
+
     return issues;
   }
 
@@ -260,7 +260,7 @@ export class AccessibilityTestingService {
    */
   private checkAriaAttributes(): AccessibilityIssue[] {
     const issues: AccessibilityIssue[] = [];
-    
+
     // Check for aria-labelledby pointing to non-existent elements
     const labelledByElements = document.querySelectorAll('[aria-labelledby]');
     labelledByElements.forEach(element => {
@@ -278,7 +278,7 @@ export class AccessibilityTestingService {
         }
       }
     });
-    
+
     // Check for aria-describedby pointing to non-existent elements
     const describedByElements = document.querySelectorAll('[aria-describedby]');
     describedByElements.forEach(element => {
@@ -296,13 +296,13 @@ export class AccessibilityTestingService {
         }
       }
     });
-    
+
     // Check for role="button" without proper keyboard support
     const roleButtons = document.querySelectorAll('[role="button"]');
     roleButtons.forEach(element => {
       const htmlElement = element as HTMLElement;
       const hasTabIndex = htmlElement.hasAttribute('tabindex');
-      
+
       if (!hasTabIndex || htmlElement.tabIndex < 0) {
         issues.push({
           element: htmlElement,
@@ -313,7 +313,7 @@ export class AccessibilityTestingService {
         });
       }
     });
-    
+
     return issues;
   }
 
@@ -322,12 +322,12 @@ export class AccessibilityTestingService {
    */
   private checkFocusManagement(): AccessibilityIssue[] {
     const issues: AccessibilityIssue[] = [];
-    
+
     // Check for elements with tabindex="-1" that might trap focus
     const negativeTabIndex = document.querySelectorAll('[tabindex="-1"]');
     negativeTabIndex.forEach(element => {
       const htmlElement = element as HTMLElement;
-      
+
       // This is just a warning as tabindex="-1" can be legitimate
       if (htmlElement.tagName.toLowerCase() !== 'main') {
         issues.push({
@@ -339,7 +339,7 @@ export class AccessibilityTestingService {
         });
       }
     });
-    
+
     return issues;
   }
 
@@ -351,13 +351,13 @@ export class AccessibilityTestingService {
     const errors = issues.filter(i => i.type === 'error');
     const warnings = issues.filter(i => i.type === 'warning');
     const infos = issues.filter(i => i.type === 'info');
-    
+
     let report = '# Accessibility Audit Report\n\n';
     report += `**Total Issues Found:** ${issues.length}\n`;
     report += `**Errors:** ${errors.length}\n`;
     report += `**Warnings:** ${warnings.length}\n`;
     report += `**Info:** ${infos.length}\n\n`;
-    
+
     if (errors.length > 0) {
       report += '## Errors (Must Fix)\n\n';
       errors.forEach((issue, index) => {
@@ -368,7 +368,7 @@ export class AccessibilityTestingService {
         report += '\n';
       });
     }
-    
+
     if (warnings.length > 0) {
       report += '## Warnings (Should Fix)\n\n';
       warnings.forEach((issue, index) => {
@@ -379,7 +379,7 @@ export class AccessibilityTestingService {
         report += '\n';
       });
     }
-    
+
     if (infos.length > 0) {
       report += '## Information (Consider Reviewing)\n\n';
       infos.forEach((issue, index) => {
@@ -390,12 +390,12 @@ export class AccessibilityTestingService {
         report += '\n';
       });
     }
-    
+
     if (issues.length === 0) {
       report += '## ✅ Great! No accessibility issues found.\n\n';
       report += 'Your page follows good accessibility practices.';
     }
-    
+
     return report;
   }
 
@@ -404,18 +404,18 @@ export class AccessibilityTestingService {
    */
   logAccessibilityIssues(): void {
     const issues = this.runAccessibilityAudit();
-    
+
     if (issues.length === 0) {
       console.log('%c✅ Accessibility Check: No issues found!', 'color: green; font-weight: bold;');
       return;
     }
-    
+
     console.group(`🔍 Accessibility Issues Found: ${issues.length}`);
-    
+
     issues.forEach(issue => {
       const color = issue.type === 'error' ? 'red' : issue.type === 'warning' ? 'orange' : 'blue';
       const icon = issue.type === 'error' ? '❌' : issue.type === 'warning' ? '⚠️' : 'ℹ️';
-      
+
       console.group(`${icon} ${issue.rule.toUpperCase()}`);
       console.log(`%c${issue.message}`, `color: ${color}; font-weight: bold;`);
       if (issue.suggestion) {
@@ -424,7 +424,7 @@ export class AccessibilityTestingService {
       console.log('Element:', issue.element);
       console.groupEnd();
     });
-    
+
     console.groupEnd();
   }
 }

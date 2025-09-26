@@ -55,18 +55,18 @@ export class SearchFormComponent {
         startIndex: 0,
         maxResults: 12
       };
-      
+
       // Announce search action to screen readers
       this.accessibilityService.announce(
-        `Searching for books with query: ${searchQuery}`, 
+        `Searching for books with query: ${searchQuery}`,
         'assertive'
       );
-      
+
       this.searchSubmitted.emit(searchParams);
     } else if (this.searchForm.invalid) {
       // Announce validation errors
       this.accessibilityService.announce(
-        this.getErrorMessage(), 
+        this.getErrorMessage(),
         'assertive'
       );
     }

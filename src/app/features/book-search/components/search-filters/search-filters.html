@@ -1,13 +1,8 @@
 <div class="search-filters-container">
   <!-- Filter Toggle Button -->
   <div class="filter-toggle" *ngIf="!showFilters">
-    <button mat-raised-button 
-            color="primary" 
-            class="toggle-button"
-            [matBadge]="getActiveFiltersCount()"
-            [matBadgeHidden]="!hasActiveFilters()"
-            matBadgeColor="accent"
-            (click)="toggleFilters()">
+    <button mat-raised-button color="primary" class="toggle-button" [matBadge]="getActiveFiltersCount()"
+      [matBadgeHidden]="!hasActiveFilters()" matBadgeColor="accent" (click)="toggleFilters()">
       <mat-icon>tune</mat-icon>
       Filters
     </button>
@@ -21,17 +16,11 @@
         Search Filters
       </mat-card-title>
       <div class="filter-actions">
-        <button mat-button 
-                color="warn" 
-                class="reset-button"
-                [disabled]="!hasActiveFilters()"
-                (click)="resetFilters()">
+        <button mat-button color="warn" class="reset-button" [disabled]="!hasActiveFilters()" (click)="resetFilters()">
           <mat-icon>clear_all</mat-icon>
           Reset
         </button>
-        <button mat-icon-button 
-                class="close-button"
-                (click)="toggleFilters()">
+        <button mat-icon-button class="close-button" (click)="toggleFilters()">
           <mat-icon>close</mat-icon>
         </button>
       </div>
@@ -62,12 +51,11 @@
               </span>
             </mat-panel-title>
           </mat-expansion-panel-header>
-          
+
           <div class="category-filters">
             <mat-chip-set>
-              <mat-chip *ngFor="let category of categoryOptions"
-                        [class.selected]="isCategorySelected(category.value)"
-                        (click)="onCategoryToggle(category.value)">
+              <mat-chip *ngFor="let category of categoryOptions" [class.selected]="isCategorySelected(category.value)"
+                (click)="onCategoryToggle(category.value)">
                 {{ category.label }}
                 <mat-icon *ngIf="isCategorySelected(category.value)" matChipTrailingIcon>check</mat-icon>
               </mat-chip>
@@ -86,7 +74,7 @@
               </span>
             </mat-panel-title>
           </mat-expansion-panel-header>
-          
+
           <div class="rating-filters">
             <mat-form-field class="range-field">
               <mat-label>Minimum Rating</mat-label>
@@ -96,7 +84,7 @@
                 </mat-option>
               </mat-select>
             </mat-form-field>
-            
+
             <mat-form-field class="range-field">
               <mat-label>Maximum Rating</mat-label>
               <mat-select [(ngModel)]="ratingRange[1]" (ngModelChange)="onRatingChange()">
@@ -119,12 +107,11 @@
               </span>
             </mat-panel-title>
           </mat-expansion-panel-header>
-          
+
           <div class="language-filters">
             <mat-chip-set>
-              <mat-chip *ngFor="let language of languageOptions"
-                        [class.selected]="isLanguageSelected(language.value)"
-                        (click)="onLanguageToggle(language.value)">
+              <mat-chip *ngFor="let language of languageOptions" [class.selected]="isLanguageSelected(language.value)"
+                (click)="onLanguageToggle(language.value)">
                 {{ language.label }}
                 <mat-icon *ngIf="isLanguageSelected(language.value)" matChipTrailingIcon>check</mat-icon>
               </mat-chip>
@@ -143,26 +130,18 @@
               </span>
             </mat-panel-title>
           </mat-expansion-panel-header>
-          
+
           <div class="page-filters">
             <mat-form-field class="range-field">
               <mat-label>Minimum Pages</mat-label>
-              <input matInput 
-                     type="number" 
-                     [(ngModel)]="pageRange[0]"
-                     (ngModelChange)="onPageRangeChange()"
-                     min="0"
-                     max="10000">
+              <input matInput type="number" [(ngModel)]="pageRange[0]" (ngModelChange)="onPageRangeChange()" min="0"
+                max="10000">
             </mat-form-field>
-            
+
             <mat-form-field class="range-field">
               <mat-label>Maximum Pages</mat-label>
-              <input matInput 
-                     type="number" 
-                     [(ngModel)]="pageRange[1]"
-                     (ngModelChange)="onPageRangeChange()"
-                     min="0"
-                     max="10000">
+              <input matInput type="number" [(ngModel)]="pageRange[1]" (ngModelChange)="onPageRangeChange()" min="0"
+                max="10000">
             </mat-form-field>
           </div>
         </mat-expansion-panel>
@@ -178,28 +157,18 @@
               </span>
             </mat-panel-title>
           </mat-expansion-panel-header>
-          
+
           <div class="date-filters">
             <mat-form-field class="range-field">
               <mat-label>Published After (Year)</mat-label>
-              <input matInput 
-                     type="number" 
-                     [(ngModel)]="yearRange[0]"
-                     (ngModelChange)="onYearRangeChange()"
-                     min="1000"
-                     max="2024"
-                     placeholder="e.g., 2020">
+              <input matInput type="number" [(ngModel)]="yearRange[0]" (ngModelChange)="onYearRangeChange()" min="1000"
+                max="2024" placeholder="e.g., 2020">
             </mat-form-field>
-            
+
             <mat-form-field class="range-field">
               <mat-label>Published Before (Year)</mat-label>
-              <input matInput 
-                     type="number" 
-                     [(ngModel)]="yearRange[1]"
-                     (ngModelChange)="onYearRangeChange()"
-                     min="1000"
-                     max="2024"
-                     placeholder="e.g., 2023">
+              <input matInput type="number" [(ngModel)]="yearRange[1]" (ngModelChange)="onYearRangeChange()" min="1000"
+                max="2024" placeholder="e.g., 2023">
             </mat-form-field>
           </div>
         </mat-expansion-panel>
@@ -212,14 +181,12 @@
               Other Options
             </mat-panel-title>
           </mat-expansion-panel-header>
-          
+
           <div class="other-filters">
-            <mat-checkbox [(ngModel)]="filters.hasPreview"
-                          (ngModelChange)="onPreviewToggle()"
-                          class="preview-checkbox">
+            <mat-checkbox [(ngModel)]="filters.hasPreview" (ngModelChange)="onPreviewToggle()" class="preview-checkbox">
               Only books with preview available
             </mat-checkbox>
-            
+
             <mat-form-field class="sort-field">
               <mat-label>Sort By</mat-label>
               <mat-select [(ngModel)]="filters.sortBy" (ngModelChange)="onSortChange()">

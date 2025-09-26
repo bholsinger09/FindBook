@@ -16,17 +16,17 @@ export class App implements OnInit {
   constructor(
     private performanceService: PerformanceService,
     private accessibilityService: AccessibilityService
-  ) {}
+  ) { }
 
   ngOnInit() {
     console.log('App component initialized');
-    
+
     // Initialize performance monitoring
     this.performanceService.monitorCoreWebVitals();
-    
+
     // Initialize accessibility service
     this.accessibilityService.announce('FindBook application loaded', 'polite');
-    
+
     // Log performance summary after 5 seconds (for demo purposes)
     setTimeout(() => {
       const summary = this.performanceService.getPerformanceSummary();

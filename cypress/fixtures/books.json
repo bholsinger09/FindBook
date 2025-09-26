@@ -9,7 +9,9 @@
       "selfLink": "https://www.googleapis.com/books/v1/volumes/test-book-1",
       "volumeInfo": {
         "title": "Clean Code: A Handbook of Agile Software Craftsmanship",
-        "authors": ["Robert C. Martin"],
+        "authors": [
+          "Robert C. Martin"
+        ],
         "publisher": "Prentice Hall",
         "publishedDate": "2008-08-01",
         "description": "Even bad code can function. But if code isn't clean, it can bring a development organization to its knees.",
@@ -21,7 +23,9 @@
         ],
         "pageCount": 464,
         "printType": "BOOK",
-        "categories": ["Computers"],
+        "categories": [
+          "Computers"
+        ],
         "averageRating": 4.4,
         "ratingsCount": 85,
         "maturityRating": "NOT_MATURE",
@@ -44,7 +48,9 @@
       "selfLink": "https://www.googleapis.com/books/v1/volumes/test-book-2",
       "volumeInfo": {
         "title": "JavaScript: The Good Parts",
-        "authors": ["Douglas Crockford"],
+        "authors": [
+          "Douglas Crockford"
+        ],
         "publisher": "O'Reilly Media",
         "publishedDate": "2008-05-08",
         "description": "Most programming languages contain good and bad parts, but JavaScript has more than its share of the bad.",
@@ -56,7 +62,9 @@
         ],
         "pageCount": 176,
         "printType": "BOOK",
-        "categories": ["Computers"],
+        "categories": [
+          "Computers"
+        ],
         "averageRating": 4.2,
         "ratingsCount": 234,
         "maturityRating": "NOT_MATURE",
@@ -79,7 +87,9 @@
       "selfLink": "https://www.googleapis.com/books/v1/volumes/test-book-3",
       "volumeInfo": {
         "title": "TypeScript Handbook",
-        "authors": ["Microsoft Corporation"],
+        "authors": [
+          "Microsoft Corporation"
+        ],
         "publisher": "Microsoft Press",
         "publishedDate": "2023-01-15",
         "description": "TypeScript is a strongly typed programming language that builds on JavaScript.",
@@ -91,7 +101,10 @@
         ],
         "pageCount": 320,
         "printType": "BOOK",
-        "categories": ["Computers", "Technology"],
+        "categories": [
+          "Computers",
+          "Technology"
+        ],
         "averageRating": 4.6,
         "ratingsCount": 156,
         "maturityRating": "NOT_MATURE",

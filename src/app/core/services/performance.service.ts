@@ -32,22 +32,22 @@ export class PerformanceService {
     if ('performance' in window) {
       const endMark = `${name}-end`;
       const startMark = `${name}-start`;
-      
+
       performance.mark(endMark);
-      
+
       try {
         performance.measure(name, startMark, endMark);
         const measure = performance.getEntriesByName(name)[0];
-        
+
         if (measure) {
           const duration = Math.round(measure.duration);
           this.recordMetric(name, duration);
-          
+
           // Clean up marks and measures
           performance.clearMarks(startMark);
           performance.clearMarks(endMark);
           performance.clearMeasures(name);
-          
+
           return duration;
         }
       } catch (error) {
@@ -90,7 +90,7 @@ export class PerformanceService {
   getAverageMetric(name: string): number {
     const metrics = this.getMetricsByName(name);
     if (metrics.length === 0) return 0;
-    
+
     const sum = metrics.reduce((acc, metric) => acc + metric.value, 0);
     return Math.round(sum / metrics.length);
   }
@@ -146,11 +146,11 @@ export class PerformanceService {
 
   // Monitor API call performance
   monitorApiCall<T>(
-    apiCall: () => Promise<T>, 
+    apiCall: () => Promise<T>,
     operationName: string
   ): Promise<T> {
     this.markStart(operationName);
-    
+
     return apiCall().then(
       (result) => {
         this.markEnd(operationName);
@@ -167,7 +167,7 @@ export class PerformanceService {
   // Get performance summary
   getPerformanceSummary(): PerformanceSummary {
     const metrics = this.metrics;
-    
+
     if (metrics.length === 0) {
       return {
         totalOperations: 0,
@@ -187,9 +187,9 @@ export class PerformanceService {
     });
 
     const allValues = metrics.map(m => m.value);
-    const slowest = metrics.reduce((prev, current) => 
+    const slowest = metrics.reduce((prev, current) =>
       prev.value > current.value ? prev : current);
-    const fastest = metrics.reduce((prev, current) => 
+    const fastest = metrics.reduce((prev, current) =>
       prev.value < current.value ? prev : current);
 
     return {

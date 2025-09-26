@@ -47,12 +47,12 @@ export class BookListComponent {
   onToggleFavorite(book: Book): void {
     const isFavorite = this.isFavorite(book.id);
     const action = isFavorite ? 'removed from' : 'added to';
-    
+
     this.accessibilityService.announce(
       `${book.title} ${action} favorites`,
       'polite'
     );
-    
+
     this.favoriteToggled.emit(book);
   }
 
@@ -69,7 +69,7 @@ export class BookListComponent {
     const authors = book.authors?.join(', ') || 'Unknown Author';
     const publishedDate = book.publishedDate || 'Unknown Date';
     const rating = book.averageRating ? `, Rating: ${book.averageRating} stars` : '';
-    
+
     return `${title} by ${authors}, published ${publishedDate}${rating}`;
   }
 

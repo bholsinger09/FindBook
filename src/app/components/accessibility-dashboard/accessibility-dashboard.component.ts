@@ -437,9 +437,9 @@ import { Observable } from 'rxjs';
 export class AccessibilityDashboardComponent implements OnInit {
   private accessibilityService = inject(AccessibilityService);
   private testingService = inject(AccessibilityTestingService);
-  
+
   accessibilityState$: Observable<AccessibilityState> = this.accessibilityService.accessibilityState$;
-  
+
   lastTestResults: AccessibilityIssue[] | null = null;
   accessibilityReport: string | null = null;
 
@@ -465,15 +465,15 @@ export class AccessibilityDashboardComponent implements OnInit {
 
   runAccessibilityTest(): void {
     this.accessibilityService.announce('Running accessibility audit', 'polite');
-    
+
     setTimeout(() => {
       this.lastTestResults = this.testingService.runAccessibilityAudit();
       this.testingService.logAccessibilityIssues();
-      
+
       const issueCount = this.lastTestResults.length;
       this.accessibilityService.announce(
-        issueCount === 0 
-          ? 'Accessibility audit complete. No issues found!' 
+        issueCount === 0
+          ? 'Accessibility audit complete. No issues found!'
           : `Accessibility audit complete. Found ${issueCount} issue${issueCount === 1 ? '' : 's'}.`,
         'assertive'
       );
@@ -506,7 +506,7 @@ export class AccessibilityDashboardComponent implements OnInit {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
+
       this.accessibilityService.announce('Report downloaded', 'polite');
     }
   }

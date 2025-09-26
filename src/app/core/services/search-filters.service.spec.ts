@@ -28,7 +28,7 @@ describe('SearchFiltersService', () => {
   describe('Default State', () => {
     it('should start with default filters', () => {
       const filters = service.getCurrentFilters();
-      
+
       expect(filters.categories).toEqual([]);
       expect(filters.minRating).toBe(0);
       expect(filters.maxRating).toBe(5);
@@ -50,7 +50,7 @@ describe('SearchFiltersService', () => {
   describe('Filter Updates', () => {
     it('should update filters partially', () => {
       service.updateFilters({ minRating: 3, sortBy: 'newest' });
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.minRating).toBe(3);
       expect(filters.sortBy).toBe('newest');
@@ -60,7 +60,7 @@ describe('SearchFiltersService', () => {
     it('should reset filters to default', () => {
       service.updateFilters({ categories: ['Fiction'], minRating: 4 });
       service.resetFilters();
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.categories).toEqual([]);
       expect(filters.minRating).toBe(0);
@@ -70,7 +70,7 @@ describe('SearchFiltersService', () => {
   describe('Category Filters', () => {
     it('should toggle category on', () => {
       service.toggleCategory('Fiction');
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.categories).toContain('Fiction');
     });
@@ -78,7 +78,7 @@ describe('SearchFiltersService', () => {
     it('should toggle category off', () => {
       service.toggleCategory('Fiction');
       service.toggleCategory('Fiction'); // Toggle off
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.categories).not.toContain('Fiction');
     });
@@ -86,14 +86,14 @@ describe('SearchFiltersService', () => {
     it('should handle multiple categories', () => {
       service.toggleCategory('Fiction');
       service.toggleCategory('Non-fiction');
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.categories).toEqual(['Fiction', 'Non-fiction']);
     });
 
     it('should provide category options', () => {
       const options = service.getCategoryOptions();
-      
+
       expect(options.length).toBeGreaterThan(0);
       expect(options[0].value).toBeDefined();
       expect(options[0].label).toBeDefined();
@@ -104,7 +104,7 @@ describe('SearchFiltersService', () => {
   describe('Language Filters', () => {
     it('should toggle language on', () => {
       service.toggleLanguage('en');
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.languages).toContain('en');
     });
@@ -112,14 +112,14 @@ describe('SearchFiltersService', () => {
     it('should toggle language off', () => {
       service.toggleLanguage('en');
       service.toggleLanguage('en'); // Toggle off
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.languages).not.toContain('en');
     });
 
     it('should provide language options', () => {
       const options = service.getLanguageOptions();
-      
+
       expect(options.length).toBeGreaterThan(0);
       expect(options.some(opt => opt.value === 'en' && opt.label === 'English')).toBe(true);
     });
@@ -128,7 +128,7 @@ describe('SearchFiltersService', () => {
   describe('Rating Filters', () => {
     it('should set rating range', () => {
       service.setRatingRange(2, 4);
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.minRating).toBe(2);
       expect(filters.maxRating).toBe(4);
@@ -136,7 +136,7 @@ describe('SearchFiltersService', () => {
 
     it('should clamp rating values to valid range', () => {
       service.setRatingRange(-1, 6);
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.minRating).toBe(0);
       expect(filters.maxRating).toBe(5);
@@ -146,7 +146,7 @@ describe('SearchFiltersService', () => {
   describe('Page Range Filters', () => {
     it('should set page range', () => {
       service.setPageRange(100, 500);
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.minPages).toBe(100);
       expect(filters.maxPages).toBe(500);
@@ -154,14 +154,14 @@ describe('SearchFiltersService', () => {
 
     it('should handle negative minimum pages', () => {
       service.setPageRange(-10, 200);
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.minPages).toBe(0);
     });
 
     it('should ensure max is at least min', () => {
       service.setPageRange(300, 100);
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.maxPages).toBe(300);
     });
@@ -170,7 +170,7 @@ describe('SearchFiltersService', () => {
   describe('Date Range Filters', () => {
     it('should set date range', () => {
       service.setDateRange('2020', '2023');
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.publishedAfter).toBe('2020');
       expect(filters.publishedBefore).toBe('2023');
@@ -180,14 +180,14 @@ describe('SearchFiltersService', () => {
   describe('Sort Filters', () => {
     it('should set sort order', () => {
       service.setSortBy('rating');
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.sortBy).toBe('rating');
     });
 
     it('should provide sort options', () => {
       const options = service.getSortOptions();
-      
+
       expect(options.length).toBe(4);
       expect(options.some(opt => opt.value === 'relevance')).toBe(true);
       expect(options.some(opt => opt.value === 'newest')).toBe(true);
@@ -199,7 +199,7 @@ describe('SearchFiltersService', () => {
   describe('Preview Filter', () => {
     it('should toggle preview filter', () => {
       service.togglePreviewFilter();
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.hasPreview).toBe(true);
     });
@@ -207,7 +207,7 @@ describe('SearchFiltersService', () => {
     it('should toggle preview filter back off', () => {
       service.togglePreviewFilter();
       service.togglePreviewFilter();
-      
+
       const filters = service.getCurrentFilters();
       expect(filters.hasPreview).toBe(false);
     });
@@ -216,21 +216,21 @@ describe('SearchFiltersService', () => {
   describe('Active Filters Detection', () => {
     it('should detect active category filters', () => {
       service.toggleCategory('Fiction');
-      
+
       expect(service.hasActiveFilters()).toBe(true);
       expect(service.getActiveFiltersCount()).toBe(1);
     });
 
     it('should detect active rating filters', () => {
       service.setRatingRange(3, 5);
-      
+
       expect(service.hasActiveFilters()).toBe(true);
       expect(service.getActiveFiltersCount()).toBe(1);
     });
 
     it('should detect active sort filter', () => {
       service.setSortBy('newest');
-      
+
       expect(service.hasActiveFilters()).toBe(true);
       expect(service.getActiveFiltersCount()).toBe(1);
     });
@@ -239,7 +239,7 @@ describe('SearchFiltersService', () => {
       service.toggleCategory('Fiction');
       service.setRatingRange(3, 5);
       service.setSortBy('newest');
-      
+
       expect(service.getActiveFiltersCount()).toBe(3);
     });
   });
@@ -247,30 +247,30 @@ describe('SearchFiltersService', () => {
   describe('API Query Building', () => {
     it('should build basic API query', () => {
       const query = service.buildApiQuery('angular');
-      
+
       expect(query).toBe('angular');
     });
 
     it('should build query with category filters', () => {
       service.toggleCategory('Programming');
       service.toggleCategory('Technology');
-      
+
       const query = service.buildApiQuery('angular');
-      
+
       expect(query).toContain('subject:Programming OR subject:Technology');
     });
 
     it('should build query with language filters', () => {
       service.toggleLanguage('en');
-      
+
       const query = service.buildApiQuery('angular');
-      
+
       expect(query).toContain('inlanguage:en');
     });
 
     it('should build order parameter', () => {
       expect(service.buildApiOrderBy()).toBe('relevance');
-      
+
       service.setSortBy('newest');
       expect(service.buildApiOrderBy()).toBe('newest');
     });
@@ -283,28 +283,28 @@ describe('SearchFiltersService', () => {
 
     it('should filter by rating', () => {
       service.setRatingRange(4.5, 5);
-      
+
       expect(service.matchesFilters(mockBook)).toBe(false);
       expect(service.matchesFilters({ ...mockBook, averageRating: 4.8 })).toBe(true);
     });
 
     it('should filter by page count', () => {
       service.setPageRange(400, 600);
-      
+
       expect(service.matchesFilters(mockBook)).toBe(false);
       expect(service.matchesFilters({ ...mockBook, pageCount: 450 })).toBe(true);
     });
 
     it('should filter by published date', () => {
       service.setDateRange('2021', '2023');
-      
+
       expect(service.matchesFilters(mockBook)).toBe(false);
       expect(service.matchesFilters({ ...mockBook, publishedDate: '2022-01-01' })).toBe(true);
     });
 
     it('should filter by preview availability', () => {
       service.togglePreviewFilter();
-      
+
       expect(service.matchesFilters(mockBook)).toBe(true);
       expect(service.matchesFilters({ ...mockBook, webReaderLink: undefined })).toBe(false);
     });
@@ -313,7 +313,7 @@ describe('SearchFiltersService', () => {
   describe('Filter Summary', () => {
     it('should provide empty summary with no filters', () => {
       const summary = service.getFilterSummary();
-      
+
       expect(summary).toEqual([]);
     });
 
@@ -321,9 +321,9 @@ describe('SearchFiltersService', () => {
       service.toggleCategory('Fiction');
       service.setRatingRange(3, 5);
       service.toggleLanguage('en');
-      
+
       const summary = service.getFilterSummary();
-      
+
       expect(summary.length).toBe(3);
       expect(summary.some(item => item.includes('Fiction'))).toBe(true);
       expect(summary.some(item => item.includes('3★'))).toBe(true);
@@ -334,7 +334,7 @@ describe('SearchFiltersService', () => {
   describe('Observable Updates', () => {
     it('should emit filter updates', (done) => {
       let updateCount = 0;
-      
+
       service.filters$.subscribe(filters => {
         updateCount++;
         if (updateCount === 2) {
@@ -342,7 +342,7 @@ describe('SearchFiltersService', () => {
           done();
         }
       });
-      
+
       service.toggleCategory('Fiction');
     });
   });

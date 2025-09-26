@@ -47,7 +47,7 @@ export class BookService {
      */
     getBookById(id: string): Observable<Book> {
         this.performanceService.markStart('book-details');
-        
+
         return this.http.get<GoogleBooksVolumeItem>(`${this.apiBaseUrl}/volumes/${id}`)
             .pipe(
                 tap(() => this.performanceService.markEnd('book-details')),

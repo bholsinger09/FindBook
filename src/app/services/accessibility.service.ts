@@ -16,7 +16,7 @@ export interface AccessibilityState {
 })
 export class AccessibilityService {
   private readonly ACCESS_STORAGE_KEY = 'findbook-accessibility-preferences';
-  
+
   private accessibilityState: BehaviorSubject<AccessibilityState>;
   public readonly accessibilityState$: Observable<AccessibilityState>;
 
@@ -33,9 +33,9 @@ export class AccessibilityService {
       keyboardNavigation: false,
       screenReader: this.hasScreenReader()
     });
-    
+
     this.accessibilityState$ = this.accessibilityState.asObservable();
-    
+
     this.loadUserPreferences();
     this.detectKeyboardNavigation();
   }
@@ -55,10 +55,10 @@ export class AccessibilityService {
     const newState = { ...current, highContrast: !current.highContrast };
     this.updateAccessibilityState(newState);
     this.applyHighContrastStyles(newState.highContrast);
-    
+
     this.announce(
-      newState.highContrast 
-        ? 'High contrast mode enabled' 
+      newState.highContrast
+        ? 'High contrast mode enabled'
         : 'High contrast mode disabled'
     );
   }
@@ -71,10 +71,10 @@ export class AccessibilityService {
     const newState = { ...current, largeText: !current.largeText };
     this.updateAccessibilityState(newState);
     this.applyLargeTextStyles(newState.largeText);
-    
+
     this.announce(
-      newState.largeText 
-        ? 'Large text mode enabled' 
+      newState.largeText
+        ? 'Large text mode enabled'
         : 'Large text mode disabled'
     );
   }
@@ -87,10 +87,10 @@ export class AccessibilityService {
     const newState = { ...current, reducedMotion: !current.reducedMotion };
     this.updateAccessibilityState(newState);
     this.applyReducedMotionStyles(newState.reducedMotion);
-    
+
     this.announce(
-      newState.reducedMotion 
-        ? 'Reduced motion enabled' 
+      newState.reducedMotion
+        ? 'Reduced motion enabled'
         : 'Reduced motion disabled'
     );
   }
@@ -138,17 +138,17 @@ export class AccessibilityService {
    */
   validateAriaAttributes(element: HTMLElement): string[] {
     const warnings: string[] = [];
-    
+
     // Check for aria-label or aria-labelledby
     if (element.hasAttribute('role') && !element.hasAttribute('aria-label') && !element.hasAttribute('aria-labelledby')) {
       warnings.push('Element with role should have aria-label or aria-labelledby');
     }
-    
+
     // Check for proper button implementation
     if (element.tagName.toLowerCase() === 'div' && element.hasAttribute('onclick')) {
       warnings.push('Clickable div should be a button or have role="button"');
     }
-    
+
     return warnings;
   }
 
@@ -181,9 +181,9 @@ export class AccessibilityService {
   private detectKeyboardNavigation(): void {
     try {
       if (!this.platform?.isBrowser) return;
-    
+
       let keyboardUsed = false;
-      
+
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Tab') {
           keyboardUsed = true;
@@ -194,7 +194,7 @@ export class AccessibilityService {
           }
         }
       });
-      
+
       document.addEventListener('mousedown', () => {
         if (keyboardUsed) {
           keyboardUsed = false;
@@ -217,7 +217,7 @@ export class AccessibilityService {
 
   private loadUserPreferences(): void {
     if (!this.platform?.isBrowser) return;
-    
+
     try {
       const saved = localStorage.getItem(this.ACCESS_STORAGE_KEY);
       if (saved) {
@@ -234,7 +234,7 @@ export class AccessibilityService {
 
   private saveUserPreferences(state: AccessibilityState): void {
     if (!this.platform?.isBrowser) return;
-    
+
     try {
       localStorage.setItem(this.ACCESS_STORAGE_KEY, JSON.stringify(state));
     } catch (error) {
@@ -251,7 +251,7 @@ export class AccessibilityService {
 
   private applyHighContrastStyles(enabled: boolean): void {
     if (!this.platform?.isBrowser) return;
-    
+
     if (enabled) {
       document.body.classList.add('high-contrast');
     } else {
@@ -261,7 +261,7 @@ export class AccessibilityService {
 
   private applyLargeTextStyles(enabled: boolean): void {
     if (!this.platform?.isBrowser) return;
-    
+
     if (enabled) {
       document.body.classList.add('large-text');
     } else {
@@ -271,7 +271,7 @@ export class AccessibilityService {
 
   private applyReducedMotionStyles(enabled: boolean): void {
     if (!this.platform?.isBrowser) return;
-    
+
     if (enabled) {
       document.body.classList.add('reduced-motion');
     } else {
@@ -281,7 +281,7 @@ export class AccessibilityService {
 
   private applyKeyboardNavigationStyles(enabled: boolean): void {
     if (!this.platform?.isBrowser) return;
-    
+
     if (enabled) {
       document.body.classList.add('keyboard-navigation');
     } else {

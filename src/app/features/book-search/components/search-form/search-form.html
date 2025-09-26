@@ -1,38 +1,26 @@
 <div class="search-form-container" role="region" aria-labelledby="search-heading">
     <!-- Search Section Heading (for screen readers) -->
     <h2 id="search-heading" class="sr-only">Book Search</h2>
-    
+
     <!-- Loading Progress Bar -->
-    <mat-progress-bar 
-        *ngIf="isLoading" 
-        mode="indeterminate" 
-        class="search-progress" 
-        data-cy="loading-indicator"
-        aria-label="Searching for books"
-        role="progressbar">
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate" class="search-progress" data-cy="loading-indicator"
+        aria-label="Searching for books" role="progressbar">
     </mat-progress-bar>
 
     <!-- Search Form -->
     <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="search-form" role="search" novalidate>
         <fieldset class="search-fieldset">
             <legend class="sr-only">Search for books by title, author, or keywords</legend>
-            
+
             <mat-form-field class="search-field" appearance="outline">
                 <mat-label id="search-label">Search for books</mat-label>
 
                 <!-- Search Input -->
-                <input 
-                    matInput 
-                    formControlName="searchTerm" 
-                    placeholder="Enter book title, author, or keywords..."
-                    class="search-input focus-indicator" 
-                    aria-labelledby="search-label"
+                <input matInput formControlName="searchTerm" placeholder="Enter book title, author, or keywords..."
+                    class="search-input focus-indicator" aria-labelledby="search-label"
                     aria-describedby="search-help search-error"
                     [attr.aria-invalid]="searchTermControl?.invalid && searchTermControl?.touched"
-                    (keydown.enter)="onSubmit()" 
-                    data-cy="search-input"
-                    autocomplete="off"
-                    spellcheck="true">
+                    (keydown.enter)="onSubmit()" data-cy="search-input" autocomplete="off" spellcheck="true">
 
                 <!-- Help text for screen readers -->
                 <div id="search-help" class="sr-only">
@@ -43,38 +31,22 @@
                 <mat-icon matPrefix aria-hidden="true">search</mat-icon>
 
                 <!-- Clear Button -->
-                <button 
-                    *ngIf="hasSearchTerm" 
-                    mat-icon-button 
-                    matSuffix 
-                    type="button" 
-                    class="clear-button focus-indicator"
-                    aria-label="Clear search field" 
-                    (click)="clearSearch()" 
-                    data-cy="clear-search"
-                    tabindex="0">
+                <button *ngIf="hasSearchTerm" mat-icon-button matSuffix type="button"
+                    class="clear-button focus-indicator" aria-label="Clear search field" (click)="clearSearch()"
+                    data-cy="clear-search" tabindex="0">
                     <mat-icon aria-hidden="true">close</mat-icon>
                 </button>
 
                 <!-- Error Messages -->
-                <mat-error 
-                    *ngIf="searchTermControl?.touched && searchTermControl?.errors" 
-                    class="error-message"
-                    id="search-error" 
-                    role="alert" 
-                    aria-live="polite"
-                    data-cy="search-error">
+                <mat-error *ngIf="searchTermControl?.touched && searchTermControl?.errors" class="error-message"
+                    id="search-error" role="alert" aria-live="polite" data-cy="search-error">
                     {{ getErrorMessage() }}
                 </mat-error>
             </mat-form-field>
 
             <!-- Search Button -->
-            <button 
-                mat-raised-button 
-                color="primary" 
-                type="submit" 
-                class="search-button focus-indicator"
-                [disabled]="searchForm.invalid || isLoading" 
+            <button mat-raised-button color="primary" type="submit" class="search-button focus-indicator"
+                [disabled]="searchForm.invalid || isLoading"
                 [attr.aria-label]="isLoading ? 'Searching for books, please wait' : 'Search for books'"
                 data-cy="search-button">
 

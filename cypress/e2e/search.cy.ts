@@ -23,7 +23,7 @@ describe('Book Search Application', () => {
     it('should perform a basic book search', () => {
       cy.searchForBooks('JavaScript');
       cy.waitForSearchResults();
-      
+
       cy.get('[data-cy=book-item]').should('have.length.greaterThan', 0);
       cy.get('[data-cy=book-title]').first().should('be.visible');
       cy.get('[data-cy=book-authors]').first().should('be.visible');
@@ -32,7 +32,7 @@ describe('Book Search Application', () => {
     it('should search for specific books', () => {
       cy.searchForBooks('Clean Code');
       cy.waitForSearchResults();
-      
+
       cy.get('[data-cy=book-title]').first().should('contain', 'Clean Code');
     });
 
@@ -49,7 +49,7 @@ describe('Book Search Application', () => {
 
       cy.searchForBooks('Angular');
       cy.get('[data-cy=loading-indicator]').should('be.visible');
-      
+
       cy.wait('@searchBooks');
       cy.get('[data-cy=loading-indicator]').should('not.exist');
     });
@@ -62,7 +62,7 @@ describe('Book Search Application', () => {
 
       cy.searchForBooks('Error Test');
       cy.wait('@searchError');
-      
+
       cy.get('[data-cy=error-message]').should('contain', 'Unable to search for books');
     });
   });
@@ -109,11 +109,11 @@ describe('Book Search Application', () => {
     it('should load more results when clicked', () => {
       cy.get('[data-cy=book-item]').then($items => {
         const initialCount = $items.length;
-        
+
         cy.get('[data-cy=load-more-button]').click();
         cy.get('[data-cy=loading-indicator]').should('be.visible');
         cy.get('[data-cy=loading-indicator]').should('not.exist');
-        
+
         cy.get('[data-cy=book-item]').should('have.length.greaterThan', initialCount);
       });
     });

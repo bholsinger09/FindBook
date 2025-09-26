@@ -256,7 +256,7 @@ import { Observable } from 'rxjs';
 })
 export class AccessibilityToolbarComponent {
   private accessibilityService = inject(AccessibilityService);
-  
+
   accessibilityState$: Observable<AccessibilityState> = this.accessibilityService.accessibilityState$;
   isExpanded = false;
 
@@ -268,8 +268,8 @@ export class AccessibilityToolbarComponent {
   toggleToolbar(): void {
     this.isExpanded = !this.isExpanded;
     this.accessibilityService.announce(
-      this.isExpanded 
-        ? 'Accessibility toolbar opened' 
+      this.isExpanded
+        ? 'Accessibility toolbar opened'
         : 'Accessibility toolbar closed'
     );
   }

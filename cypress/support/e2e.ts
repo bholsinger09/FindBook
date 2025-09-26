@@ -22,7 +22,7 @@ import './commands'
 // Hide fetch/XHR requests from the command log to reduce noise
 Cypress.on('window:before:load', (win) => {
   const originalFetch = win.fetch;
-  win.fetch = function(...args) {
+  win.fetch = function (...args) {
     return originalFetch.apply(this, args);
   };
 });
@@ -35,22 +35,22 @@ declare global {
        * Search for books with a given query
        */
       searchForBooks(query: string): Chainable<Element>;
-      
+
       /**
        * Wait for search results to load
        */
       waitForSearchResults(): Chainable<Element>;
-      
+
       /**
        * Add a book to favorites
        */
       addToFavorites(): Chainable<Element>;
-      
+
       /**
        * Remove a book from favorites
        */
       removeFromFavorites(): Chainable<Element>;
-      
+
       /**
        * Open advanced filters
        */

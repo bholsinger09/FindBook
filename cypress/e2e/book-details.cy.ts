@@ -5,7 +5,7 @@ describe('Book Details Page', () => {
     cy.searchForBooks('Clean Code');
     cy.waitForSearchResults();
     cy.get('[data-cy=book-item]').first().click();
-    
+
     // Wait for details page to load
     cy.url().should('include', '/book/');
     cy.get('[data-cy=book-details]').should('be.visible');
@@ -71,7 +71,7 @@ describe('Book Details Page', () => {
       // First add to favorites
       cy.get('[data-cy=favorite-button]').click();
       cy.get('[data-cy=favorite-button]').should('contain', 'favorite');
-      
+
       // Then remove
       cy.get('[data-cy=favorite-button]').click();
       cy.get('[data-cy=favorite-button]').should('contain', 'favorite_border');
@@ -81,7 +81,7 @@ describe('Book Details Page', () => {
     it('should persist favorite status across page reloads', () => {
       cy.get('[data-cy=favorite-button]').click();
       cy.get('[data-cy=favorite-button]').should('contain', 'favorite');
-      
+
       cy.reload();
       cy.get('[data-cy=favorite-button]').should('contain', 'favorite');
     });
@@ -116,7 +116,7 @@ describe('Book Details Page', () => {
 
       cy.visit('/book/test-id');
       cy.wait('@bookNotFound');
-      
+
       cy.get('[data-cy=error-message]').should('contain', 'Unable to load book details');
     });
   });
@@ -130,7 +130,7 @@ describe('Book Details Page', () => {
 
       cy.visit('/book/test-id');
       cy.get('[data-cy=loading-indicator]').should('be.visible');
-      
+
       cy.wait('@bookDetails');
       cy.get('[data-cy=loading-indicator]').should('not.exist');
       cy.get('[data-cy=book-details]').should('be.visible');

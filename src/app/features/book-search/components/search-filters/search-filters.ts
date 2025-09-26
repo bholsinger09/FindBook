@@ -46,7 +46,7 @@ export class SearchFiltersComponent implements OnInit {
   categoryOptions: FilterOption[] = [];
   languageOptions: FilterOption[] = [];
   sortOptions: FilterOption[] = [];
-  
+
   // Slider values for two-way binding
   ratingRange: number[] = [0, 5];
   pageRange: number[] = [0, 1000];
@@ -58,19 +58,19 @@ export class SearchFiltersComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('SearchFilters component initialized');
-    
+
     // Get filter options
     this.categoryOptions = this.filtersService.getCategoryOptions();
     this.languageOptions = this.filtersService.getLanguageOptions();
     this.sortOptions = this.filtersService.getSortOptions();
-    
+
     // Subscribe to filter changes
     this.filtersService.filters$.subscribe(filters => {
       this.filters = filters;
       this.updateSliderValues();
       this.filtersChanged.emit(filters);
     });
-    
+
     // Initialize slider values
     this.updateSliderValues();
   }

@@ -67,7 +67,7 @@ describe('BookDetailsComponent', () => {
         NoopAnimationsModule
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(BookDetailsComponent);
     component = fixture.componentInstance;
@@ -99,7 +99,7 @@ describe('BookDetailsComponent', () => {
 
       const spinner = fixture.debugElement.query(By.css('mat-spinner'));
       const loadingMessage = fixture.debugElement.query(By.css('.loading-message'));
-      
+
       expect(spinner).toBeTruthy();
       expect(loadingMessage.nativeElement.textContent.trim()).toBe('Loading book details...');
     });
@@ -131,7 +131,7 @@ describe('BookDetailsComponent', () => {
 
       const noBookMessage = fixture.debugElement.query(By.css('.no-book-message'));
       expect(noBookMessage).toBeTruthy();
-      expect(noBookMessage.nativeElement.textContent).toContain('No book selected');
+      expect(noBookMessage.nativeElement.textContent).toContain('Book not found');
     });
 
     it('should hide no book message when book exists', () => {
@@ -249,44 +249,44 @@ describe('BookDetailsComponent', () => {
 
     it('should emit closed event when close button is clicked', () => {
       spyOn(component.closed, 'emit');
-      
-      const closeButton = fixture.debugElement.query(By.css('.close-button'));
+
+      const closeButton = fixture.debugElement.query(By.css('.back-button'));
       closeButton.nativeElement.click();
-      
+
       expect(component.closed.emit).toHaveBeenCalled();
     });
 
     it('should emit favoriteToggled event when favorite button is clicked', () => {
       spyOn(component.favoriteToggled, 'emit');
-      
+
       const favoriteButton = fixture.debugElement.query(By.css('.favorite-button'));
       favoriteButton.nativeElement.click();
-      
+
       expect(component.favoriteToggled.emit).toHaveBeenCalledWith(mockBook);
     });
 
     it('should toggle favorite state when favorite button is clicked', () => {
       expect(component.isFavorite).toBe(false);
-      
+
       const favoriteButton = fixture.debugElement.query(By.css('.favorite-button'));
       favoriteButton.nativeElement.click();
-      
+
       expect(component.isFavorite).toBe(true);
     });
 
     it('should emit previewRequested event when preview button is clicked', () => {
       spyOn(component.previewRequested, 'emit');
-      
+
       const previewButton = fixture.debugElement.query(By.css('.preview-button'));
       previewButton.nativeElement.click();
-      
+
       expect(component.previewRequested.emit).toHaveBeenCalledWith(mockBook);
     });
 
     it('should disable preview button when webReaderLink is not available', () => {
       component.book = { ...mockBook, webReaderLink: '' };
       fixture.detectChanges();
-      
+
       const previewButton = fixture.debugElement.query(By.css('.preview-button'));
       expect(previewButton.nativeElement.disabled).toBe(true);
     });
@@ -294,10 +294,10 @@ describe('BookDetailsComponent', () => {
     it('should update favorite button text when favorite state changes', () => {
       let favoriteButton = fixture.debugElement.query(By.css('.favorite-button'));
       expect(favoriteButton.nativeElement.textContent).toContain('Add to Favorites');
-      
+
       component.isFavorite = true;
       fixture.detectChanges();
-      
+
       favoriteButton = fixture.debugElement.query(By.css('.favorite-button'));
       expect(favoriteButton.nativeElement.textContent).toContain('Remove from Favorites');
     });
@@ -305,10 +305,10 @@ describe('BookDetailsComponent', () => {
     it('should update favorite button icon when favorite state changes', () => {
       let favoriteIcon = fixture.debugElement.query(By.css('.favorite-button mat-icon'));
       expect(favoriteIcon.nativeElement.textContent.trim()).toBe('favorite_border');
-      
+
       component.isFavorite = true;
       fixture.detectChanges();
-      
+
       favoriteIcon = fixture.debugElement.query(By.css('.favorite-button mat-icon'));
       expect(favoriteIcon.nativeElement.textContent.trim()).toBe('favorite');
     });
@@ -339,10 +339,10 @@ describe('BookDetailsComponent', () => {
     it('should get correct image URL', () => {
       component.book = mockBook;
       expect(component.getImageUrl()).toBe('https://example.com/covers/angular-testing-thumb.jpg');
-      
+
       component.book = { ...mockBook, imageLinks: { thumbnail: 'http://example.com/cover.jpg' } };
       expect(component.getImageUrl()).toBe('https://example.com/cover.jpg');
-      
+
       component.book = mockBookMinimal;
       expect(component.getImageUrl()).toBe('assets/images/book-placeholder.png');
     });

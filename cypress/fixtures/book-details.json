@@ -6,7 +6,9 @@
   "volumeInfo": {
     "title": "Clean Code: A Handbook of Agile Software Craftsmanship",
     "subtitle": "A Handbook of Agile Software Craftsmanship",
-    "authors": ["Robert C. Martin"],
+    "authors": [
+      "Robert C. Martin"
+    ],
     "publisher": "Prentice Hall",
     "publishedDate": "2008-08-01",
     "description": "Even bad code can function. But if code isn't clean, it can bring a development organization to its knees. Every year, countless hours and significant resources are lost because of poorly written code. But it doesn't have to be that way.",
@@ -22,7 +24,11 @@
     ],
     "pageCount": 464,
     "printType": "BOOK",
-    "categories": ["Computers", "Programming", "Software Engineering"],
+    "categories": [
+      "Computers",
+      "Programming",
+      "Software Engineering"
+    ],
     "averageRating": 4.4,
     "ratingsCount": 85,
     "maturityRating": "NOT_MATURE",

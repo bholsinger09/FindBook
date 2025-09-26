@@ -10,6 +10,7 @@ import { DebugElement } from '@angular/core';
 
 import { BookListComponent } from './book-list';
 import { Book, BookSearchResult } from '../../../../core/models';
+import { AccessibilityService } from '../../../../services/accessibility.service';
 
 describe('BookListComponent', () => {
   let component: BookListComponent;
@@ -47,6 +48,10 @@ describe('BookListComponent', () => {
   };
 
   beforeEach(async () => {
+    const mockAccessibilityService = {
+      announce: jasmine.createSpy('announce')
+    };
+
     await TestBed.configureTestingModule({
       imports: [
         BookListComponent,
@@ -56,9 +61,12 @@ describe('BookListComponent', () => {
         MatChipsModule,
         MatProgressSpinnerModule,
         NoopAnimationsModule
+      ],
+      providers: [
+        { provide: AccessibilityService, useValue: mockAccessibilityService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(BookListComponent);
     component = fixture.componentInstance;
@@ -179,25 +187,27 @@ describe('BookListComponent', () => {
   describe('User Interactions', () => {
     beforeEach(() => {
       component.searchResult = mockSearchResult;
+      component.favoriteBookIds = new Set<string>();
       component.isLoading = false;
       fixture.detectChanges();
     });
 
     it('should emit bookSelected event when view details is clicked', () => {
       spyOn(component.bookSelected, 'emit');
-      
-      const viewDetailsButton = fixture.debugElement.query(By.css('.view-details-btn'));
-      viewDetailsButton.nativeElement.click();
-      
+
+      // The entire card is clickable for view details, not a separate button
+      const bookCard = fixture.debugElement.query(By.css('.book-card'));
+      bookCard.nativeElement.click();
+
       expect(component.bookSelected.emit).toHaveBeenCalledWith(mockBook);
     });
 
     it('should emit favoriteToggled event when favorite button is clicked', () => {
       spyOn(component.favoriteToggled, 'emit');
-      
-      const favoriteButton = fixture.debugElement.query(By.css('.favorite-btn'));
+
+      const favoriteButton = fixture.debugElement.query(By.css('[data-cy="favorite-button"]'));
       favoriteButton.nativeElement.click();
-      
+
       expect(component.favoriteToggled.emit).toHaveBeenCalledWith(mockBook);
     });
 
@@ -239,14 +249,15 @@ describe('BookListComponent', () => {
   describe('Accessibility', () => {
     beforeEach(() => {
       component.searchResult = mockSearchResult;
+      component.favoriteBookIds = new Set<string>();
       fixture.detectChanges();
     });
 
-    it('should have proper ARIA labels on buttons', () => {
-      const viewDetailsBtn = fixture.debugElement.query(By.css('.view-details-btn'));
-      const favoriteBtn = fixture.debugElement.query(By.css('.favorite-btn'));
-      
-      expect(viewDetailsBtn.nativeElement.getAttribute('aria-label')).toContain('View details');
+    it('should have proper ARIA labels on favorite button', () => {
+      // Only test the favorite button since there is no separate view details button
+      const favoriteBtn = fixture.debugElement.query(By.css('[data-cy="favorite-button"]'));
+
+      expect(favoriteBtn).toBeTruthy();
       expect(favoriteBtn.nativeElement.getAttribute('aria-label')).toContain('Add to favorites');
     });
 
@@ -258,7 +269,7 @@ describe('BookListComponent', () => {
     it('should have semantic HTML structure', () => {
       const bookList = fixture.debugElement.query(By.css('[role="list"]'));
       const bookItems = fixture.debugElement.queryAll(By.css('[role="listitem"]'));
-      
+
       expect(bookList).toBeTruthy();
       expect(bookItems.length).toBe(1);
     });

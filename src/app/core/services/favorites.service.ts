@@ -16,7 +16,7 @@ export interface FavoriteBook {
 export class FavoritesService {
   private readonly STORAGE_KEY = 'findbook-favorites';
   private favoritesSubject = new BehaviorSubject<FavoriteBook[]>([]);
-  
+
   public favorites$ = this.favoritesSubject.asObservable();
 
   constructor() {
@@ -49,7 +49,7 @@ export class FavoritesService {
    */
   addToFavorites(book: Book): void {
     const currentFavorites = this.getFavorites();
-    
+
     // Check if already favorited
     if (this.isFavorite(book.id)) {
       return;
@@ -81,7 +81,7 @@ export class FavoritesService {
    */
   toggleFavorite(book: Book): boolean {
     const isCurrentlyFavorite = this.isFavorite(book.id);
-    
+
     if (isCurrentlyFavorite) {
       this.removeFromFavorites(book.id);
     } else {
@@ -114,7 +114,7 @@ export class FavoritesService {
     }
 
     const searchTerm = query.toLowerCase();
-    return this.getFavorites().filter(fav => 
+    return this.getFavorites().filter(fav =>
       fav.title.toLowerCase().includes(searchTerm) ||
       fav.authors.some(author => author.toLowerCase().includes(searchTerm))
     );
@@ -142,16 +142,16 @@ export class FavoritesService {
   importFavorites(jsonData: string): boolean {
     try {
       const favorites = JSON.parse(jsonData) as FavoriteBook[];
-      
+
       // Validate the data structure
       if (!Array.isArray(favorites)) {
         return false;
       }
 
       // Basic validation of each favorite
-      const isValidData = favorites.every(fav => 
-        fav && 
-        typeof fav.id === 'string' && 
+      const isValidData = favorites.every(fav =>
+        fav &&
+        typeof fav.id === 'string' &&
         typeof fav.title === 'string' &&
         Array.isArray(fav.authors)
       );

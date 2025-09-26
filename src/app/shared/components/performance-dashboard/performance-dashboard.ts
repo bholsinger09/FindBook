@@ -221,11 +221,11 @@ export class PerformanceDashboardComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['timestamp', 'name', 'value'];
   private refreshSubscription?: Subscription;
 
-  constructor(private performanceService: PerformanceService) {}
+  constructor(private performanceService: PerformanceService) { }
 
   ngOnInit(): void {
     this.refreshMetrics();
-    
+
     // Auto-refresh every 5 seconds
     this.refreshSubscription = interval(5000).subscribe(() => {
       this.refreshMetrics();
@@ -271,17 +271,17 @@ export class PerformanceDashboardComponent implements OnInit, OnDestroy {
         if (value <= 1800) return 'good';
         if (value <= 3000) return 'needs-improvement';
         return 'poor';
-      
+
       case 'LCP':
         if (value <= 2500) return 'good';
         if (value <= 4000) return 'needs-improvement';
         return 'poor';
-      
+
       case 'CLS':
         if (value <= 0.1) return 'good';
         if (value <= 0.25) return 'needs-improvement';
         return 'poor';
-      
+
       default:
         return 'unknown';
     }

@@ -20,11 +20,8 @@
   <div class="book-details-content" *ngIf="!isLoading && !hasError">
     <!-- Header with back button -->
     <div class="details-header">
-      <button mat-icon-button 
-              class="back-button" 
-              (click)="close()" 
-              aria-label="Back to search results"
-              data-cy="back-button">
+      <button mat-icon-button class="back-button" (click)="close()" aria-label="Back to search results"
+        data-cy="back-button">
         <mat-icon>arrow_back</mat-icon>
       </button>
       <h2 class="details-title">Book Details</h2>
@@ -37,24 +34,21 @@
       <!-- Book cover and basic info -->
       <div class="book-header">
         <div class="book-cover">
-          <img [src]="getImageUrl()" 
-               [alt]="book.title + ' cover'"
-               class="cover-image"
-               data-cy="book-thumbnail">
+          <img [src]="getImageUrl()" [alt]="book.title + ' cover'" class="cover-image" data-cy="book-thumbnail">
         </div>
-        
+
         <div class="book-basic-info">
           <h1 class="book-title" data-cy="book-title">{{ book.title }}</h1>
           <p class="book-authors" data-cy="book-authors">
             <mat-icon class="info-icon">person</mat-icon>
             {{ formatAuthors(book.authors) }}
           </p>
-          
+
           <p class="book-publisher" *ngIf="book.publisher" data-cy="book-publisher">
             <mat-icon class="info-icon">business</mat-icon>
             {{ book.publisher }}
           </p>
-          
+
           <p class="book-published-date" *ngIf="book.publishedDate" data-cy="book-publication-date">
             <mat-icon class="info-icon">calendar_today</mat-icon>
             {{ book.publishedDate }}
@@ -75,7 +69,8 @@
       <!-- Rating -->
       <div class="book-rating" *ngIf="book.averageRating" data-cy="book-rating">
         <mat-icon class="rating-icon">star</mat-icon>
-        <span class="rating-text" data-cy="book-rating-count">{{ formatRating(book.averageRating, book.ratingsCount) }}</span>
+        <span class="rating-text" data-cy="book-rating-count">{{ formatRating(book.averageRating, book.ratingsCount)
+          }}</span>
       </div>
 
       <!-- Categories -->
@@ -91,7 +86,8 @@
       </div>
 
       <!-- ISBN -->
-      <div class="book-isbn" *ngIf="book.industryIdentifiers && book.industryIdentifiers.length > 0" data-cy="book-isbn">
+      <div class="book-isbn" *ngIf="book.industryIdentifiers && book.industryIdentifiers.length > 0"
+        data-cy="book-isbn">
         <h3 class="section-title">ISBN</h3>
         <div class="isbn-container">
           <p *ngFor="let isbn of book.industryIdentifiers">
@@ -108,31 +104,20 @@
 
       <!-- Action buttons -->
       <div class="action-buttons">
-        <button mat-raised-button 
-                color="primary"
-                class="preview-button"
-                [disabled]="!book.webReaderLink"
-                (click)="requestPreview()"
-                data-cy="preview-link">
+        <button mat-raised-button color="primary" class="preview-button" [disabled]="!book.webReaderLink"
+          (click)="requestPreview()" data-cy="preview-link">
           <mat-icon>visibility</mat-icon>
           Preview Book
         </button>
 
-        <button mat-raised-button 
-                color="primary"
-                class="purchase-button"
-                [disabled]="true"
-                (click)="requestPurchase()"
-                data-cy="purchase-link">
+        <button mat-raised-button color="primary" class="purchase-button" [disabled]="true" (click)="requestPurchase()"
+          data-cy="purchase-link">
           <mat-icon>shopping_cart</mat-icon>
           Purchase Book
         </button>
 
-        <button mat-raised-button 
-                [color]="isFavorite ? 'accent' : 'primary'"
-                class="favorite-button"
-                (click)="toggleFavorite()"
-                data-cy="favorite-button">
+        <button mat-raised-button [color]="isFavorite ? 'accent' : 'primary'" class="favorite-button"
+          (click)="toggleFavorite()" data-cy="favorite-button">
           <mat-icon>{{ isFavorite ? 'favorite' : 'favorite_border' }}</mat-icon>
           {{ isFavorite ? 'Remove from Favorites' : 'Add to Favorites' }}
         </button>

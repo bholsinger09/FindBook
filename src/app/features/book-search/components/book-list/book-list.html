@@ -13,7 +13,8 @@
   </div>
 
   <!-- No Results State -->
-  <div *ngIf="searchResult && searchResult.books.length === 0 && !isLoading" class="no-results" data-cy="no-results" role="status" aria-live="polite">
+  <div *ngIf="searchResult && searchResult.books.length === 0 && !isLoading" class="no-results" data-cy="no-results"
+    role="status" aria-live="polite">
     <mat-icon class="no-results-icon" aria-hidden="true">search_off</mat-icon>
     <h3>No books found</h3>
     <p>Try different search terms or check your spelling.</p>
@@ -38,49 +39,33 @@
     </div>
 
     <!-- Books Virtual Scroll Grid -->
-    <cdk-virtual-scroll-viewport 
-      itemSize="400" 
-      class="book-viewport"
-      *ngIf="searchResult.books.length > 20"
-      role="list"
+    <cdk-virtual-scroll-viewport itemSize="400" class="book-viewport" *ngIf="searchResult.books.length > 20" role="list"
       aria-label="Search results">
-      
-      <div 
-        *cdkVirtualFor="let book of searchResult.books; trackBy: trackByBookId"
-        class="virtual-book-item">
-        
-        <mat-card 
-          class="book-card focus-indicator"
-          role="listitem"
-          data-cy="book-item"
-          (click)="onViewDetails(book)"
-          (keydown.enter)="onViewDetails(book)"
-          (keydown.space)="onViewDetails(book); $event.preventDefault()"
-          [attr.aria-label]="getBookAriaLabel(book)"
-          tabindex="0">
-          
+
+      <div *cdkVirtualFor="let book of searchResult.books; trackBy: trackByBookId" class="virtual-book-item">
+
+        <mat-card class="book-card focus-indicator" role="listitem" data-cy="book-item" (click)="onViewDetails(book)"
+          (keydown.enter)="onViewDetails(book)" (keydown.space)="onViewDetails(book); $event.preventDefault()"
+          [attr.aria-label]="getBookAriaLabel(book)" tabindex="0">
+
           <!-- Book Image -->
           <div class="book-image-container">
-            <img 
-              [src]="getBookThumbnail(book)"
-              [alt]="'Cover of ' + book.title"
-              class="book-image"
-              loading="lazy"
-              (error)="handleImageError($event)"
-              (load)="handleImageLoad($event)">
+            <img [src]="getBookThumbnail(book)" [alt]="'Cover of ' + book.title" class="book-image" loading="lazy"
+              (error)="handleImageError($event)" (load)="handleImageLoad($event)">
           </div>
 
           <!-- Book Content -->
           <mat-card-content class="book-content">
             <h3 class="book-title" [title]="book.title">{{ book.title }}</h3>
-            
+
             <div class="book-authors" *ngIf="book.authors && book.authors.length">
               <span class="author-label">by</span>
               <span class="author-names">{{ book.authors.join(', ') }}</span>
             </div>
 
             <div class="book-meta">
-              <span class="published-date" *ngIf="book.publishedDate" aria-label="Published in {{ book.publishedDate }}">
+              <span class="published-date" *ngIf="book.publishedDate"
+                aria-label="Published in {{ book.publishedDate }}">
                 {{ book.publishedDate }}
               </span>
               <span class="page-count" *ngIf="book.pageCount" aria-label="{{ book.pageCount }} pages">
@@ -95,28 +80,21 @@
 
           <!-- Book Actions -->
           <mat-card-actions class="book-actions">
-            <button 
-              mat-icon-button 
-              class="focus-indicator"
-              [class.favorited]="favoriteBookIds.has(book.id)"
+            <button mat-icon-button class="focus-indicator" [class.favorited]="favoriteBookIds.has(book.id)"
               (click)="onToggleFavorite(book); $event.stopPropagation()"
               (keydown.enter)="onToggleFavorite(book); $event.stopPropagation()"
               (keydown.space)="onToggleFavorite(book); $event.stopPropagation(); $event.preventDefault()"
-              [attr.aria-label]="getFavoriteButtonAriaLabel(book)"
-              [attr.aria-pressed]="isFavorite(book.id)"
+              [attr.aria-label]="getFavoriteButtonAriaLabel(book)" [attr.aria-pressed]="isFavorite(book.id)"
               data-cy="favorite-button">
-              <mat-icon [attr.aria-hidden]="true">{{ favoriteBookIds.has(book.id) ? 'favorite' : 'favorite_border' }}</mat-icon>
+              <mat-icon [attr.aria-hidden]="true">{{ favoriteBookIds.has(book.id) ? 'favorite' : 'favorite_border'
+                }}</mat-icon>
             </button>
-            
-            <button 
-              mat-button 
-              color="primary"
-              class="focus-indicator"
+
+            <button mat-button color="primary" class="focus-indicator"
               (click)="onViewDetails(book); $event.stopPropagation()"
               (keydown.enter)="onViewDetails(book); $event.stopPropagation()"
               (keydown.space)="onViewDetails(book); $event.stopPropagation(); $event.preventDefault()"
-              [attr.aria-label]="'View details for ' + book.title"
-              data-cy="view-details-button">
+              [attr.aria-label]="'View details for ' + book.title" data-cy="view-details-button">
               View Details
             </button>
           </mat-card-actions>
@@ -126,23 +104,13 @@
 
     <!-- Regular Books Grid (for smaller lists) -->
     <div class="books-grid" role="list" data-cy="book-list" *ngIf="searchResult.books.length <= 20">
-      <mat-card 
-        *ngFor="let book of searchResult.books; trackBy: trackByBookId" 
-        class="book-card"
-        role="listitem"
-        data-cy="book-item"
-        (click)="onViewDetails(book)">
-        
+      <mat-card *ngFor="let book of searchResult.books; trackBy: trackByBookId" class="book-card" role="listitem"
+        data-cy="book-item" (click)="onViewDetails(book)">
+
         <!-- Book Image -->
         <div class="book-image-container">
-          <img 
-            [src]="getBookThumbnail(book)" 
-            [alt]="book.title + ' cover'"
-            class="book-thumbnail"
-            loading="lazy"
-            data-cy="book-thumbnail"
-            (error)="handleImageError($event)"
-            (load)="handleImageLoad($event)">
+          <img [src]="getBookThumbnail(book)" [alt]="book.title + ' cover'" class="book-thumbnail" loading="lazy"
+            data-cy="book-thumbnail" (error)="handleImageError($event)" (load)="handleImageLoad($event)">
         </div>
 
         <!-- Book Content -->
@@ -154,7 +122,7 @@
         <mat-card-content class="book-content">
           <!-- Book Description -->
           <p class="book-description" data-cy="book-description">{{ truncateDescription(book.description) }}</p>
-          
+
           <!-- Book Metadata -->
           <div class="book-metadata">
             <!-- Rating -->
@@ -197,13 +165,10 @@
         </mat-card-content>
 
         <!-- Book Actions -->
-        <mat-card-actions class="book-actions">          
-          <button 
-            mat-icon-button
-            class="favorite-btn"
+        <mat-card-actions class="book-actions">
+          <button mat-icon-button class="favorite-btn"
             [attr.aria-label]="(isFavorite(book.id) ? 'Remove from' : 'Add to') + ' favorites'"
-            (click)="onToggleFavorite(book); $event.stopPropagation()"
-            data-cy="favorite-button">
+            (click)="onToggleFavorite(book); $event.stopPropagation()" data-cy="favorite-button">
             <mat-icon>{{ isFavorite(book.id) ? 'favorite' : 'favorite_border' }}</mat-icon>
           </button>
         </mat-card-actions>

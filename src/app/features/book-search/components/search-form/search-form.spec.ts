@@ -228,8 +228,8 @@ describe('SearchFormComponent', () => {
       const searchInput = fixture.debugElement.query(By.css('.search-input'));
       const searchButton = fixture.debugElement.query(By.css('.search-button'));
 
-      expect(searchInput.nativeElement.getAttribute('aria-label')).toBe('Search for books');
-      expect(searchButton.nativeElement.getAttribute('aria-label')).toBe('Submit search');
+      expect(searchInput.nativeElement.getAttribute('aria-labelledby')).toBe('search-label');
+      expect(searchButton.nativeElement.getAttribute('aria-label')).toBe('Search for books');
     });
 
     it('should have proper form structure', () => {

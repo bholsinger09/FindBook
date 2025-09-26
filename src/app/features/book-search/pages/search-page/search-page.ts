@@ -49,14 +49,14 @@ export class SearchPage implements OnInit {
   favoriteBookIds: Set<string> = new Set();
   selectedBook: Book | null = null;
   showBookDetails = false;
-  
+
   // Favorites functionality
   isShowingFavorites = false;
   favorites: Book[] = [];
   favoritesSearchTerm = '';
   filteredFavorites: Book[] = [];
   favoritesCount = 0;
-  
+
   // Filters functionality
   showFilters = false;
   activeFilters: any = {};
@@ -72,7 +72,7 @@ export class SearchPage implements OnInit {
     console.log('SearchPage component initialized');
     // Initialize favorites from service
     this.loadFavorites();
-    
+
     // Subscribe to favorites changes
     this.favoritesService.favorites$.subscribe(() => {
       this.loadFavorites();
@@ -131,7 +131,7 @@ export class SearchPage implements OnInit {
       this.filteredFavorites = this.favorites;
     } else {
       const searchTerm = this.favoritesSearchTerm.toLowerCase();
-      this.filteredFavorites = this.favorites.filter(book => 
+      this.filteredFavorites = this.favorites.filter(book =>
         book.title.toLowerCase().includes(searchTerm) ||
         book.authors?.some(author => author.toLowerCase().includes(searchTerm)) ||
         book.description?.toLowerCase().includes(searchTerm)
@@ -185,7 +185,7 @@ export class SearchPage implements OnInit {
   onFavoriteToggled(book: Book): void {
     this.favoritesService.toggleFavorite(book);
     console.log('Favorites updated. Total count:', this.favoritesService.getFavoritesCount());
-    
+
     // Update filtered favorites if we're in favorites view
     if (this.isShowingFavorites) {
       this.updateFilteredFavorites();

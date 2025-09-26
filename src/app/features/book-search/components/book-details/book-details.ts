@@ -40,7 +40,7 @@ export class BookDetailsComponent implements OnInit {
   favoriteMessageText: string = '';
   favoriteMessageIcon: string = '';
 
-  constructor(private favoritesService: FavoritesService) {}
+  constructor(private favoritesService: FavoritesService) { }
 
   ngOnInit(): void {
     console.log('BookDetails component initialized');
@@ -51,12 +51,12 @@ export class BookDetailsComponent implements OnInit {
     if (this.book) {
       this.isFavorite = !this.isFavorite;
       this.favoriteToggled.emit(this.book);
-      
+
       // Show feedback message
       this.showFavoriteMessage = true;
       this.favoriteMessageText = this.isFavorite ? 'Added to favorites' : 'Removed from favorites';
       this.favoriteMessageIcon = this.isFavorite ? 'favorite' : 'favorite_border';
-      
+
       // Hide message after 3 seconds
       setTimeout(() => {
         this.showFavoriteMessage = false;
