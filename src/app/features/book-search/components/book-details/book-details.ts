@@ -8,6 +8,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { Book } from '../../../../core/models';
+import { FavoritesService } from '../../../../core/services/favorites.service';
 
 @Component({
   selector: 'app-book-details',
@@ -33,6 +34,8 @@ export class BookDetailsComponent implements OnInit {
   @Output() closed = new EventEmitter<void>();
 
   isFavorite: boolean = false;
+
+  constructor(private favoritesService: FavoritesService) {}
 
   ngOnInit(): void {
     console.log('BookDetails component initialized');
@@ -86,8 +89,8 @@ export class BookDetailsComponent implements OnInit {
   }
 
   private checkIfFavorite(): void {
-    // TODO: Check localStorage or service for favorite status
-    // For now, just set to false
-    this.isFavorite = false;
+    if (this.book) {
+      this.isFavorite = this.favoritesService.isFavorite(this.book.id);
+    }
   }
 }

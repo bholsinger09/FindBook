@@ -10,6 +10,7 @@ import { SearchFormComponent } from '../../components/search-form/search-form';
 import { BookListComponent } from '../../components/book-list/book-list';
 import { BookDetailsComponent } from '../../components/book-details/book-details';
 import { BookService } from '../../../../core/services/book.service';
+import { FavoritesService } from '../../../../core/services/favorites.service';
 import { Book, BookSearchParams, BookSearchResult } from '../../../../core/models';
 import { Observable } from 'rxjs';
 
@@ -39,11 +40,20 @@ export class SearchPage implements OnInit {
 
   constructor(
     private bookService: BookService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private favoritesService: FavoritesService
   ) { }
 
   ngOnInit(): void {
     console.log('SearchPage component initialized');
+    // Initialize favorites from service
+    this.favoriteBookIds = this.favoritesService.getFavoriteIds();
+    
+    // Subscribe to favorites changes
+    this.favoritesService.favorites$.subscribe(() => {
+      this.favoriteBookIds = this.favoritesService.getFavoriteIds();
+    });
+
     // Load some popular books initially
     this.loadPopularBooks();
   }
@@ -77,13 +87,8 @@ export class SearchPage implements OnInit {
   }
 
   onFavoriteToggled(book: Book): void {
-    if (this.favoriteBookIds.has(book.id)) {
-      this.favoriteBookIds.delete(book.id);
-    } else {
-      this.favoriteBookIds.add(book.id);
-    }
-    // TODO: Persist favorites to local storage
-    console.log('Favorites updated:', Array.from(this.favoriteBookIds));
+    this.favoritesService.toggleFavorite(book);
+    console.log('Favorites updated. Total count:', this.favoritesService.getFavoritesCount());
   }
 
   onBookDetailsClose(): void {
