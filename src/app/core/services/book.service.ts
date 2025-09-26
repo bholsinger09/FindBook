@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
 import {
     Book,
@@ -11,6 +11,7 @@ import {
     GoogleBooksVolumeItem,
     GoogleBooksVolumeInfo
 } from '../models';
+import { PerformanceService } from './performance.service';
 
 @Injectable({
     providedIn: 'root'
@@ -19,7 +20,10 @@ export class BookService {
     private readonly apiBaseUrl = 'https://www.googleapis.com/books/v1';
     private readonly defaultMaxResults = 20;
 
-    constructor(private http: HttpClient) { }
+    constructor(
+        private http: HttpClient,
+        private performanceService: PerformanceService
+    ) { }
 
     /**
      * Search for books using Google Books API
@@ -27,8 +31,12 @@ export class BookService {
     searchBooks(searchParams: BookSearchParams): Observable<BookSearchResult> {
         const params = this.buildSearchParams(searchParams);
 
+        // Start performance monitoring
+        this.performanceService.markStart('book-search');
+
         return this.http.get<GoogleBooksApiResponse>(`${this.apiBaseUrl}/volumes`, { params })
             .pipe(
+                tap(() => this.performanceService.markEnd('book-search')),
                 map(response => this.transformGoogleBooksResponse(response, searchParams)),
                 catchError(error => this.handleError(error, 'Failed to search books'))
             );
@@ -38,8 +46,11 @@ export class BookService {
      * Get a specific book by ID
      */
     getBookById(id: string): Observable<Book> {
+        this.performanceService.markStart('book-details');
+        
         return this.http.get<GoogleBooksVolumeItem>(`${this.apiBaseUrl}/volumes/${id}`)
             .pipe(
+                tap(() => this.performanceService.markEnd('book-details')),
                 map(item => this.transformVolumeItem(item)),
                 catchError(error => this.handleError(error, 'Book not found'))
             );

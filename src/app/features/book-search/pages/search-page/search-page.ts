@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,6 +24,7 @@ import { Observable } from 'rxjs';
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
     MatToolbarModule,
     MatCardModule,
     MatButtonModule,
@@ -62,7 +64,8 @@ export class SearchPage implements OnInit {
   constructor(
     private bookService: BookService,
     private dialog: MatDialog,
-    private favoritesService: FavoritesService
+    private favoritesService: FavoritesService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -175,9 +178,8 @@ export class SearchPage implements OnInit {
 
   onBookSelected(book: Book): void {
     console.log('Book selected:', book);
-    this.selectedBook = book;
-    this.showBookDetails = true;
-    this.hasDetailsError = false;
+    // Navigate to dedicated book details page
+    this.router.navigate(['/book', book.id]);
   }
 
   onFavoriteToggled(book: Book): void {

@@ -3,7 +3,36 @@
   padding: 24px 0;
 }
 
-// Loading State
+/* Virtual Scrolling Styles */
+.book-viewport {
+  height: 600px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.virtual-book-item {
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.book-viewport .book-card {
+  margin: 0;
+  margin-bottom: 16px;
+}
+
+/* Responsive Virtual Scrolling */
+@media (min-width: 768px) {
+  .book-viewport {
+    height: 800px;
+  }
+}
+
+/* Error and Loading States */
 .loading-state {
   display: flex;
   flex-direction: column;

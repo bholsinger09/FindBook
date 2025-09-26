@@ -37,8 +37,81 @@
       </p>
     </div>
 
-    <!-- Books Grid -->
-    <div class="books-grid" role="list" data-cy="book-list">
+    <!-- Books Virtual Scroll Grid -->
+    <cdk-virtual-scroll-viewport 
+      itemSize="400" 
+      class="book-viewport"
+      *ngIf="searchResult.books.length > 20">
+      
+      <div 
+        *cdkVirtualFor="let book of searchResult.books; trackBy: trackByBookId"
+        class="virtual-book-item">
+        
+        <mat-card 
+          class="book-card"
+          role="listitem"
+          data-cy="book-item"
+          (click)="onViewDetails(book)">
+          
+          <!-- Book Image -->
+          <div class="book-image-container">
+            <img 
+              [src]="getBookThumbnail(book)"
+              [alt]="'Cover of ' + book.title"
+              class="book-image"
+              loading="lazy"
+              (error)="handleImageError($event)"
+              (load)="handleImageLoad($event)">
+          </div>
+
+          <!-- Book Content -->
+          <mat-card-content class="book-content">
+            <h3 class="book-title" [title]="book.title">{{ book.title }}</h3>
+            
+            <div class="book-authors" *ngIf="book.authors && book.authors.length">
+              <span class="author-label">by</span>
+              <span class="author-names">{{ book.authors.join(', ') }}</span>
+            </div>
+
+            <div class="book-meta">
+              <span class="published-date" *ngIf="book.publishedDate">
+                {{ book.publishedDate }}
+              </span>
+              <span class="page-count" *ngIf="book.pageCount">
+                {{ book.pageCount }} pages
+              </span>
+            </div>
+
+            <p class="book-description" *ngIf="book.description">
+              {{ book.description | slice:0:150 }}{{ book.description.length > 150 ? '...' : '' }}
+            </p>
+          </mat-card-content>
+
+          <!-- Book Actions -->
+          <mat-card-actions class="book-actions">
+            <button 
+              mat-icon-button 
+              [class.favorited]="favoriteBookIds.has(book.id)"
+              (click)="onToggleFavorite(book); $event.stopPropagation()"
+              [attr.aria-label]="favoriteBookIds.has(book.id) ? 'Remove from favorites' : 'Add to favorites'"
+              data-cy="favorite-button">
+              <mat-icon>{{ favoriteBookIds.has(book.id) ? 'favorite' : 'favorite_border' }}</mat-icon>
+            </button>
+            
+            <button 
+              mat-button 
+              color="primary"
+              (click)="onViewDetails(book); $event.stopPropagation()"
+              data-cy="view-details-button">
+              View Details
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </cdk-virtual-scroll-viewport>
+
+    <!-- Regular Books Grid (for smaller lists) -->
+    <div class="books-grid" role="list" data-cy="book-list" *ngIf="searchResult.books.length <= 20">
       <mat-card 
         *ngFor="let book of searchResult.books; trackBy: trackByBookId" 
         class="book-card"
@@ -52,8 +125,10 @@
             [src]="getBookThumbnail(book)" 
             [alt]="book.title + ' cover'"
             class="book-thumbnail"
+            loading="lazy"
             data-cy="book-thumbnail"
-            (error)="$event.target.src='assets/images/book-placeholder.png'">
+            (error)="handleImageError($event)"
+            (load)="handleImageLoad($event)">
         </div>
 
         <!-- Book Content -->

@@ -13,6 +13,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
+    "build:analyze": "ng build --configuration production --stats-json && npx webpack-bundle-analyzer dist/findbook-app/stats.json",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:unit": "ng test --watch=false",
@@ -62,6 +64,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "karma-safari-launcher": "^1.0.0",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "webpack-bundle-analyzer": "^4.10.2"
   }
 }

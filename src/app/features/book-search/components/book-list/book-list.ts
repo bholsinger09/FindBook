@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,6 +14,7 @@ import { Book, BookSearchResult } from '../../../../core/models';
   standalone: true,
   imports: [
     CommonModule,
+    ScrollingModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -48,7 +50,20 @@ export class BookListComponent {
   }
 
   getBookThumbnail(book: Book): string {
-    return book.imageLinks?.thumbnail || 'assets/images/book-placeholder.png';
+    return book.imageLinks?.thumbnail || book.imageLinks?.smallThumbnail || '/assets/images/book-placeholder.png';
+  }
+
+  handleImageError(event: any): void {
+    const img = event.target as HTMLImageElement;
+    if (img.src !== 'assets/images/book-placeholder.png') {
+      img.src = 'assets/images/book-placeholder.png';
+    }
+  }
+
+  handleImageLoad(event: any): void {
+    const img = event.target as HTMLImageElement;
+    img.style.opacity = '1';
+    img.style.transition = 'opacity 0.3s ease';
   }
 
   getBookAuthors(book: Book): string {
