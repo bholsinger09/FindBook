@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { SearchPage } from './search-page';
 
@@ -8,7 +10,11 @@ describe('SearchPage', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SearchPage]
+      imports: [SearchPage],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     })
     .compileComponents();
 

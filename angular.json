@@ -84,6 +84,8 @@
             ],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
+            "karmaConfig": "karma.conf.js",
+            "browsers": "Safari",
             "assets": [
               {
                 "glob": "**/*",
