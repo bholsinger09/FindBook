@@ -22,7 +22,7 @@
     "e2e:open": "cypress open",
     "e2e:dev": "concurrently \"npm start\" \"cypress open\"",
     "test:all": "npm run test:unit && npm run e2e",
-    "deploy:gh": "ng build --configuration production --base-href=/FindBook/ && npx angular-cli-ghpages --dir=dist/findbook-app",
+    "deploy:gh": "ng build --configuration production --base-href=/FindBook/ && npx angular-cli-ghpages --dir=dist/findbook-app/browser",
     "deploy:vercel": "vercel --prod",
     "deploy:netlify": "npm run build:prod && netlify deploy --prod --dir=dist/findbook-app"
   },
