@@ -1,22 +1,29 @@
 <div class="book-list-container">
   <!-- Loading State -->
-  <div *ngIf="isLoading" class="loading-state">
+  <div *ngIf="isLoading" class="loading-state" data-cy="loading-indicator">
     <mat-spinner diameter="50"></mat-spinner>
     <p class="loading-message">Searching for books...</p>
   </div>
 
   <!-- Empty State (No search performed) -->
-  <div *ngIf="!searchResult && !isLoading" class="empty-state">
+  <div *ngIf="!searchResult && !isLoading" class="empty-state" data-cy="empty-state">
     <mat-icon class="empty-icon">menu_book</mat-icon>
     <h3>Ready to discover books</h3>
     <p>Use the search form above to find your next great read!</p>
   </div>
 
   <!-- No Results State -->
-  <div *ngIf="searchResult && searchResult.books.length === 0 && !isLoading" class="no-results">
+  <div *ngIf="searchResult && searchResult.books.length === 0 && !isLoading" class="no-results" data-cy="no-results">
     <mat-icon class="no-results-icon">search_off</mat-icon>
     <h3>No books found</h3>
     <p>Try different search terms or check your spelling.</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="hasError && !isLoading" class="error-state" data-cy="error-message">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <h3>Unable to search for books</h3>
+    <p>Please check your connection and try again.</p>
   </div>
 
   <!-- Results with Books -->
@@ -31,11 +38,13 @@
     </div>
 
     <!-- Books Grid -->
-    <div class="books-grid" role="list">
+    <div class="books-grid" role="list" data-cy="book-list">
       <mat-card 
         *ngFor="let book of searchResult.books; trackBy: trackByBookId" 
         class="book-card"
-        role="listitem">
+        role="listitem"
+        data-cy="book-item"
+        (click)="onViewDetails(book)">
         
         <!-- Book Image -->
         <div class="book-image-container">
@@ -43,49 +52,50 @@
             [src]="getBookThumbnail(book)" 
             [alt]="book.title + ' cover'"
             class="book-thumbnail"
+            data-cy="book-thumbnail"
             (error)="$event.target.src='assets/images/book-placeholder.png'">
         </div>
 
         <!-- Book Content -->
         <mat-card-header class="book-header">
-          <mat-card-title class="book-title">{{ book.title }}</mat-card-title>
-          <mat-card-subtitle class="book-authors">{{ getBookAuthors(book) }}</mat-card-subtitle>
+          <mat-card-title class="book-title" data-cy="book-title">{{ book.title }}</mat-card-title>
+          <mat-card-subtitle class="book-authors" data-cy="book-authors">{{ getBookAuthors(book) }}</mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content class="book-content">
           <!-- Book Description -->
-          <p class="book-description">{{ truncateDescription(book.description) }}</p>
+          <p class="book-description" data-cy="book-description">{{ truncateDescription(book.description) }}</p>
           
           <!-- Book Metadata -->
           <div class="book-metadata">
             <!-- Rating -->
-            <div *ngIf="book.averageRating" class="book-rating">
+            <div *ngIf="book.averageRating" class="book-rating" data-cy="book-rating">
               <mat-icon class="rating-icon">star</mat-icon>
               <span class="rating-value">{{ book.averageRating }}</span>
               <span class="rating-count" *ngIf="book.ratingsCount">({{ book.ratingsCount }})</span>
             </div>
 
             <!-- Published Date -->
-            <div *ngIf="book.publishedDate" class="published-date">
+            <div *ngIf="book.publishedDate" class="published-date" data-cy="book-publication-year">
               <mat-icon class="date-icon">calendar_today</mat-icon>
               <span>{{ formatPublishedDate(book.publishedDate) }}</span>
             </div>
 
             <!-- Page Count -->
-            <div *ngIf="book.pageCount" class="page-count">
+            <div *ngIf="book.pageCount" class="page-count" data-cy="book-page-count">
               <mat-icon class="page-icon">description</mat-icon>
               <span>{{ book.pageCount }} pages</span>
             </div>
 
             <!-- Publisher -->
-            <div *ngIf="book.publisher" class="publisher">
+            <div *ngIf="book.publisher" class="publisher" data-cy="book-publisher">
               <mat-icon class="publisher-icon">business</mat-icon>
               <span>{{ book.publisher }}</span>
             </div>
           </div>
 
           <!-- Categories -->
-          <div *ngIf="book.categories && book.categories.length > 0" class="book-categories">
+          <div *ngIf="book.categories && book.categories.length > 0" class="book-categories" data-cy="book-categories">
             <mat-chip-set>
               <mat-chip *ngFor="let category of book.categories?.slice(0, 3)">
                 {{ category }}
@@ -98,22 +108,13 @@
         </mat-card-content>
 
         <!-- Book Actions -->
-        <mat-card-actions class="book-actions">
-          <button 
-            mat-raised-button 
-            color="primary"
-            class="view-details-btn"
-            [attr.aria-label]="'View details for ' + book.title"
-            (click)="onViewDetails(book)">
-            <mat-icon>visibility</mat-icon>
-            View Details
-          </button>
-          
+        <mat-card-actions class="book-actions">          
           <button 
             mat-icon-button
             class="favorite-btn"
             [attr.aria-label]="(isFavorite(book.id) ? 'Remove from' : 'Add to') + ' favorites'"
-            (click)="onToggleFavorite(book)">
+            (click)="onToggleFavorite(book); $event.stopPropagation()"
+            data-cy="favorite-button">
             <mat-icon>{{ isFavorite(book.id) ? 'favorite' : 'favorite_border' }}</mat-icon>
           </button>
         </mat-card-actions>
@@ -122,7 +123,7 @@
 
     <!-- Load More (Future Enhancement) -->
     <div *ngIf="searchResult.hasMoreResults" class="load-more-container">
-      <button mat-stroked-button class="load-more-btn" disabled>
+      <button mat-stroked-button class="load-more-btn" data-cy="load-more-button" disabled>
         <mat-icon>expand_more</mat-icon>
         Load More Results (Coming Soon)
       </button>

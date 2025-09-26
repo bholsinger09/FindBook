@@ -6,15 +6,45 @@
       FindBook
     </span>
     <span class="spacer"></span>
+    
+    <!-- Favorites Toggle -->
+    <button mat-icon-button 
+            class="favorites-toggle"
+            [class.active]="isShowingFavorites"
+            (click)="toggleFavoritesView()"
+            [attr.aria-label]="isShowingFavorites ? 'Show all books' : 'Show favorites'"
+            data-cy="favorites-toggle">
+      <mat-icon>{{ isShowingFavorites ? 'favorite' : 'favorite_border' }}</mat-icon>
+      <span class="favorites-badge" *ngIf="favoritesCount > 0" data-cy="favorites-count">{{ favoritesCount }}</span>
+    </button>
+
+    <!-- Filters Toggle -->
+    <!-- <button mat-icon-button 
+            class="filters-toggle"
+            [class.active]="showFilters"
+            (click)="toggleFilters()"
+            aria-label="Toggle advanced filters"
+            data-cy="filters-toggle">
+      <mat-icon>tune</mat-icon>
+    </button> -->
+
     <span class="toolbar-subtitle" *ngIf="currentSearchTerm">
       Searching for: "{{ currentSearchTerm }}"
     </span>
   </mat-toolbar>
 
+  <!-- Advanced Filters -->
+  <!-- <div class="filters-container" *ngIf="showFilters">
+    <app-search-filters
+      (filtersChanged)="onFiltersChanged($event)"
+      data-cy="search-filters">
+    </app-search-filters>
+  </div> -->
+
   <!-- Search Form Section -->
   <section class="search-section" aria-label="Book search">
     <div class="search-container">
-      <h1 class="search-title">Discover Your Next Great Read</h1>
+      <h1 class="search-title">Find Your Next Great Read</h1>
       <p class="search-subtitle">
         Search through millions of books by title, author, ISBN, or keywords.
       </p>
@@ -27,12 +57,61 @@
     </div>
   </section>
 
+  <!-- Favorites View -->
+  <section class="favorites-section" *ngIf="isShowingFavorites" aria-label="Favorite books" data-cy="favorites-view">
+    <div class="favorites-header">
+      <h2>Your Favorite Books</h2>
+      <mat-form-field appearance="outline" class="favorites-search">
+        <mat-label>Search favorites</mat-label>
+        <input matInput 
+               [(ngModel)]="favoritesSearchTerm"
+               (ngModelChange)="updateFilteredFavorites()"
+               placeholder="Search your favorites..."
+               data-cy="favorites-search">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+    </div>
+    
+    <div class="favorites-content">
+      <div *ngIf="filteredFavorites.length === 0 && favorites.length === 0" 
+           class="no-favorites" data-cy="no-favorites-message">
+        <mat-icon class="no-favorites-icon">favorite_border</mat-icon>
+        <h3>No favorite books yet</h3>
+        <p>Books you favorite will appear here for quick access.</p>
+      </div>
+      
+      <div *ngIf="filteredFavorites.length === 0 && favorites.length > 0" 
+           class="no-search-results" data-cy="no-search-results">
+        <mat-icon class="no-results-icon">search_off</mat-icon>
+        <h3>No favorites match your search</h3>
+        <p>Try different keywords or browse all your favorites.</p>
+      </div>
+
+      <app-book-list
+        *ngIf="filteredFavorites.length > 0"
+        [searchResult]="favoritesAsSearchResult"
+        [isLoading]="false"
+        [favoriteBookIds]="favoriteBookIds"
+        (bookSelected)="onBookSelected($event)"
+        (favoriteToggled)="onFavoriteToggled($event)">
+      </app-book-list>
+    </div>
+  </section>
+
   <!-- Book List Section -->
-  <section class="book-list-section" aria-label="Search results">
+  <section class="book-list-section" *ngIf="!isShowingFavorites" aria-label="Search results">
     <div class="book-list-container">
+      <!-- Empty state message -->
+      <div *ngIf="!searchResult && !isLoading" class="empty-search-state" data-cy="no-results">
+        <mat-icon class="empty-icon">search</mat-icon>
+        <h3>Please enter a search term</h3>
+        <p>Use the search box above to find books.</p>
+      </div>
+
       <app-book-list
         [searchResult]="searchResult"
         [isLoading]="isLoading"
+        [hasError]="hasSearchError"
         [favoriteBookIds]="favoriteBookIds"
         (bookSelected)="onBookSelected($event)"
         (favoriteToggled)="onFavoriteToggled($event)">
@@ -49,9 +128,11 @@
       <app-book-details
         [book]="selectedBook"
         [isLoading]="false"
+        [hasError]="hasDetailsError"
         (closed)="onBookDetailsClose()"
         (favoriteToggled)="onBookDetailsFavoriteToggled($event)"
-        (previewRequested)="onBookPreviewRequested($event)">
+        (previewRequested)="onBookPreviewRequested($event)"
+        (purchaseRequested)="onBookPurchaseRequested($event)">
       </app-book-details>
     </div>
   </div>

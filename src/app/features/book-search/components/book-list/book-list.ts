@@ -25,6 +25,7 @@ import { Book, BookSearchResult } from '../../../../core/models';
 export class BookListComponent {
   @Input() searchResult: BookSearchResult | null = null;
   @Input() isLoading = false;
+  @Input() hasError = false;
   @Input() favoriteBookIds: Set<string> = new Set();
 
   @Output() bookSelected = new EventEmitter<Book>();

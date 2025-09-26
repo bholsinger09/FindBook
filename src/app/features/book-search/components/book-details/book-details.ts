@@ -29,11 +29,16 @@ import { FavoritesService } from '../../../../core/services/favorites.service';
 export class BookDetailsComponent implements OnInit {
   @Input() book: Book | null = null;
   @Input() isLoading: boolean = false;
+  @Input() hasError: boolean = false;
   @Output() favoriteToggled = new EventEmitter<Book>();
   @Output() previewRequested = new EventEmitter<Book>();
+  @Output() purchaseRequested = new EventEmitter<Book>();
   @Output() closed = new EventEmitter<void>();
 
   isFavorite: boolean = false;
+  showFavoriteMessage: boolean = false;
+  favoriteMessageText: string = '';
+  favoriteMessageIcon: string = '';
 
   constructor(private favoritesService: FavoritesService) {}
 
@@ -46,12 +51,29 @@ export class BookDetailsComponent implements OnInit {
     if (this.book) {
       this.isFavorite = !this.isFavorite;
       this.favoriteToggled.emit(this.book);
+      
+      // Show feedback message
+      this.showFavoriteMessage = true;
+      this.favoriteMessageText = this.isFavorite ? 'Added to favorites' : 'Removed from favorites';
+      this.favoriteMessageIcon = this.isFavorite ? 'favorite' : 'favorite_border';
+      
+      // Hide message after 3 seconds
+      setTimeout(() => {
+        this.showFavoriteMessage = false;
+      }, 3000);
     }
   }
 
   requestPreview(): void {
     if (this.book?.webReaderLink) {
       this.previewRequested.emit(this.book);
+      window.open(this.book.webReaderLink, '_blank');
+    }
+  }
+
+  requestPurchase(): void {
+    if (this.book) {
+      this.purchaseRequested.emit(this.book);
     }
   }
 

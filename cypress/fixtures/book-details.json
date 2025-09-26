@@ -1,0 +1,73 @@
+{
+  "kind": "books#volume",
+  "id": "test-book-details-1",
+  "etag": "test-etag-details",
+  "selfLink": "https://www.googleapis.com/books/v1/volumes/test-book-details-1",
+  "volumeInfo": {
+    "title": "Clean Code: A Handbook of Agile Software Craftsmanship",
+    "subtitle": "A Handbook of Agile Software Craftsmanship",
+    "authors": ["Robert C. Martin"],
+    "publisher": "Prentice Hall",
+    "publishedDate": "2008-08-01",
+    "description": "Even bad code can function. But if code isn't clean, it can bring a development organization to its knees. Every year, countless hours and significant resources are lost because of poorly written code. But it doesn't have to be that way.",
+    "industryIdentifiers": [
+      {
+        "type": "ISBN_10",
+        "identifier": "0132350882"
+      },
+      {
+        "type": "ISBN_13",
+        "identifier": "9780132350884"
+      }
+    ],
+    "pageCount": 464,
+    "printType": "BOOK",
+    "categories": ["Computers", "Programming", "Software Engineering"],
+    "averageRating": 4.4,
+    "ratingsCount": 85,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "1.2.2.0.preview.2",
+    "imageLinks": {
+      "smallThumbnail": "http://books.google.com/books/content?id=test-book-details-1&printsec=frontcover&img=1&zoom=5",
+      "thumbnail": "http://books.google.com/books/content?id=test-book-details-1&printsec=frontcover&img=1&zoom=1",
+      "small": "http://books.google.com/books/content?id=test-book-details-1&printsec=frontcover&img=1&zoom=2",
+      "medium": "http://books.google.com/books/content?id=test-book-details-1&printsec=frontcover&img=1&zoom=3"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.com/books?id=test-book-details-1&printsec=frontcover&dq=clean+code",
+    "infoLink": "http://books.google.com/books?id=test-book-details-1&dq=clean+code",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Clean_Code.html?hl=&id=test-book-details-1"
+  },
+  "saleInfo": {
+    "country": "US",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+      "amount": 54.99,
+      "currencyCode": "USD"
+    },
+    "retailPrice": {
+      "amount": 54.99,
+      "currencyCode": "USD"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=test-book-details-1"
+  },
+  "accessInfo": {
+    "country": "US",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+    "epub": {
+      "isAvailable": true,
+      "acsTokenLink": "http://books.google.com/books/download/Clean_Code-sample-epub.acsm?id=test-book-details-1"
+    },
+    "pdf": {
+      "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=test-book-details-1&hl=&as_brr=6&source=gbs_vpt_read",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+  }
+}
