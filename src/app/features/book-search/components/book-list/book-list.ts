@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatCardModule } from '@angular/material/card';
@@ -8,6 +8,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { Book, BookSearchResult } from '../../../../core/models';
+import { AccessibilityService } from '../../../../services/accessibility.service';
 
 @Component({
   selector: 'app-book-list',
@@ -33,11 +34,25 @@ export class BookListComponent {
   @Output() bookSelected = new EventEmitter<Book>();
   @Output() favoriteToggled = new EventEmitter<Book>();
 
+  private accessibilityService = inject(AccessibilityService);
+
   onViewDetails(book: Book): void {
+    this.accessibilityService.announce(
+      `Opening details for ${book.title} by ${book.authors?.join(', ') || 'Unknown Author'}`,
+      'polite'
+    );
     this.bookSelected.emit(book);
   }
 
   onToggleFavorite(book: Book): void {
+    const isFavorite = this.isFavorite(book.id);
+    const action = isFavorite ? 'removed from' : 'added to';
+    
+    this.accessibilityService.announce(
+      `${book.title} ${action} favorites`,
+      'polite'
+    );
+    
     this.favoriteToggled.emit(book);
   }
 
@@ -47,6 +62,21 @@ export class BookListComponent {
 
   trackByBookId(index: number, book: Book): string {
     return book.id;
+  }
+
+  getBookAriaLabel(book: Book): string {
+    const title = book.title || 'Unknown Title';
+    const authors = book.authors?.join(', ') || 'Unknown Author';
+    const publishedDate = book.publishedDate || 'Unknown Date';
+    const rating = book.averageRating ? `, Rating: ${book.averageRating} stars` : '';
+    
+    return `${title} by ${authors}, published ${publishedDate}${rating}`;
+  }
+
+  getFavoriteButtonAriaLabel(book: Book): string {
+    const isFavorite = this.isFavorite(book.id);
+    const action = isFavorite ? 'Remove from' : 'Add to';
+    return `${action} favorites: ${book.title}`;
   }
 
   getBookThumbnail(book: Book): string {

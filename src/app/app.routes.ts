@@ -17,6 +17,11 @@ export const routes: Routes = [
     title: 'Performance Dashboard - FindBook'
   },
   {
+    path: 'accessibility',
+    loadComponent: () => import('./components/accessibility-dashboard/accessibility-dashboard.component').then(m => m.AccessibilityDashboardComponent),
+    title: 'Accessibility Dashboard - FindBook'
+  },
+  {
     path: '**',
     redirectTo: ''
   }

@@ -1,4 +1,14 @@
 <!-- FindBook Application -->
-<main>
+<!-- Skip navigation link for screen readers -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- Live region for screen reader announcements -->
+<div aria-live="polite" aria-atomic="true" class="sr-only" id="live-announcements"></div>
+
+<!-- Accessibility toolbar -->
+<app-accessibility-toolbar></app-accessibility-toolbar>
+
+<!-- Main application content -->
+<main id="main-content" role="main" tabindex="-1">
   <router-outlet></router-outlet>
 </main>

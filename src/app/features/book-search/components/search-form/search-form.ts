@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -8,6 +8,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { BookSearchParams } from '../../../../core/models';
+import { AccessibilityService } from '../../../../services/accessibility.service';
 
 @Component({
   selector: 'app-search-form',
@@ -30,6 +31,7 @@ export class SearchFormComponent {
   @Output() searchCleared = new EventEmitter<void>();
 
   searchForm: FormGroup;
+  private accessibilityService = inject(AccessibilityService);
 
   constructor(private formBuilder: FormBuilder) {
     this.searchForm = this.formBuilder.group({
@@ -47,17 +49,32 @@ export class SearchFormComponent {
 
   onSubmit(): void {
     if (this.searchForm.valid && !this.isLoading) {
+      const searchQuery = this.searchTermControl?.value.trim();
       const searchParams: BookSearchParams = {
-        query: this.searchTermControl?.value.trim(),
+        query: searchQuery,
         startIndex: 0,
         maxResults: 12
       };
+      
+      // Announce search action to screen readers
+      this.accessibilityService.announce(
+        `Searching for books with query: ${searchQuery}`, 
+        'assertive'
+      );
+      
       this.searchSubmitted.emit(searchParams);
+    } else if (this.searchForm.invalid) {
+      // Announce validation errors
+      this.accessibilityService.announce(
+        this.getErrorMessage(), 
+        'assertive'
+      );
     }
   }
 
   clearSearch(): void {
     this.searchForm.reset();
+    this.accessibilityService.announce('Search cleared', 'polite');
     this.searchCleared.emit();
   }
 
