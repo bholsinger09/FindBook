@@ -1,0 +1,131 @@
+<div class="book-list-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p class="loading-message">Searching for books...</p>
+  </div>
+
+  <!-- Empty State (No search performed) -->
+  <div *ngIf="!searchResult && !isLoading" class="empty-state">
+    <mat-icon class="empty-icon">menu_book</mat-icon>
+    <h3>Ready to discover books</h3>
+    <p>Use the search form above to find your next great read!</p>
+  </div>
+
+  <!-- No Results State -->
+  <div *ngIf="searchResult && searchResult.books.length === 0 && !isLoading" class="no-results">
+    <mat-icon class="no-results-icon">search_off</mat-icon>
+    <h3>No books found</h3>
+    <p>Try different search terms or check your spelling.</p>
+  </div>
+
+  <!-- Results with Books -->
+  <div *ngIf="searchResult && searchResult.books.length > 0 && !isLoading" class="results-container">
+    <!-- Results Summary -->
+    <div class="results-summary">
+      <h2>Search Results</h2>
+      <p class="results-count">
+        Showing {{ searchResult.books.length }} of {{ searchResult.totalItems }} books
+        <span *ngIf="searchResult.query" class="search-query">for "{{ searchResult.query }}"</span>
+      </p>
+    </div>
+
+    <!-- Books Grid -->
+    <div class="books-grid" role="list">
+      <mat-card 
+        *ngFor="let book of searchResult.books; trackBy: trackByBookId" 
+        class="book-card"
+        role="listitem">
+        
+        <!-- Book Image -->
+        <div class="book-image-container">
+          <img 
+            [src]="getBookThumbnail(book)" 
+            [alt]="book.title + ' cover'"
+            class="book-thumbnail"
+            (error)="$event.target.src='assets/images/book-placeholder.png'">
+        </div>
+
+        <!-- Book Content -->
+        <mat-card-header class="book-header">
+          <mat-card-title class="book-title">{{ book.title }}</mat-card-title>
+          <mat-card-subtitle class="book-authors">{{ getBookAuthors(book) }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="book-content">
+          <!-- Book Description -->
+          <p class="book-description">{{ truncateDescription(book.description) }}</p>
+          
+          <!-- Book Metadata -->
+          <div class="book-metadata">
+            <!-- Rating -->
+            <div *ngIf="book.averageRating" class="book-rating">
+              <mat-icon class="rating-icon">star</mat-icon>
+              <span class="rating-value">{{ book.averageRating }}</span>
+              <span class="rating-count" *ngIf="book.ratingsCount">({{ book.ratingsCount }})</span>
+            </div>
+
+            <!-- Published Date -->
+            <div *ngIf="book.publishedDate" class="published-date">
+              <mat-icon class="date-icon">calendar_today</mat-icon>
+              <span>{{ formatPublishedDate(book.publishedDate) }}</span>
+            </div>
+
+            <!-- Page Count -->
+            <div *ngIf="book.pageCount" class="page-count">
+              <mat-icon class="page-icon">description</mat-icon>
+              <span>{{ book.pageCount }} pages</span>
+            </div>
+
+            <!-- Publisher -->
+            <div *ngIf="book.publisher" class="publisher">
+              <mat-icon class="publisher-icon">business</mat-icon>
+              <span>{{ book.publisher }}</span>
+            </div>
+          </div>
+
+          <!-- Categories -->
+          <div *ngIf="book.categories && book.categories.length > 0" class="book-categories">
+            <mat-chip-set>
+              <mat-chip *ngFor="let category of book.categories?.slice(0, 3)">
+                {{ category }}
+              </mat-chip>
+              <mat-chip *ngIf="book.categories && book.categories.length > 3" class="more-categories">
+                +{{ book.categories.length - 3 }} more
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </mat-card-content>
+
+        <!-- Book Actions -->
+        <mat-card-actions class="book-actions">
+          <button 
+            mat-raised-button 
+            color="primary"
+            class="view-details-btn"
+            [attr.aria-label]="'View details for ' + book.title"
+            (click)="onViewDetails(book)">
+            <mat-icon>visibility</mat-icon>
+            View Details
+          </button>
+          
+          <button 
+            mat-icon-button
+            class="favorite-btn"
+            [attr.aria-label]="(isFavorite(book.id) ? 'Remove from' : 'Add to') + ' favorites'"
+            (click)="onToggleFavorite(book)">
+            <mat-icon>{{ isFavorite(book.id) ? 'favorite' : 'favorite_border' }}</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <!-- Load More (Future Enhancement) -->
+    <div *ngIf="searchResult.hasMoreResults" class="load-more-container">
+      <button mat-stroked-button class="load-more-btn" disabled>
+        <mat-icon>expand_more</mat-icon>
+        Load More Results (Coming Soon)
+      </button>
+    </div>
+  </div>
+</div>
