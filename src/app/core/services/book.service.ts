@@ -17,7 +17,7 @@ import { PerformanceService } from './performance.service';
     providedIn: 'root'
 })
 export class BookService {
-    private readonly apiBaseUrl = 'https://www.googleapis.com/books/v1';
+    private readonly apiBaseUrl = 'https://DISABLED-API.com/books/v1'; // Disabled to prevent console errors
     private readonly defaultMaxResults = 20;
     
     // Feature flag to disable API calls when external service is unreliable
