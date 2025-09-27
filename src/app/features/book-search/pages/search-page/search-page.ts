@@ -78,10 +78,9 @@ export class SearchPage implements OnInit {
       this.loadFavorites();
     });
 
-    // Load popular books initially, but with a delay to avoid blocking page load
-    setTimeout(() => {
-      this.loadPopularBooks();
-    }, 1000);
+    // Don't auto-load popular books to prevent API errors on page load
+    // User can manually search or browse when ready
+    this.initializeEmptyState();
   }
 
   // Favorites functionality
@@ -243,6 +242,20 @@ export class SearchPage implements OnInit {
         };
       }
     });
+  }
+
+  private initializeEmptyState(): void {
+    this.isLoading = false;
+    this.hasSearchError = false;
+    this.searchResult = {
+      books: [],
+      totalItems: 0,
+      query: '',
+      currentPage: 1,
+      itemsPerPage: 20,
+      hasMoreResults: false,
+      searchTimestamp: new Date()
+    };
   }
 
   trackByBookId(index: number, book: Book): string {
