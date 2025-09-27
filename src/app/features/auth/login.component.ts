@@ -14,22 +14,22 @@ import { AuthService } from '../../core/services/auth.service';
 import { LoginRequest } from '../../core/models/auth.model';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCheckboxModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule
-  ],
-  template: `
+    selector: 'app-login',
+    standalone: true,
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCheckboxModule,
+        MatProgressSpinnerModule,
+        MatSnackBarModule
+    ],
+    template: `
     <div class="login-container">
       <mat-card class="login-card">
         <mat-card-header>
@@ -143,7 +143,7 @@ import { LoginRequest } from '../../core/models/auth.model';
       </mat-card>
     </div>
   `,
-  styles: [`
+    styles: [`
     .login-container {
       display: flex;
       justify-content: center;
@@ -298,78 +298,78 @@ import { LoginRequest } from '../../core/models/auth.model';
   `]
 })
 export class LoginComponent implements OnInit {
-  protected readonly authService = inject(AuthService);
-  private readonly fb = inject(FormBuilder);
-  private readonly router = inject(Router);
-  private readonly snackBar = inject(MatSnackBar);
+    protected readonly authService = inject(AuthService);
+    private readonly fb = inject(FormBuilder);
+    private readonly router = inject(Router);
+    private readonly snackBar = inject(MatSnackBar);
 
-  protected readonly hidePassword = signal(true);
+    protected readonly hidePassword = signal(true);
 
-  protected loginForm: FormGroup;
+    protected loginForm: FormGroup;
 
-  constructor() {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      rememberMe: [false]
-    });
-  }
-
-  ngOnInit(): void {
-    // Auto-focus email field
-    setTimeout(() => {
-      const emailInput = document.querySelector('input[formControlName="email"]') as HTMLInputElement;
-      emailInput?.focus();
-    }, 100);
-  }
-
-  protected onSubmit(): void {
-    if (this.loginForm.invalid) {
-      this.markFormGroupTouched();
-      return;
+    constructor() {
+        this.loginForm = this.fb.group({
+            email: ['', [Validators.required, Validators.email]],
+            password: ['', [Validators.required, Validators.minLength(6)]],
+            rememberMe: [false]
+        });
     }
 
-    const credentials: LoginRequest = this.loginForm.value;
-    
-    this.authService.login(credentials).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.snackBar.open('Login successful!', 'Close', { duration: 3000 });
-          
-          // Redirect to stored URL or dashboard
-          const redirectUrl = sessionStorage.getItem('findbook_redirect_url') || '/dashboard';
-          sessionStorage.removeItem('findbook_redirect_url');
-          this.router.navigate([redirectUrl]);
+    ngOnInit(): void {
+        // Auto-focus email field
+        setTimeout(() => {
+            const emailInput = document.querySelector('input[formControlName="email"]') as HTMLInputElement;
+            emailInput?.focus();
+        }, 100);
+    }
+
+    protected onSubmit(): void {
+        if (this.loginForm.invalid) {
+            this.markFormGroupTouched();
+            return;
         }
-      },
-      error: (error) => {
-        console.error('Login error:', error);
-        this.snackBar.open(error.message || 'Login failed', 'Close', { 
-          duration: 5000,
-          panelClass: ['error-snackbar']
+
+        const credentials: LoginRequest = this.loginForm.value;
+
+        this.authService.login(credentials).subscribe({
+            next: (response) => {
+                if (response.success) {
+                    this.snackBar.open('Login successful!', 'Close', { duration: 3000 });
+
+                    // Redirect to stored URL or dashboard
+                    const redirectUrl = sessionStorage.getItem('findbook_redirect_url') || '/dashboard';
+                    sessionStorage.removeItem('findbook_redirect_url');
+                    this.router.navigate([redirectUrl]);
+                }
+            },
+            error: (error) => {
+                console.error('Login error:', error);
+                this.snackBar.open(error.message || 'Login failed', 'Close', {
+                    duration: 5000,
+                    panelClass: ['error-snackbar']
+                });
+            }
         });
-      }
-    });
-  }
+    }
 
-  protected togglePasswordVisibility(): void {
-    this.hidePassword.set(!this.hidePassword());
-  }
+    protected togglePasswordVisibility(): void {
+        this.hidePassword.set(!this.hidePassword());
+    }
 
-  protected signInWithGoogle(): void {
-    // TODO: Implement Google OAuth
-    this.snackBar.open('Google Sign-In coming soon!', 'Close', { duration: 3000 });
-  }
+    protected signInWithGoogle(): void {
+        // TODO: Implement Google OAuth
+        this.snackBar.open('Google Sign-In coming soon!', 'Close', { duration: 3000 });
+    }
 
-  protected isFieldInvalid(fieldName: string): boolean {
-    const field = this.loginForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
-  }
+    protected isFieldInvalid(fieldName: string): boolean {
+        const field = this.loginForm.get(fieldName);
+        return !!(field && field.invalid && (field.dirty || field.touched));
+    }
 
-  private markFormGroupTouched(): void {
-    Object.keys(this.loginForm.controls).forEach(key => {
-      const control = this.loginForm.get(key);
-      control?.markAsTouched();
-    });
-  }
+    private markFormGroupTouched(): void {
+        Object.keys(this.loginForm.controls).forEach(key => {
+            const control = this.loginForm.get(key);
+            control?.markAsTouched();
+        });
+    }
 }

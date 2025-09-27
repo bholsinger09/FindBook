@@ -15,33 +15,33 @@ import { RegisterRequest } from '../../core/models/auth.model';
 
 // Custom validator for password confirmation
 export function passwordMatchValidator(control: AbstractControl): { [key: string]: any } | null {
-  const password = control.get('password');
-  const confirmPassword = control.get('confirmPassword');
+    const password = control.get('password');
+    const confirmPassword = control.get('confirmPassword');
 
-  if (!password || !confirmPassword) {
-    return null;
-  }
+    if (!password || !confirmPassword) {
+        return null;
+    }
 
-  return password.value !== confirmPassword.value ? { passwordMismatch: true } : null;
+    return password.value !== confirmPassword.value ? { passwordMismatch: true } : null;
 }
 
 @Component({
-  selector: 'app-register',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCheckboxModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule
-  ],
-  template: `
+    selector: 'app-register',
+    standalone: true,
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCheckboxModule,
+        MatProgressSpinnerModule,
+        MatSnackBarModule
+    ],
+    template: `
     <div class="register-container">
       <mat-card class="register-card">
         <mat-card-header>
@@ -234,7 +234,7 @@ export function passwordMatchValidator(control: AbstractControl): { [key: string
       </mat-card>
     </div>
   `,
-  styles: [`
+    styles: [`
     .register-container {
       display: flex;
       justify-content: center;
@@ -412,108 +412,108 @@ export function passwordMatchValidator(control: AbstractControl): { [key: string
   `]
 })
 export class RegisterComponent implements OnInit {
-  protected readonly authService = inject(AuthService);
-  private readonly fb = inject(FormBuilder);
-  private readonly router = inject(Router);
-  private readonly snackBar = inject(MatSnackBar);
+    protected readonly authService = inject(AuthService);
+    private readonly fb = inject(FormBuilder);
+    private readonly router = inject(Router);
+    private readonly snackBar = inject(MatSnackBar);
 
-  protected readonly hidePassword = signal(true);
-  protected readonly hideConfirmPassword = signal(true);
+    protected readonly hidePassword = signal(true);
+    protected readonly hideConfirmPassword = signal(true);
 
-  protected registerForm: FormGroup;
+    protected registerForm: FormGroup;
 
-  constructor() {
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
-    const usernamePattern = /^[a-zA-Z0-9_]+$/;
+    constructor() {
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
+        const usernamePattern = /^[a-zA-Z0-9_]+$/;
 
-    this.registerForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-      username: ['', [
-        Validators.required, 
-        Validators.minLength(3), 
-        Validators.maxLength(20),
-        Validators.pattern(usernamePattern)
-      ]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [
-        Validators.required, 
-        Validators.minLength(8),
-        Validators.pattern(passwordPattern)
-      ]],
-      confirmPassword: ['', [Validators.required]],
-      acceptTerms: [false, [Validators.requiredTrue]]
-    }, { validators: passwordMatchValidator });
-  }
-
-  ngOnInit(): void {
-    // Auto-focus first name field
-    setTimeout(() => {
-      const firstNameInput = document.querySelector('input[formControlName="firstName"]') as HTMLInputElement;
-      firstNameInput?.focus();
-    }, 100);
-  }
-
-  protected onSubmit(): void {
-    if (this.registerForm.invalid) {
-      this.markFormGroupTouched();
-      return;
+        this.registerForm = this.fb.group({
+            firstName: ['', [Validators.required, Validators.minLength(2)]],
+            lastName: ['', [Validators.required, Validators.minLength(2)]],
+            username: ['', [
+                Validators.required,
+                Validators.minLength(3),
+                Validators.maxLength(20),
+                Validators.pattern(usernamePattern)
+            ]],
+            email: ['', [Validators.required, Validators.email]],
+            password: ['', [
+                Validators.required,
+                Validators.minLength(8),
+                Validators.pattern(passwordPattern)
+            ]],
+            confirmPassword: ['', [Validators.required]],
+            acceptTerms: [false, [Validators.requiredTrue]]
+        }, { validators: passwordMatchValidator });
     }
 
-    const userData: RegisterRequest = {
-      email: this.registerForm.value.email,
-      username: this.registerForm.value.username,
-      password: this.registerForm.value.password,
-      confirmPassword: this.registerForm.value.confirmPassword,
-      firstName: this.registerForm.value.firstName,
-      lastName: this.registerForm.value.lastName,
-      acceptTerms: this.registerForm.value.acceptTerms
-    };
-    
-    this.authService.register(userData).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.snackBar.open('Account created successfully! Welcome to FindBook!', 'Close', { 
-            duration: 5000,
-            panelClass: ['success-snackbar']
-          });
-          
-          // Redirect to dashboard or onboarding
-          this.router.navigate(['/dashboard']);
+    ngOnInit(): void {
+        // Auto-focus first name field
+        setTimeout(() => {
+            const firstNameInput = document.querySelector('input[formControlName="firstName"]') as HTMLInputElement;
+            firstNameInput?.focus();
+        }, 100);
+    }
+
+    protected onSubmit(): void {
+        if (this.registerForm.invalid) {
+            this.markFormGroupTouched();
+            return;
         }
-      },
-      error: (error) => {
-        console.error('Registration error:', error);
-        this.snackBar.open(error.message || 'Registration failed', 'Close', { 
-          duration: 5000,
-          panelClass: ['error-snackbar']
+
+        const userData: RegisterRequest = {
+            email: this.registerForm.value.email,
+            username: this.registerForm.value.username,
+            password: this.registerForm.value.password,
+            confirmPassword: this.registerForm.value.confirmPassword,
+            firstName: this.registerForm.value.firstName,
+            lastName: this.registerForm.value.lastName,
+            acceptTerms: this.registerForm.value.acceptTerms
+        };
+
+        this.authService.register(userData).subscribe({
+            next: (response) => {
+                if (response.success) {
+                    this.snackBar.open('Account created successfully! Welcome to FindBook!', 'Close', {
+                        duration: 5000,
+                        panelClass: ['success-snackbar']
+                    });
+
+                    // Redirect to dashboard or onboarding
+                    this.router.navigate(['/dashboard']);
+                }
+            },
+            error: (error) => {
+                console.error('Registration error:', error);
+                this.snackBar.open(error.message || 'Registration failed', 'Close', {
+                    duration: 5000,
+                    panelClass: ['error-snackbar']
+                });
+            }
         });
-      }
-    });
-  }
+    }
 
-  protected togglePasswordVisibility(): void {
-    this.hidePassword.set(!this.hidePassword());
-  }
+    protected togglePasswordVisibility(): void {
+        this.hidePassword.set(!this.hidePassword());
+    }
 
-  protected toggleConfirmPasswordVisibility(): void {
-    this.hideConfirmPassword.set(!this.hideConfirmPassword());
-  }
+    protected toggleConfirmPasswordVisibility(): void {
+        this.hideConfirmPassword.set(!this.hideConfirmPassword());
+    }
 
-  protected signUpWithGoogle(): void {
-    // TODO: Implement Google OAuth
-    this.snackBar.open('Google Sign-Up coming soon!', 'Close', { duration: 3000 });
-  }
+    protected signUpWithGoogle(): void {
+        // TODO: Implement Google OAuth
+        this.snackBar.open('Google Sign-Up coming soon!', 'Close', { duration: 3000 });
+    }
 
-  protected isFieldInvalid(fieldName: string): boolean {
-    const field = this.registerForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
-  }
+    protected isFieldInvalid(fieldName: string): boolean {
+        const field = this.registerForm.get(fieldName);
+        return !!(field && field.invalid && (field.dirty || field.touched));
+    }
 
-  private markFormGroupTouched(): void {
-    Object.keys(this.registerForm.controls).forEach(key => {
-      const control = this.registerForm.get(key);
-      control?.markAsTouched();
-    });
-  }
+    private markFormGroupTouched(): void {
+        Object.keys(this.registerForm.controls).forEach(key => {
+            const control = this.registerForm.get(key);
+            control?.markAsTouched();
+        });
+    }
 }

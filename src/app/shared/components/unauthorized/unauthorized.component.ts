@@ -6,16 +6,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-unauthorized',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    RouterModule
-  ],
-  template: `
+    selector: 'app-unauthorized',
+    standalone: true,
+    imports: [
+        CommonModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        RouterModule
+    ],
+    template: `
     <div class="unauthorized-container">
       <mat-card class="unauthorized-card">
         <mat-card-header>
@@ -43,7 +43,7 @@ import { RouterModule } from '@angular/router';
       </mat-card>
     </div>
   `,
-  styles: [`
+    styles: [`
     .unauthorized-container {
       display: flex;
       justify-content: center;
@@ -71,4 +71,4 @@ import { RouterModule } from '@angular/router';
     }
   `]
 })
-export class UnauthorizedComponent {}
+export class UnauthorizedComponent { }
