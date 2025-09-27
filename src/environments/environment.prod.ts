@@ -1,7 +1,7 @@
 export const environment = {
     production: true,
     googleBooksApiUrl: 'https://www.googleapis.com/books/v1',
-    authApiUrl: 'https://findbook-bholsinger09.vercel.app/api',
+    authApiUrl: 'https://findbook-kcuccnc0w-ben-holsingers-projects.vercel.app/api',
     enablePerformanceLogging: false,
     version: '1.0.0',
     apiTimeout: 10000,
