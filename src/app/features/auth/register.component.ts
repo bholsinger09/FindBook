@@ -217,7 +217,7 @@ export function passwordMatchValidator(control: AbstractControl): { [key: string
                 (click)="signUpWithGoogle()"
                 [disabled]="authService.isLoading()"
               >
-                <mat-icon svgIcon="google"></mat-icon>
+                <mat-icon>account_circle</mat-icon>
                 Sign up with Google
               </button>
             </div>

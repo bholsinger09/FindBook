@@ -122,7 +122,7 @@ import { LoginRequest } from '../../core/models/auth.model';
                 (click)="signInWithGoogle()"
                 [disabled]="authService.isLoading()"
               >
-                <mat-icon svgIcon="google"></mat-icon>
+                <mat-icon>account_circle</mat-icon>
                 Sign in with Google
               </button>
             </div>
