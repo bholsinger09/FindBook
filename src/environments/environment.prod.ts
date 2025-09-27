@@ -1,13 +1,13 @@
 export const environment = {
     production: true,
     googleBooksApiUrl: 'https://www.googleapis.com/books/v1',
-    authApiUrl: '', // Disabled for GitHub Pages demo
+    authApiUrl: 'https://findbook-bholsinger09.vercel.app/api',
     enablePerformanceLogging: false,
     version: '1.0.0',
     apiTimeout: 10000,
     features: {
-        enableAuth: false, // Disabled for GitHub Pages demo
-        enableSocialAuth: false, // Disabled for GitHub Pages demo
+        enableAuth: true, // Re-enabled for full-stack deployment
+        enableSocialAuth: false, // Keep disabled for now
         enableOfflineSync: true,
         enableAnalytics: true
     },

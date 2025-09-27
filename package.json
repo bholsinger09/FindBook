@@ -23,6 +23,7 @@
     "e2e:dev": "concurrently \"npm start\" \"cypress open\"",
     "test:all": "npm run test:unit && npm run e2e",
     "deploy:gh": "ng build --configuration production --base-href=/FindBook/ && npx angular-cli-ghpages --dir=dist/findbook-app/browser",
+    "build:vercel": "ng build --configuration production",
     "deploy:vercel": "vercel --prod",
     "deploy:netlify": "npm run build:prod && netlify deploy --prod --dir=dist/findbook-app"
   },
@@ -49,6 +50,9 @@
     "@angular/material": "^20.2.5",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "bcryptjs": "^3.0.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.15.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

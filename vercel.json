@@ -6,17 +6,25 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist/findbook-app"
+        "distDir": "dist/findbook-app/browser"
       }
     }
   ],
   "routes": [
+    {
+      "src": "/api/auth/(.*)",
+      "dest": "/api/auth/$1"
+    },
     {
       "src": "/performance",
       "dest": "/index.html"
     },
     {
       "src": "/book/(.*)",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/auth/(.*)",
       "dest": "/index.html"
     },
     {
