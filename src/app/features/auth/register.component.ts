@@ -144,7 +144,7 @@ export function passwordMatchValidator(control: AbstractControl): { [key: string
               <mat-error *ngIf="isFieldInvalid('password')">
                 <span *ngIf="registerForm.get('password')?.errors?.['required']">Password is required</span>
                 <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters</span>
-                <span *ngIf="registerForm.get('password')?.errors?.['pattern']">Password must contain at least one uppercase, lowercase, number, and special character</span>
+                <span *ngIf="registerForm.get('password')?.errors?.['pattern']">Password must contain at least 8 characters with letters and numbers</span>
               </mat-error>
             </mat-form-field>
 
@@ -423,7 +423,8 @@ export class RegisterComponent implements OnInit {
     protected registerForm: FormGroup;
 
     constructor() {
-        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
+        // Practical password pattern - requires at least 8 chars with letters and numbers, special chars optional
+        const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
         const usernamePattern = /^[a-zA-Z0-9_]+$/;
 
         this.registerForm = this.fb.group({
