@@ -1,0 +1,16 @@
+php-backend/
+node_modules/
+.git/
+.DS_Store
+*.log
+.env.local
+.env.*.local
+coverage/
+dist/
+!dist/findbook-app/browser/
+src/assets/temp/
+docs/
+*.md
+.gitignore
+.editorconfig
+.prettierrc
