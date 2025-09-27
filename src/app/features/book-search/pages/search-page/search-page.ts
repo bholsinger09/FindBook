@@ -174,7 +174,7 @@ export class SearchPage implements OnInit {
     this.currentSearchTerm = '';
     this.searchResult = null;
     this.hasSearchError = false;
-    this.loadPopularBooks();
+    this.initializeEmptyState();
   }
 
   onBookSelected(book: Book): void {
