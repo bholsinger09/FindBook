@@ -1,0 +1,33 @@
+{
+    "name": "findbook/php-backend",
+    "description": "PHP backend API for FindBook application",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.4",
+        "firebase/php-jwt": "^6.8",
+        "ext-pdo": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "FindBook\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FindBook\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "start": "php -S localhost:8080 -t api/"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}
