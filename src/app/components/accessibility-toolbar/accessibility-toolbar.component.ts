@@ -98,11 +98,12 @@ import { Observable } from 'rxjs';
     </div>
   `,
   styles: [`
+    /* Accessibility toolbar positioned to avoid interference with main navigation */
     .accessibility-toolbar {
       position: fixed;
-      top: 20px;
+      top: 80px;
       right: 20px;
-      z-index: 9999;
+      z-index: 1000;
       background: white;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -243,13 +244,26 @@ import { Observable } from 'rxjs';
     /* Mobile responsive */
     @media (max-width: 768px) {
       .accessibility-toolbar {
-        top: 10px;
+        top: 70px;
         right: 10px;
       }
       
       .toolbar-content {
         width: calc(100vw - 80px);
         right: -10px;
+      }
+    }
+    
+    /* Better positioning for smaller screens */
+    @media (max-width: 480px) {
+      .accessibility-toolbar {
+        top: 60px;
+        right: 8px;
+      }
+      
+      .toolbar-content {
+        width: calc(100vw - 60px);
+        right: -8px;
       }
     }
   `]
