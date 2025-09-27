@@ -149,7 +149,7 @@ module.exports = async (req, res) => {
 
     } catch (error) {
         console.error('Registration error:', error);
-        
+
         if (connection) {
             try {
                 await connection.end();

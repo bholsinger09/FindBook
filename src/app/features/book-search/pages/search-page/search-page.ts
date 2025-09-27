@@ -78,8 +78,10 @@ export class SearchPage implements OnInit {
       this.loadFavorites();
     });
 
-    // Load some popular books initially
-    this.loadPopularBooks();
+    // Load popular books initially, but with a delay to avoid blocking page load
+    setTimeout(() => {
+      this.loadPopularBooks();
+    }, 1000);
   }
 
   // Favorites functionality
@@ -223,9 +225,22 @@ export class SearchPage implements OnInit {
         this.hasSearchError = false;
       },
       error: (error) => {
-        console.error('Failed to load popular books:', error);
+        // Only log non-503 errors to avoid console spam
+        if (!error.message.includes('503') && !error.message.includes('temporarily unavailable')) {
+          console.error('Failed to load popular books:', error);
+        }
         this.isLoading = false;
         this.hasSearchError = true;
+        // Set a friendly error state
+        this.searchResult = {
+          books: [],
+          totalItems: 0,
+          query: 'popular books',
+          currentPage: 1,
+          itemsPerPage: 20,
+          hasMoreResults: false,
+          searchTimestamp: new Date()
+        };
       }
     });
   }

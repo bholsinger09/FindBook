@@ -238,6 +238,7 @@ export class BookService {
      */
     private handleError(error: HttpErrorResponse, context: string): Observable<never> {
         let errorMessage = `${context}: `;
+        let shouldLogToConsole = true;
 
         if (error.error instanceof ErrorEvent) {
             // Client-side error
@@ -245,9 +246,18 @@ export class BookService {
         } else {
             // Server-side error
             errorMessage += `Error Code: ${error.status}\nMessage: ${error.message}`;
+            
+            // Don't spam console with 503 errors (service unavailable) - these are temporary
+            if (error.status === 503) {
+                shouldLogToConsole = false;
+                errorMessage = 'Google Books API temporarily unavailable';
+            }
         }
 
-        console.error(errorMessage);
+        if (shouldLogToConsole) {
+            console.error(errorMessage);
+        }
+        
         return throwError(() => new Error(errorMessage));
     }
 }
