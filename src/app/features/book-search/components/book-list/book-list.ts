@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { Book, BookSearchResult } from '../../../../core/models';
 import { AccessibilityService } from '../../../../services/accessibility.service';
+import { OptimizedImageComponent } from '../../../../shared/components/optimized-image/optimized-image.component';
 
 @Component({
   selector: 'app-book-list',
@@ -20,7 +21,8 @@ import { AccessibilityService } from '../../../../services/accessibility.service
     MatButtonModule,
     MatIconModule,
     MatChipsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    OptimizedImageComponent
   ],
   templateUrl: './book-list.html',
   styleUrls: ['./book-list.scss']

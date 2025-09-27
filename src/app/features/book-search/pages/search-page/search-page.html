@@ -13,6 +13,11 @@
       <mat-icon>speed</mat-icon>
     </button>
 
+    <!-- Reading Center Link -->
+    <button mat-icon-button routerLink="/reading-center" aria-label="View reading center" title="Reading Center">
+      <mat-icon>dashboard</mat-icon>
+    </button>
+
     <!-- Favorites Toggle -->
     <button mat-icon-button class="favorites-toggle" [class.active]="isShowingFavorites" (click)="toggleFavoritesView()"
       [attr.aria-label]="isShowingFavorites ? 'Show all books' : 'Show favorites'" data-cy="favorites-toggle">

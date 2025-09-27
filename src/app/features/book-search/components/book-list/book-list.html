@@ -50,8 +50,10 @@
 
           <!-- Book Image -->
           <div class="book-image-container">
-            <img [src]="getBookThumbnail(book)" [alt]="'Cover of ' + book.title" class="book-image" loading="lazy"
-              (error)="handleImageError($event)" (load)="handleImageLoad($event)">
+            <app-optimized-image [src]="getBookThumbnail(book)" [alt]="'Cover of ' + book.title" [width]="256"
+              [height]="384" [lazy]="true" [preload]="false" priority="low" class="book-image"
+              (imageError)="handleImageError($event)">
+            </app-optimized-image>
           </div>
 
           <!-- Book Content -->
@@ -109,8 +111,10 @@
 
         <!-- Book Image -->
         <div class="book-image-container">
-          <img [src]="getBookThumbnail(book)" [alt]="book.title + ' cover'" class="book-thumbnail" loading="lazy"
-            data-cy="book-thumbnail" (error)="handleImageError($event)" (load)="handleImageLoad($event)">
+          <app-optimized-image [src]="getBookThumbnail(book)" [alt]="book.title + ' cover'" [width]="180" [height]="270"
+            [lazy]="true" [preload]="true" priority="high" class="book-thumbnail" data-cy="book-thumbnail"
+            (imageError)="handleImageError($event)">
+          </app-optimized-image>
         </div>
 
         <!-- Book Content -->

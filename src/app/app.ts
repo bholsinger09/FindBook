@@ -2,6 +2,7 @@ import { Component, signal, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { PerformanceService } from './core/services/performance.service';
 import { AccessibilityService } from './services/accessibility.service';
+import { ServiceWorkerService } from './core/services/service-worker.service';
 import { AccessibilityToolbarComponent } from './components/accessibility-toolbar/accessibility-toolbar.component';
 
 @Component({
@@ -15,7 +16,8 @@ export class App implements OnInit {
 
   constructor(
     private performanceService: PerformanceService,
-    private accessibilityService: AccessibilityService
+    private accessibilityService: AccessibilityService,
+    private serviceWorkerService: ServiceWorkerService
   ) { }
 
   ngOnInit() {
@@ -26,6 +28,9 @@ export class App implements OnInit {
 
     // Initialize accessibility service
     this.accessibilityService.announce('FindBook application loaded', 'polite');
+
+    // Service worker is automatically initialized in constructor
+    console.log('Service Worker initialized for offline functionality');
 
     // Log performance summary after 5 seconds (for demo purposes)
     setTimeout(() => {

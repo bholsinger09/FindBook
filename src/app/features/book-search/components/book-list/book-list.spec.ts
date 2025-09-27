@@ -11,6 +11,7 @@ import { DebugElement } from '@angular/core';
 import { BookListComponent } from './book-list';
 import { Book, BookSearchResult } from '../../../../core/models';
 import { AccessibilityService } from '../../../../services/accessibility.service';
+import { OptimizedImageComponent } from '../../../../shared/components/optimized-image/optimized-image.component';
 
 describe('BookListComponent', () => {
   let component: BookListComponent;
@@ -150,9 +151,12 @@ describe('BookListComponent', () => {
     });
 
     it('should display book thumbnail', () => {
-      const thumbnailElement = fixture.debugElement.query(By.css('.book-thumbnail'));
-      expect(thumbnailElement.nativeElement.src).toBe('https://example.com/thumbnail.jpg');
-      expect(thumbnailElement.nativeElement.alt).toBe('Angular Testing Guide cover');
+      const optimizedImageElement = fixture.debugElement.query(By.css('app-optimized-image'));
+      expect(optimizedImageElement).toBeTruthy();
+      // Test the component instance inputs directly
+      const optimizedImageComponent = optimizedImageElement.componentInstance;
+      expect(optimizedImageComponent.src).toBe('https://example.com/thumbnail.jpg');
+      expect(optimizedImageComponent.alt).toBe('Angular Testing Guide cover');
     });
 
     it('should display default image when thumbnail is not available', () => {
@@ -160,8 +164,10 @@ describe('BookListComponent', () => {
       component.searchResult = { ...mockSearchResult, books: [bookWithoutThumbnail] };
       fixture.detectChanges();
 
-      const thumbnailElement = fixture.debugElement.query(By.css('.book-thumbnail'));
-      expect(thumbnailElement.nativeElement.src).toContain('assets/images/book-placeholder.png');
+      const optimizedImageElement = fixture.debugElement.query(By.css('app-optimized-image'));
+      expect(optimizedImageElement).toBeTruthy();
+      const optimizedImageComponent = optimizedImageElement.componentInstance;
+      expect(optimizedImageComponent.src).toContain('assets/images/book-placeholder.png');
     });
 
     it('should display book rating when available', () => {
@@ -262,8 +268,9 @@ describe('BookListComponent', () => {
     });
 
     it('should have proper alt text for book images', () => {
-      const thumbnail = fixture.debugElement.query(By.css('.book-thumbnail'));
-      expect(thumbnail.nativeElement.alt).toBe('Angular Testing Guide cover');
+      const optimizedImageElement = fixture.debugElement.query(By.css('app-optimized-image'));
+      const optimizedImageComponent = optimizedImageElement.componentInstance;
+      expect(optimizedImageComponent.alt).toBe('Angular Testing Guide cover');
     });
 
     it('should have semantic HTML structure', () => {

@@ -12,6 +12,11 @@ export const routes: Routes = [
     title: 'Book Details - FindBook'
   },
   {
+    path: 'reading-center',
+    loadComponent: () => import('./features/reading-center/reading-center.component').then(m => m.ReadingCenterComponent),
+    title: 'Reading Center - FindBook'
+  },
+  {
     path: 'performance',
     loadComponent: () => import('./shared/components/performance-dashboard/performance-dashboard').then(m => m.PerformanceDashboardComponent),
     title: 'Performance Dashboard - FindBook'
