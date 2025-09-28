@@ -12,13 +12,8 @@ describe('SearchPage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SearchPage],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideRouter([])
-      ]
-    })
-      .compileComponents();
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SearchPage);
     component = fixture.componentInstance;

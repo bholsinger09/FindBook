@@ -11,7 +11,7 @@ export interface FavoriteBook {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FavoritesService {
   private readonly STORAGE_KEY = 'findbook-favorites';
@@ -34,7 +34,7 @@ export class FavoritesService {
    * Get favorite book IDs as a Set for quick lookup
    */
   getFavoriteIds(): Set<string> {
-    return new Set(this.favoritesSubject.value.map(fav => fav.id));
+    return new Set(this.favoritesSubject.value.map((fav) => fav.id));
   }
 
   /**
@@ -60,7 +60,7 @@ export class FavoritesService {
       title: book.title,
       authors: book.authors || [],
       imageUrl: book.imageLinks?.thumbnail?.replace('http:', 'https:'),
-      addedDate: new Date()
+      addedDate: new Date(),
     };
 
     const updatedFavorites = [favoriteBook, ...currentFavorites];
@@ -72,7 +72,7 @@ export class FavoritesService {
    */
   removeFromFavorites(bookId: string): void {
     const currentFavorites = this.getFavorites();
-    const updatedFavorites = currentFavorites.filter(fav => fav.id !== bookId);
+    const updatedFavorites = currentFavorites.filter((fav) => fav.id !== bookId);
     this.updateFavorites(updatedFavorites);
   }
 
@@ -114,16 +114,17 @@ export class FavoritesService {
     }
 
     const searchTerm = query.toLowerCase();
-    return this.getFavorites().filter(fav =>
-      fav.title.toLowerCase().includes(searchTerm) ||
-      fav.authors.some(author => author.toLowerCase().includes(searchTerm))
+    return this.getFavorites().filter(
+      (fav) =>
+        fav.title.toLowerCase().includes(searchTerm) ||
+        fav.authors.some((author) => author.toLowerCase().includes(searchTerm)),
     );
   }
 
   /**
    * Get recently added favorites (last N items)
    */
-  getRecentFavorites(limit: number = 5): FavoriteBook[] {
+  getRecentFavorites(limit = 5): FavoriteBook[] {
     return this.getFavorites()
       .sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime())
       .slice(0, limit);
@@ -149,11 +150,12 @@ export class FavoritesService {
       }
 
       // Basic validation of each favorite
-      const isValidData = favorites.every(fav =>
-        fav &&
-        typeof fav.id === 'string' &&
-        typeof fav.title === 'string' &&
-        Array.isArray(fav.authors)
+      const isValidData = favorites.every(
+        (fav) =>
+          fav &&
+          typeof fav.id === 'string' &&
+          typeof fav.title === 'string' &&
+          Array.isArray(fav.authors),
       );
 
       if (!isValidData) {
@@ -161,9 +163,9 @@ export class FavoritesService {
       }
 
       // Convert addedDate strings back to Date objects
-      const processedFavorites = favorites.map(fav => ({
+      const processedFavorites = favorites.map((fav) => ({
         ...fav,
-        addedDate: new Date(fav.addedDate)
+        addedDate: new Date(fav.addedDate),
       }));
 
       this.updateFavorites(processedFavorites);
@@ -185,9 +187,9 @@ export class FavoritesService {
       if (stored) {
         const favorites = JSON.parse(stored) as FavoriteBook[];
         // Convert addedDate strings back to Date objects
-        const processedFavorites = favorites.map(fav => ({
+        const processedFavorites = favorites.map((fav) => ({
           ...fav,
-          addedDate: new Date(fav.addedDate)
+          addedDate: new Date(fav.addedDate),
         }));
         this.favoritesSubject.next(processedFavorites);
       }

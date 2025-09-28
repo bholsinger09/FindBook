@@ -20,10 +20,10 @@ import { AccessibilityService } from '../../../../services/accessibility.service
     MatButtonModule,
     MatIconModule,
     MatProgressBarModule,
-    MatFormFieldModule
+    MatFormFieldModule,
   ],
   templateUrl: './search-form.html',
-  styleUrls: ['./search-form.scss']
+  styleUrls: ['./search-form.scss'],
 })
 export class SearchFormComponent {
   @Input() isLoading = false;
@@ -35,7 +35,7 @@ export class SearchFormComponent {
 
   constructor(private formBuilder: FormBuilder) {
     this.searchForm = this.formBuilder.group({
-      searchTerm: ['', [Validators.required, Validators.minLength(3)]]
+      searchTerm: ['', [Validators.required, Validators.minLength(3)]],
     });
   }
 
@@ -53,22 +53,19 @@ export class SearchFormComponent {
       const searchParams: BookSearchParams = {
         query: searchQuery,
         startIndex: 0,
-        maxResults: 12
+        maxResults: 12,
       };
 
       // Announce search action to screen readers
       this.accessibilityService.announce(
         `Searching for books with query: ${searchQuery}`,
-        'assertive'
+        'assertive',
       );
 
       this.searchSubmitted.emit(searchParams);
     } else if (this.searchForm.invalid) {
       // Announce validation errors
-      this.accessibilityService.announce(
-        this.getErrorMessage(),
-        'assertive'
-      );
+      this.accessibilityService.announce(this.getErrorMessage(), 'assertive');
     }
   }
 

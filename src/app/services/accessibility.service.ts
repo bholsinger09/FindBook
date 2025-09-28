@@ -12,7 +12,7 @@ export interface AccessibilityState {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccessibilityService {
   private readonly ACCESS_STORAGE_KEY = 'findbook-accessibility-preferences';
@@ -23,7 +23,7 @@ export class AccessibilityService {
   constructor(
     private focusMonitor: FocusMonitor,
     private liveAnnouncer: LiveAnnouncer,
-    private platform: Platform
+    private platform: Platform,
   ) {
     // Initialize state after services are available
     this.accessibilityState = new BehaviorSubject<AccessibilityState>({
@@ -31,7 +31,7 @@ export class AccessibilityService {
       reducedMotion: this.hasReducedMotion(),
       largeText: false,
       keyboardNavigation: false,
-      screenReader: this.hasScreenReader()
+      screenReader: this.hasScreenReader(),
     });
 
     this.accessibilityState$ = this.accessibilityState.asObservable();
@@ -57,9 +57,7 @@ export class AccessibilityService {
     this.applyHighContrastStyles(newState.highContrast);
 
     this.announce(
-      newState.highContrast
-        ? 'High contrast mode enabled'
-        : 'High contrast mode disabled'
+      newState.highContrast ? 'High contrast mode enabled' : 'High contrast mode disabled',
     );
   }
 
@@ -72,11 +70,7 @@ export class AccessibilityService {
     this.updateAccessibilityState(newState);
     this.applyLargeTextStyles(newState.largeText);
 
-    this.announce(
-      newState.largeText
-        ? 'Large text mode enabled'
-        : 'Large text mode disabled'
-    );
+    this.announce(newState.largeText ? 'Large text mode enabled' : 'Large text mode disabled');
   }
 
   /**
@@ -88,11 +82,7 @@ export class AccessibilityService {
     this.updateAccessibilityState(newState);
     this.applyReducedMotionStyles(newState.reducedMotion);
 
-    this.announce(
-      newState.reducedMotion
-        ? 'Reduced motion enabled'
-        : 'Reduced motion disabled'
-    );
+    this.announce(newState.reducedMotion ? 'Reduced motion enabled' : 'Reduced motion disabled');
   }
 
   /**
@@ -109,7 +99,9 @@ export class AccessibilityService {
     const element = document.getElementById(elementId);
     if (element) {
       element.focus();
-      this.announce(`Focused on ${element.getAttribute('aria-label') || element.textContent || elementId}`);
+      this.announce(
+        `Focused on ${element.getAttribute('aria-label') || element.textContent || elementId}`,
+      );
     }
   }
 
@@ -140,7 +132,11 @@ export class AccessibilityService {
     const warnings: string[] = [];
 
     // Check for aria-label or aria-labelledby
-    if (element.hasAttribute('role') && !element.hasAttribute('aria-label') && !element.hasAttribute('aria-labelledby')) {
+    if (
+      element.hasAttribute('role') &&
+      !element.hasAttribute('aria-label') &&
+      !element.hasAttribute('aria-labelledby')
+    ) {
       warnings.push('Element with role should have aria-label or aria-labelledby');
     }
 

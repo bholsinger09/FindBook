@@ -13,17 +13,17 @@ import { Book } from '../../core/models';
 @Component({
   selector: 'app-book-details-page',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    BookDetailsComponent
-  ],
+  imports: [CommonModule, MatButtonModule, MatIconModule, BookDetailsComponent],
   template: `
     <div class="book-details-page">
       <!-- Back Navigation -->
       <div class="navigation-header">
-        <button mat-icon-button (click)="goBack()" aria-label="Back to search" data-cy="back-button">
+        <button
+          mat-icon-button
+          (click)="goBack()"
+          aria-label="Back to search"
+          data-cy="back-button"
+        >
           <mat-icon>arrow_back</mat-icon>
         </button>
         <span class="page-title">Book Details</span>
@@ -38,7 +38,8 @@ import { Book } from '../../core/models';
         (favoriteToggled)="onFavoriteToggled($event)"
         (previewRequested)="onPreviewRequested($event)"
         (purchaseRequested)="onPurchaseRequested($event)"
-        data-cy="book-details">
+        data-cy="book-details"
+      >
       </app-book-details>
 
       <!-- Error State -->
@@ -53,56 +54,58 @@ import { Book } from '../../core/models';
       </div>
     </div>
   `,
-  styles: [`
-    .book-details-page {
-      min-height: 100vh;
-      background: #fafafa;
-    }
+  styles: [
+    `
+      .book-details-page {
+        min-height: 100vh;
+        background: #fafafa;
+      }
 
-    .navigation-header {
-      display: flex;
-      align-items: center;
-      padding: 16px;
-      background: white;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      gap: 16px;
-    }
+      .navigation-header {
+        display: flex;
+        align-items: center;
+        padding: 16px;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        gap: 16px;
+      }
 
-    .page-title {
-      font-size: 1.25rem;
-      font-weight: 500;
-      color: #333;
-    }
+      .page-title {
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: #333;
+      }
 
-    .error-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 48px 24px;
-      text-align: center;
-      min-height: 400px;
-    }
+      .error-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 24px;
+        text-align: center;
+        min-height: 400px;
+      }
 
-    .error-icon {
-      font-size: 48px;
-      height: 48px;
-      width: 48px;
-      color: #f44336;
-      margin-bottom: 16px;
-    }
+      .error-icon {
+        font-size: 48px;
+        height: 48px;
+        width: 48px;
+        color: #f44336;
+        margin-bottom: 16px;
+      }
 
-    .error-container h2 {
-      margin: 0 0 8px 0;
-      color: #333;
-    }
+      .error-container h2 {
+        margin: 0 0 8px 0;
+        color: #333;
+      }
 
-    .error-container p {
-      margin: 0 0 24px 0;
-      color: #666;
-      max-width: 400px;
-    }
-  `]
+      .error-container p {
+        margin: 0 0 24px 0;
+        color: #666;
+        max-width: 400px;
+      }
+    `,
+  ],
 })
 export class BookDetailsPage implements OnInit {
   private route = inject(ActivatedRoute);
@@ -122,30 +125,32 @@ export class BookDetailsPage implements OnInit {
     this.isLoading = true;
     this.hasError = false;
 
-    this.route.params.pipe(
-      switchMap(params => {
-        const bookId = params['id'];
-        if (!bookId) {
-          throw new Error('No book ID provided');
-        }
-        return this.bookService.getBookById(bookId);
-      }),
-      catchError(error => {
-        console.error('Failed to load book details:', error);
-        this.hasError = true;
-        return of(null);
-      })
-    ).subscribe({
-      next: (book) => {
-        this.book = book;
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error loading book:', error);
-        this.hasError = true;
-        this.isLoading = false;
-      }
-    });
+    this.route.params
+      .pipe(
+        switchMap((params) => {
+          const bookId = params['id'];
+          if (!bookId) {
+            throw new Error('No book ID provided');
+          }
+          return this.bookService.getBookById(bookId);
+        }),
+        catchError((error) => {
+          console.error('Failed to load book details:', error);
+          this.hasError = true;
+          return of(null);
+        }),
+      )
+      .subscribe({
+        next: (book) => {
+          this.book = book;
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error loading book:', error);
+          this.hasError = true;
+          this.isLoading = false;
+        },
+      });
   }
 
   goBack(): void {

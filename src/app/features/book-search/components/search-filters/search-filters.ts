@@ -13,7 +13,11 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatBadgeModule } from '@angular/material/badge';
 import { FormsModule } from '@angular/forms';
 
-import { SearchFiltersService, SearchFilters, FilterOption } from '../../../../core/services/search-filters.service';
+import {
+  SearchFiltersService,
+  SearchFilters,
+  FilterOption,
+} from '../../../../core/services/search-filters.service';
 
 @Component({
   selector: 'app-search-filters',
@@ -31,13 +35,13 @@ import { SearchFiltersService, SearchFilters, FilterOption } from '../../../../c
     MatInputModule,
     MatCheckboxModule,
     MatExpansionModule,
-    MatBadgeModule
+    MatBadgeModule,
   ],
   templateUrl: './search-filters.html',
-  styleUrl: './search-filters.scss'
+  styleUrl: './search-filters.scss',
 })
 export class SearchFiltersComponent implements OnInit {
-  @Input() showFilters: boolean = false;
+  @Input() showFilters = false;
   @Output() filtersToggled = new EventEmitter<void>();
   @Output() filtersChanged = new EventEmitter<SearchFilters>();
   @Output() filtersReset = new EventEmitter<void>();
@@ -65,7 +69,7 @@ export class SearchFiltersComponent implements OnInit {
     this.sortOptions = this.filtersService.getSortOptions();
 
     // Subscribe to filter changes
-    this.filtersService.filters$.subscribe(filters => {
+    this.filtersService.filters$.subscribe((filters) => {
       this.filters = filters;
       this.updateSliderValues();
       this.filtersChanged.emit(filters);

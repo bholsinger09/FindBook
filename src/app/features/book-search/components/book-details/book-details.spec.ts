@@ -22,7 +22,8 @@ describe('BookDetailsComponent', () => {
     id: '1',
     title: 'The Complete Guide to Angular Testing',
     authors: ['John Doe', 'Jane Smith'],
-    description: '<p>A comprehensive guide to testing Angular applications with detailed examples and best practices. This book covers unit testing, integration testing, and end-to-end testing strategies.</p>',
+    description:
+      '<p>A comprehensive guide to testing Angular applications with detailed examples and best practices. This book covers unit testing, integration testing, and end-to-end testing strategies.</p>',
     publishedDate: '2023-06-15',
     publisher: 'Tech Publishing House',
     pageCount: 450,
@@ -33,8 +34,8 @@ describe('BookDetailsComponent', () => {
     webReaderLink: 'https://example.com/preview/angular-testing',
     imageLinks: {
       thumbnail: 'https://example.com/covers/angular-testing-thumb.jpg',
-      smallThumbnail: 'https://example.com/covers/angular-testing-small.jpg'
-    }
+      smallThumbnail: 'https://example.com/covers/angular-testing-small.jpg',
+    },
   };
 
   const mockBookMinimal: Book = {
@@ -50,7 +51,7 @@ describe('BookDetailsComponent', () => {
     ratingsCount: 0,
     language: '',
     webReaderLink: '',
-    imageLinks: undefined
+    imageLinks: undefined,
   };
 
   beforeEach(async () => {
@@ -64,10 +65,9 @@ describe('BookDetailsComponent', () => {
         MatDividerModule,
         MatProgressSpinnerModule,
         MatDialogModule,
-        NoopAnimationsModule
-      ]
-    })
-      .compileComponents();
+        NoopAnimationsModule,
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(BookDetailsComponent);
     component = fixture.componentInstance;
@@ -153,7 +153,9 @@ describe('BookDetailsComponent', () => {
 
     it('should display book title', () => {
       const titleElement = fixture.debugElement.query(By.css('.book-title'));
-      expect(titleElement.nativeElement.textContent.trim()).toBe('The Complete Guide to Angular Testing');
+      expect(titleElement.nativeElement.textContent.trim()).toBe(
+        'The Complete Guide to Angular Testing',
+      );
     });
 
     it('should display formatted authors', () => {
@@ -183,7 +185,9 @@ describe('BookDetailsComponent', () => {
 
     it('should display book cover image', () => {
       const coverImage = fixture.debugElement.query(By.css('.cover-image'));
-      expect(coverImage.nativeElement.src).toContain('https://example.com/covers/angular-testing-thumb.jpg');
+      expect(coverImage.nativeElement.src).toContain(
+        'https://example.com/covers/angular-testing-thumb.jpg',
+      );
       expect(coverImage.nativeElement.alt).toBe('The Complete Guide to Angular Testing cover');
     });
 
@@ -203,7 +207,9 @@ describe('BookDetailsComponent', () => {
 
     it('should display description with HTML content', () => {
       const descriptionElement = fixture.debugElement.query(By.css('.description-text'));
-      expect(descriptionElement.nativeElement.innerHTML).toContain('<p>A comprehensive guide to testing');
+      expect(descriptionElement.nativeElement.innerHTML).toContain(
+        '<p>A comprehensive guide to testing',
+      );
     });
   });
 

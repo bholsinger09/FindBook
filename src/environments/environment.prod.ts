@@ -1,28 +1,28 @@
 export const environment = {
-    production: true,
-    googleBooksApiUrl: 'https://DISABLED-ENVIRONMENT.com/books/v1', // Disabled to prevent API calls
-    authApiUrl: '/api', // Use relative URL to bypass Vercel auth protection
-    enablePerformanceLogging: false,
-    version: '1.0.0',
-    apiTimeout: 10000,
-    features: {
-        enableAuth: true, // Re-enabled for full-stack deployment
-        enableSocialAuth: false, // Keep disabled for now
-        enableOfflineSync: true,
-        enableAnalytics: true
+  production: true,
+  googleBooksApiUrl: 'https://DISABLED-ENVIRONMENT.com/books/v1', // Disabled to prevent API calls
+  authApiUrl: '/api', // Use relative URL to bypass Vercel auth protection
+  enablePerformanceLogging: false,
+  version: '1.0.0',
+  apiTimeout: 10000,
+  features: {
+    enableAuth: true, // Re-enabled for full-stack deployment
+    enableSocialAuth: false, // Keep disabled for now
+    enableOfflineSync: true,
+    enableAnalytics: true,
+  },
+  auth: {
+    tokenStorageKey: 'findbook_token',
+    refreshTokenStorageKey: 'findbook_refresh_token',
+    userStorageKey: 'findbook_user',
+    tokenRefreshBuffer: 300, // seconds before expiry to refresh
+  },
+  social: {
+    google: {
+      clientId: 'your-google-client-id.googleusercontent.com',
     },
-    auth: {
-        tokenStorageKey: 'findbook_token',
-        refreshTokenStorageKey: 'findbook_refresh_token',
-        userStorageKey: 'findbook_user',
-        tokenRefreshBuffer: 300 // seconds before expiry to refresh
+    facebook: {
+      appId: 'your-facebook-app-id',
     },
-    social: {
-        google: {
-            clientId: 'your-google-client-id.googleusercontent.com'
-        },
-        facebook: {
-            appId: 'your-facebook-app-id'
-        }
-    }
+  },
 };

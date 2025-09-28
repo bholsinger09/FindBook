@@ -215,9 +215,9 @@
 button,
 .btn,
 a,
-input[type="button"],
-input[type="submit"],
-input[type="reset"] {
+input[type='button'],
+input[type='submit'],
+input[type='reset'] {
   min-height: 44px;
   min-width: 44px;
 }
@@ -296,7 +296,6 @@ a:not(.btn):not(.card):focus {
 
 /* Responsive Accessibility */
 @media (max-width: 768px) {
-
   .large-text button,
   .large-text .btn {
     min-height: 56px !important;
@@ -313,7 +312,6 @@ a:not(.btn):not(.card):focus {
 
 /* Prefers Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {

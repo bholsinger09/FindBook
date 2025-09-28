@@ -12,7 +12,7 @@ import { LoggerService } from './core/services/logger.service';
   selector: 'app-root',
   imports: [RouterOutlet, AccessibilityToolbarComponent],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App implements OnInit {
   protected readonly title = signal('FindBook');
@@ -21,8 +21,8 @@ export class App implements OnInit {
     private performanceService: PerformanceService,
     private accessibilityService: AccessibilityService,
     private serviceWorkerService: ServiceWorkerService,
-    private logger: LoggerService
-  ) { }
+    private logger: LoggerService,
+  ) {}
 
   ngOnInit() {
     this.logger.component('App', 'Application initialized');

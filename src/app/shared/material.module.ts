@@ -23,30 +23,30 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 const MATERIAL_MODULES = [
-    MatToolbarModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatChipsModule,
-    MatBadgeModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatSliderModule,
-    MatSelectModule,
-    MatCheckboxModule,
-    MatExpansionModule,
-    MatListModule,
-    MatTableModule,
-    MatTooltipModule,
-    MatSlideToggleModule,
+  MatToolbarModule,
+  MatCardModule,
+  MatButtonModule,
+  MatIconModule,
+  MatInputModule,
+  MatFormFieldModule,
+  MatProgressBarModule,
+  MatProgressSpinnerModule,
+  MatChipsModule,
+  MatBadgeModule,
+  MatDialogModule,
+  MatDividerModule,
+  MatSliderModule,
+  MatSelectModule,
+  MatCheckboxModule,
+  MatExpansionModule,
+  MatListModule,
+  MatTableModule,
+  MatTooltipModule,
+  MatSlideToggleModule,
 ];
 
 @NgModule({
-    imports: MATERIAL_MODULES,
-    exports: MATERIAL_MODULES,
+  imports: MATERIAL_MODULES,
+  exports: MATERIAL_MODULES,
 })
-export class MaterialModule { }
+export class MaterialModule {}

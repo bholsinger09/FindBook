@@ -21,8 +21,8 @@ describe('FavoritesService', () => {
     webReaderLink: 'https://example.com/preview',
     imageLinks: {
       thumbnail: 'http://example.com/thumbnail1.jpg',
-      smallThumbnail: 'http://example.com/small1.jpg'
-    }
+      smallThumbnail: 'http://example.com/small1.jpg',
+    },
   };
 
   const mockBook2: Book = {
@@ -40,8 +40,8 @@ describe('FavoritesService', () => {
     webReaderLink: 'https://example.com/preview2',
     imageLinks: {
       thumbnail: 'https://example.com/thumbnail2.jpg',
-      smallThumbnail: 'https://example.com/small2.jpg'
-    }
+      smallThumbnail: 'https://example.com/small2.jpg',
+    },
   };
 
   beforeEach(() => {
@@ -325,12 +325,14 @@ describe('FavoritesService', () => {
 
     it('should load favorites from localStorage on service creation', () => {
       // Manually set localStorage
-      const testFavorites = [{
-        id: '1',
-        title: 'Test Book',
-        authors: ['Test Author'],
-        addedDate: new Date().toISOString()
-      }];
+      const testFavorites = [
+        {
+          id: '1',
+          title: 'Test Book',
+          authors: ['Test Author'],
+          addedDate: new Date().toISOString(),
+        },
+      ];
       localStorage.setItem('findbook-favorites', JSON.stringify(testFavorites));
 
       // Create new service instance
@@ -353,7 +355,7 @@ describe('FavoritesService', () => {
     it('should emit favorites updates via observable', (done) => {
       let updateCount = 0;
 
-      service.favorites$.subscribe(favorites => {
+      service.favorites$.subscribe((favorites) => {
         updateCount++;
         if (updateCount === 2) {
           expect(favorites).toHaveSize(1);

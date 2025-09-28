@@ -9,10 +9,9 @@ export interface AccessibilityIssue {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccessibilityTestingService {
-
   /**
    * Run comprehensive accessibility tests on the current page
    */
@@ -50,7 +49,7 @@ export class AccessibilityTestingService {
     const issues: AccessibilityIssue[] = [];
     const images = document.querySelectorAll('img');
 
-    images.forEach(img => {
+    images.forEach((img) => {
       const altText = img.getAttribute('alt');
 
       if (altText === null) {
@@ -59,7 +58,7 @@ export class AccessibilityTestingService {
           type: 'error',
           rule: 'img-alt',
           message: 'Image missing alt attribute',
-          suggestion: 'Add meaningful alt text to describe the image content'
+          suggestion: 'Add meaningful alt text to describe the image content',
         });
       } else if (altText.trim() === '') {
         // Empty alt is acceptable for decorative images, but check context
@@ -72,7 +71,7 @@ export class AccessibilityTestingService {
             type: 'warning',
             rule: 'img-alt',
             message: 'Image in button has empty alt, but button lacks aria-label',
-            suggestion: 'Add aria-label to button or meaningful alt text to image'
+            suggestion: 'Add aria-label to button or meaningful alt text to image',
           });
         }
 
@@ -82,7 +81,7 @@ export class AccessibilityTestingService {
             type: 'error',
             rule: 'img-alt',
             message: 'Image in link has empty alt and link has no text',
-            suggestion: 'Add alt text to image or text content to link'
+            suggestion: 'Add alt text to image or text content to link',
           });
         }
       }
@@ -108,7 +107,7 @@ export class AccessibilityTestingService {
           type: 'error',
           rule: 'heading-order',
           message: 'First heading should be h1',
-          suggestion: 'Use h1 for the main page heading'
+          suggestion: 'Use h1 for the main page heading',
         });
       }
 
@@ -118,7 +117,7 @@ export class AccessibilityTestingService {
           type: 'error',
           rule: 'heading-order',
           message: `Heading level skipped from h${previousLevel} to h${currentLevel}`,
-          suggestion: 'Use headings in sequential order'
+          suggestion: 'Use headings in sequential order',
         });
       }
 
@@ -135,14 +134,18 @@ export class AccessibilityTestingService {
     const issues: AccessibilityIssue[] = [];
     const inputs = document.querySelectorAll('input, textarea, select');
 
-    inputs.forEach(input => {
+    inputs.forEach((input) => {
       const inputElement = input as HTMLInputElement;
       const id = inputElement.id;
       const ariaLabel = inputElement.getAttribute('aria-label');
       const ariaLabelledby = inputElement.getAttribute('aria-labelledby');
 
       // Skip if input type doesn't need a label
-      if (inputElement.type === 'hidden' || inputElement.type === 'submit' || inputElement.type === 'button') {
+      if (
+        inputElement.type === 'hidden' ||
+        inputElement.type === 'submit' ||
+        inputElement.type === 'button'
+      ) {
         return;
       }
 
@@ -167,7 +170,7 @@ export class AccessibilityTestingService {
           type: 'error',
           rule: 'label',
           message: 'Form input missing accessible label',
-          suggestion: 'Add a label element, aria-label, or aria-labelledby attribute'
+          suggestion: 'Add a label element, aria-label, or aria-labelledby attribute',
         });
       }
     });
@@ -183,7 +186,7 @@ export class AccessibilityTestingService {
 
     // Check for clickable elements that aren't focusable
     const clickables = document.querySelectorAll('[onclick], [ng-click]');
-    clickables.forEach(element => {
+    clickables.forEach((element) => {
       const htmlElement = element as HTMLElement;
       const tabIndex = htmlElement.tabIndex;
       const tagName = htmlElement.tagName.toLowerCase();
@@ -197,14 +200,16 @@ export class AccessibilityTestingService {
           type: 'error',
           rule: 'keyboard',
           message: 'Clickable element is not keyboard accessible',
-          suggestion: 'Add tabindex="0" or use a button element'
+          suggestion: 'Add tabindex="0" or use a button element',
         });
       }
     });
 
     // Check for positive tabindex values (anti-pattern)
-    const positiveTabIndex = document.querySelectorAll('[tabindex]:not([tabindex="0"]):not([tabindex="-1"])');
-    positiveTabIndex.forEach(element => {
+    const positiveTabIndex = document.querySelectorAll(
+      '[tabindex]:not([tabindex="0"]):not([tabindex="-1"])',
+    );
+    positiveTabIndex.forEach((element) => {
       const tabIndex = (element as HTMLElement).tabIndex;
       if (tabIndex > 0) {
         issues.push({
@@ -212,7 +217,7 @@ export class AccessibilityTestingService {
           type: 'warning',
           rule: 'tabindex',
           message: 'Avoid positive tabindex values',
-          suggestion: 'Use tabindex="0" or rely on natural tab order'
+          suggestion: 'Use tabindex="0" or rely on natural tab order',
         });
       }
     });
@@ -227,9 +232,11 @@ export class AccessibilityTestingService {
     const issues: AccessibilityIssue[] = [];
 
     // This is a simplified check - real implementation would need more sophisticated color analysis
-    const textElements = document.querySelectorAll('p, span, div, h1, h2, h3, h4, h5, h6, a, button, label');
+    const textElements = document.querySelectorAll(
+      'p, span, div, h1, h2, h3, h4, h5, h6, a, button, label',
+    );
 
-    textElements.forEach(element => {
+    textElements.forEach((element) => {
       const htmlElement = element as HTMLElement;
       const style = getComputedStyle(htmlElement);
       const color = style.color;
@@ -247,7 +254,7 @@ export class AccessibilityTestingService {
           type: 'error',
           rule: 'color-contrast',
           message: 'Text color matches background color',
-          suggestion: 'Ensure sufficient color contrast between text and background'
+          suggestion: 'Ensure sufficient color contrast between text and background',
         });
       }
     });
@@ -263,7 +270,7 @@ export class AccessibilityTestingService {
 
     // Check for aria-labelledby pointing to non-existent elements
     const labelledByElements = document.querySelectorAll('[aria-labelledby]');
-    labelledByElements.forEach(element => {
+    labelledByElements.forEach((element) => {
       const labelledBy = element.getAttribute('aria-labelledby');
       if (labelledBy) {
         const labelElement = document.getElementById(labelledBy);
@@ -273,7 +280,7 @@ export class AccessibilityTestingService {
             type: 'error',
             rule: 'aria-labelledby',
             message: `aria-labelledby references non-existent element "${labelledBy}"`,
-            suggestion: 'Ensure the referenced element exists with the correct ID'
+            suggestion: 'Ensure the referenced element exists with the correct ID',
           });
         }
       }
@@ -281,7 +288,7 @@ export class AccessibilityTestingService {
 
     // Check for aria-describedby pointing to non-existent elements
     const describedByElements = document.querySelectorAll('[aria-describedby]');
-    describedByElements.forEach(element => {
+    describedByElements.forEach((element) => {
       const describedBy = element.getAttribute('aria-describedby');
       if (describedBy) {
         const descElement = document.getElementById(describedBy);
@@ -291,7 +298,7 @@ export class AccessibilityTestingService {
             type: 'error',
             rule: 'aria-describedby',
             message: `aria-describedby references non-existent element "${describedBy}"`,
-            suggestion: 'Ensure the referenced element exists with the correct ID'
+            suggestion: 'Ensure the referenced element exists with the correct ID',
           });
         }
       }
@@ -299,7 +306,7 @@ export class AccessibilityTestingService {
 
     // Check for role="button" without proper keyboard support
     const roleButtons = document.querySelectorAll('[role="button"]');
-    roleButtons.forEach(element => {
+    roleButtons.forEach((element) => {
       const htmlElement = element as HTMLElement;
       const hasTabIndex = htmlElement.hasAttribute('tabindex');
 
@@ -309,7 +316,7 @@ export class AccessibilityTestingService {
           type: 'error',
           rule: 'button-keyboard',
           message: 'Element with role="button" is not keyboard accessible',
-          suggestion: 'Add tabindex="0" and keyboard event handlers'
+          suggestion: 'Add tabindex="0" and keyboard event handlers',
         });
       }
     });
@@ -325,7 +332,7 @@ export class AccessibilityTestingService {
 
     // Check for elements with tabindex="-1" that might trap focus
     const negativeTabIndex = document.querySelectorAll('[tabindex="-1"]');
-    negativeTabIndex.forEach(element => {
+    negativeTabIndex.forEach((element) => {
       const htmlElement = element as HTMLElement;
 
       // This is just a warning as tabindex="-1" can be legitimate
@@ -335,7 +342,7 @@ export class AccessibilityTestingService {
           type: 'info',
           rule: 'focus-management',
           message: 'Element has tabindex="-1" - ensure this is intentional',
-          suggestion: 'Use tabindex="-1" only for programmatically focused elements'
+          suggestion: 'Use tabindex="-1" only for programmatically focused elements',
         });
       }
     });
@@ -348,9 +355,9 @@ export class AccessibilityTestingService {
    */
   generateAccessibilityReport(): string {
     const issues = this.runAccessibilityAudit();
-    const errors = issues.filter(i => i.type === 'error');
-    const warnings = issues.filter(i => i.type === 'warning');
-    const infos = issues.filter(i => i.type === 'info');
+    const errors = issues.filter((i) => i.type === 'error');
+    const warnings = issues.filter((i) => i.type === 'warning');
+    const infos = issues.filter((i) => i.type === 'info');
 
     let report = '# Accessibility Audit Report\n\n';
     report += `**Total Issues Found:** ${issues.length}\n`;
@@ -412,7 +419,7 @@ export class AccessibilityTestingService {
 
     console.group(`🔍 Accessibility Issues Found: ${issues.length}`);
 
-    issues.forEach(issue => {
+    issues.forEach((issue) => {
       const color = issue.type === 'error' ? 'red' : issue.type === 'warning' ? 'orange' : 'blue';
       const icon = issue.type === 'error' ? '❌' : issue.type === 'warning' ? '⚠️' : 'ℹ️';
 

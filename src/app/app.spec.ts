@@ -5,9 +5,13 @@ import { App } from './app';
 import { ServiceWorkerService } from './core/services/service-worker.service';
 
 describe('App', () => {
-  const mockServiceWorkerService = jasmine.createSpyObj('ServiceWorkerService', ['online', 'checkForUpdate'], {
-    online: true
-  });
+  const mockServiceWorkerService = jasmine.createSpyObj(
+    'ServiceWorkerService',
+    ['online', 'checkForUpdate'],
+    {
+      online: true,
+    },
+  );
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -15,8 +19,8 @@ describe('App', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: ServiceWorkerService, useValue: mockServiceWorkerService }
-      ]
+        { provide: ServiceWorkerService, useValue: mockServiceWorkerService },
+      ],
     }).compileComponents();
   });
 

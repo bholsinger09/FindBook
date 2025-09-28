@@ -21,7 +21,7 @@ export interface FilterOption {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SearchFiltersService {
   private readonly DEFAULT_FILTERS: SearchFilters = {
@@ -34,7 +34,7 @@ export class SearchFiltersService {
     minPages: 0,
     maxPages: 10000,
     hasPreview: false,
-    sortBy: 'relevance'
+    sortBy: 'relevance',
   };
 
   private filtersSubject = new BehaviorSubject<SearchFilters>(this.DEFAULT_FILTERS);
@@ -54,7 +54,7 @@ export class SearchFiltersService {
     'Mystery',
     'Fantasy',
     'Children',
-    'Education'
+    'Education',
   ];
 
   private readonly SUPPORTED_LANGUAGES = [
@@ -67,10 +67,10 @@ export class SearchFiltersService {
     { code: 'ru', name: 'Russian' },
     { code: 'ja', name: 'Japanese' },
     { code: 'zh', name: 'Chinese' },
-    { code: 'ko', name: 'Korean' }
+    { code: 'ko', name: 'Korean' },
   ];
 
-  constructor() { }
+  constructor() {}
 
   /**
    * Get current filters
@@ -177,7 +177,7 @@ export class SearchFiltersService {
   setRatingRange(min: number, max: number): void {
     this.updateFilters({
       minRating: Math.max(0, Math.min(min, 5)),
-      maxRating: Math.max(0, Math.min(max, 5))
+      maxRating: Math.max(0, Math.min(max, 5)),
     });
   }
 
@@ -187,7 +187,7 @@ export class SearchFiltersService {
   setPageRange(min: number, max: number): void {
     this.updateFilters({
       minPages: Math.max(0, min),
-      maxPages: Math.max(min, max)
+      maxPages: Math.max(min, max),
     });
   }
 
@@ -197,7 +197,7 @@ export class SearchFiltersService {
   setDateRange(after: string, before: string): void {
     this.updateFilters({
       publishedAfter: after,
-      publishedBefore: before
+      publishedBefore: before,
     });
   }
 
@@ -220,9 +220,9 @@ export class SearchFiltersService {
    * Get popular category options
    */
   getCategoryOptions(): FilterOption[] {
-    return this.POPULAR_CATEGORIES.map(category => ({
+    return this.POPULAR_CATEGORIES.map((category) => ({
       value: category,
-      label: category
+      label: category,
     }));
   }
 
@@ -230,9 +230,9 @@ export class SearchFiltersService {
    * Get language options
    */
   getLanguageOptions(): FilterOption[] {
-    return this.SUPPORTED_LANGUAGES.map(lang => ({
+    return this.SUPPORTED_LANGUAGES.map((lang) => ({
       value: lang.code,
-      label: lang.name
+      label: lang.name,
     }));
   }
 
@@ -244,7 +244,7 @@ export class SearchFiltersService {
       { value: 'relevance', label: 'Relevance' },
       { value: 'newest', label: 'Newest First' },
       { value: 'rating', label: 'Highest Rated' },
-      { value: 'title', label: 'Title A-Z' }
+      { value: 'title', label: 'Title A-Z' },
     ];
   }
 
@@ -257,13 +257,13 @@ export class SearchFiltersService {
 
     // Add category filters
     if (filters.categories.length > 0) {
-      const categoryQuery = filters.categories.map(cat => `subject:${cat}`).join(' OR ');
+      const categoryQuery = filters.categories.map((cat) => `subject:${cat}`).join(' OR ');
       query += ` (${categoryQuery})`;
     }
 
     // Add language filter
     if (filters.languages.length > 0) {
-      const langQuery = filters.languages.map(lang => `inlanguage:${lang}`).join(' OR ');
+      const langQuery = filters.languages.map((lang) => `inlanguage:${lang}`).join(' OR ');
       query += ` (${langQuery})`;
     }
 
@@ -348,8 +348,8 @@ export class SearchFiltersService {
     }
 
     if (filters.languages.length > 0) {
-      const langNames = filters.languages.map(code =>
-        this.SUPPORTED_LANGUAGES.find(lang => lang.code === code)?.name || code
+      const langNames = filters.languages.map(
+        (code) => this.SUPPORTED_LANGUAGES.find((lang) => lang.code === code)?.name || code,
       );
       summary.push(`Languages: ${langNames.join(', ')}`);
     }
@@ -371,7 +371,7 @@ export class SearchFiltersService {
     }
 
     if (filters.sortBy !== 'relevance') {
-      const sortLabel = this.getSortOptions().find(opt => opt.value === filters.sortBy)?.label;
+      const sortLabel = this.getSortOptions().find((opt) => opt.value === filters.sortBy)?.label;
       summary.push(`Sort: ${sortLabel}`);
     }
 

@@ -1,0 +1,14 @@
+# Prettier ignore files
+node_modules/
+dist/
+coverage/
+.git/
+.github/
+*.min.js
+*.min.css
+package-lock.json
+cypress/downloads/
+cypress/screenshots/
+cypress/videos/
+.vercel/
+php-backend/vendor/

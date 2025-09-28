@@ -12,11 +12,11 @@ interface PerformanceSummary {
   averageResponseTime: number;
   slowestOperation: PerformanceMetric | null;
   fastestOperation: PerformanceMetric | null;
-  operationsByType: { [key: string]: number };
+  operationsByType: Record<string, number>;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PerformanceService {
   private metrics: PerformanceMetric[] = [];
@@ -64,7 +64,7 @@ export class PerformanceService {
     this.metrics.push({
       name,
       value,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     // Keep only last 100 metrics to prevent memory leaks
@@ -85,7 +85,7 @@ export class PerformanceService {
 
   // Get metrics by name
   getMetricsByName(name: string): PerformanceMetric[] {
-    return this.metrics.filter(metric => metric.name === name);
+    return this.metrics.filter((metric) => metric.name === name);
   }
 
   // Get average metric value by name
@@ -139,7 +139,6 @@ export class PerformanceService {
           }
         });
         clsObserver.observe({ entryTypes: ['layout-shift'] });
-
       } catch (error) {
         this.logger.performance('Failed to set up Core Web Vitals monitoring', error);
       }
@@ -147,10 +146,7 @@ export class PerformanceService {
   }
 
   // Monitor API call performance
-  monitorApiCall<T>(
-    apiCall: () => Promise<T>,
-    operationName: string
-  ): Promise<T> {
+  monitorApiCall<T>(apiCall: () => Promise<T>, operationName: string): Promise<T> {
     this.markStart(operationName);
 
     return apiCall().then(
@@ -162,7 +158,7 @@ export class PerformanceService {
         this.markEnd(operationName);
         this.recordMetric(`${operationName}-error`, 1);
         throw error;
-      }
+      },
     );
   }
 
@@ -176,33 +172,39 @@ export class PerformanceService {
         averageResponseTime: 0,
         slowestOperation: null,
         fastestOperation: null,
-        operationsByType: {}
+        operationsByType: {},
       };
     }
 
-    const operationsByType: { [key: string]: number[] } = {};
-    metrics.forEach(metric => {
+    const operationsByType: Record<string, number[]> = {};
+    metrics.forEach((metric) => {
       if (!operationsByType[metric.name]) {
         operationsByType[metric.name] = [];
       }
       operationsByType[metric.name].push(metric.value);
     });
 
-    const allValues = metrics.map(m => m.value);
+    const allValues = metrics.map((m) => m.value);
     const slowest = metrics.reduce((prev, current) =>
-      prev.value > current.value ? prev : current);
+      prev.value > current.value ? prev : current,
+    );
     const fastest = metrics.reduce((prev, current) =>
-      prev.value < current.value ? prev : current);
+      prev.value < current.value ? prev : current,
+    );
 
     return {
       totalOperations: metrics.length,
       averageResponseTime: allValues.reduce((a, b) => a + b, 0) / allValues.length,
       slowestOperation: slowest,
       fastestOperation: fastest,
-      operationsByType: Object.keys(operationsByType).reduce((acc, key) => {
-        acc[key] = operationsByType[key].reduce((a, b) => a + b, 0) / operationsByType[key].length;
-        return acc;
-      }, {} as { [key: string]: number })
+      operationsByType: Object.keys(operationsByType).reduce(
+        (acc, key) => {
+          acc[key] =
+            operationsByType[key].reduce((a, b) => a + b, 0) / operationsByType[key].length;
+          return acc;
+        },
+        {} as Record<string, number>,
+      ),
     };
   }
 

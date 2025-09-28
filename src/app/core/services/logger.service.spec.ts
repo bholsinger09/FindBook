@@ -11,7 +11,7 @@ describe('LoggerService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(LoggerService);
-    
+
     consoleLogSpy = spyOn(console, 'log');
     consoleInfoSpy = spyOn(console, 'info');
     consoleWarnSpy = spyOn(console, 'warn');
@@ -46,7 +46,7 @@ describe('LoggerService', () => {
     service.info('Info');
     service.warn('Warn');
     service.error('Error');
-    
+
     expect(consoleLogSpy).not.toHaveBeenCalled();
     expect(consoleInfoSpy).not.toHaveBeenCalled();
     expect(consoleWarnSpy).not.toHaveBeenCalled();

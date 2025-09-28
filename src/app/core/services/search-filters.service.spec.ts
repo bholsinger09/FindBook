@@ -13,7 +13,7 @@ describe('SearchFiltersService', () => {
     pageCount: 300,
     publishedDate: '2020-01-01',
     language: 'en',
-    webReaderLink: 'https://example.com/preview'
+    webReaderLink: 'https://example.com/preview',
   };
 
   beforeEach(() => {
@@ -97,7 +97,7 @@ describe('SearchFiltersService', () => {
       expect(options.length).toBeGreaterThan(0);
       expect(options[0].value).toBeDefined();
       expect(options[0].label).toBeDefined();
-      expect(options.some(opt => opt.value === 'Fiction')).toBe(true);
+      expect(options.some((opt) => opt.value === 'Fiction')).toBe(true);
     });
   });
 
@@ -121,7 +121,7 @@ describe('SearchFiltersService', () => {
       const options = service.getLanguageOptions();
 
       expect(options.length).toBeGreaterThan(0);
-      expect(options.some(opt => opt.value === 'en' && opt.label === 'English')).toBe(true);
+      expect(options.some((opt) => opt.value === 'en' && opt.label === 'English')).toBe(true);
     });
   });
 
@@ -189,10 +189,10 @@ describe('SearchFiltersService', () => {
       const options = service.getSortOptions();
 
       expect(options.length).toBe(4);
-      expect(options.some(opt => opt.value === 'relevance')).toBe(true);
-      expect(options.some(opt => opt.value === 'newest')).toBe(true);
-      expect(options.some(opt => opt.value === 'rating')).toBe(true);
-      expect(options.some(opt => opt.value === 'title')).toBe(true);
+      expect(options.some((opt) => opt.value === 'relevance')).toBe(true);
+      expect(options.some((opt) => opt.value === 'newest')).toBe(true);
+      expect(options.some((opt) => opt.value === 'rating')).toBe(true);
+      expect(options.some((opt) => opt.value === 'title')).toBe(true);
     });
   });
 
@@ -325,9 +325,9 @@ describe('SearchFiltersService', () => {
       const summary = service.getFilterSummary();
 
       expect(summary.length).toBe(3);
-      expect(summary.some(item => item.includes('Fiction'))).toBe(true);
-      expect(summary.some(item => item.includes('3★'))).toBe(true);
-      expect(summary.some(item => item.includes('English'))).toBe(true);
+      expect(summary.some((item) => item.includes('Fiction'))).toBe(true);
+      expect(summary.some((item) => item.includes('3★'))).toBe(true);
+      expect(summary.some((item) => item.includes('English'))).toBe(true);
     });
   });
 
@@ -335,7 +335,7 @@ describe('SearchFiltersService', () => {
     it('should emit filter updates', (done) => {
       let updateCount = 0;
 
-      service.filters$.subscribe(filters => {
+      service.filters$.subscribe((filters) => {
         updateCount++;
         if (updateCount === 2) {
           expect(filters.categories).toContain('Fiction');

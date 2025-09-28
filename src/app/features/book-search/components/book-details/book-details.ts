@@ -22,29 +22,29 @@ import { LoggerService } from '../../../../core/services/logger.service';
     MatChipsModule,
     MatDividerModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatDialogModule,
   ],
   templateUrl: './book-details.html',
-  styleUrl: './book-details.scss'
+  styleUrl: './book-details.scss',
 })
 export class BookDetailsComponent implements OnInit {
   @Input() book: Book | null = null;
-  @Input() isLoading: boolean = false;
-  @Input() hasError: boolean = false;
+  @Input() isLoading = false;
+  @Input() hasError = false;
   @Output() favoriteToggled = new EventEmitter<Book>();
   @Output() previewRequested = new EventEmitter<Book>();
   @Output() purchaseRequested = new EventEmitter<Book>();
   @Output() closed = new EventEmitter<void>();
 
-  isFavorite: boolean = false;
-  showFavoriteMessage: boolean = false;
-  favoriteMessageText: string = '';
-  favoriteMessageIcon: string = '';
+  isFavorite = false;
+  showFavoriteMessage = false;
+  favoriteMessageText = '';
+  favoriteMessageIcon = '';
 
   constructor(
     private favoritesService: FavoritesService,
-    private logger: LoggerService
-  ) { }
+    private logger: LoggerService,
+  ) {}
 
   ngOnInit(): void {
     this.logger.component('BookDetails', 'component initialized');

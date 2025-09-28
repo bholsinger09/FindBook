@@ -17,7 +17,8 @@
     "build:analyze": "ng build --configuration production --stats-json && npx webpack-bundle-analyzer dist/findbook-app/stats.json",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "test:unit": "ng test --watch=false",
+    "test:unit": "ng test --watch=false --code-coverage",
+    "test:coverage": "ng test --watch=false --code-coverage --browsers=Chrome",
     "e2e": "cypress run",
     "e2e:open": "cypress open",
     "e2e:dev": "concurrently \"npm start\" \"cypress open\"",
@@ -25,7 +26,11 @@
     "deploy:gh": "ng build --configuration production --base-href=/FindBook/ && npx angular-cli-ghpages --dir=dist/findbook-app/browser",
     "build:vercel": "ng build --configuration production",
     "deploy:vercel": "vercel --prod",
-    "deploy:netlify": "npm run build:prod && netlify deploy --prod --dir=dist/findbook-app"
+    "deploy:netlify": "npm run build:prod && netlify deploy --prod --dir=dist/findbook-app",
+    "lint": "eslint \"src/**/*.{ts,html}\" --quiet --fix",
+    "lint:check": "eslint \"src/**/*.{ts,html}\" --quiet",
+    "format": "prettier --write \"src/**/*.{ts,html,scss,css,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,html,scss,css,json}\""
   },
   "prettier": {
     "printWidth": 100,

@@ -24,10 +24,9 @@ describe('SearchFormComponent', () => {
         MatButtonModule,
         MatIconModule,
         MatProgressBarModule,
-        NoopAnimationsModule
-      ]
-    })
-      .compileComponents();
+        NoopAnimationsModule,
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SearchFormComponent);
     component = fixture.componentInstance;
@@ -78,7 +77,9 @@ describe('SearchFormComponent', () => {
       fixture.detectChanges();
 
       const errorElement = fixture.debugElement.query(By.css('.error-message'));
-      expect(errorElement?.nativeElement.textContent.trim()).toBe('Search term must be at least 3 characters');
+      expect(errorElement?.nativeElement.textContent.trim()).toBe(
+        'Search term must be at least 3 characters',
+      );
     });
 
     it('should hide error messages when form is valid', async () => {
@@ -124,7 +125,7 @@ describe('SearchFormComponent', () => {
       const expectedParams: BookSearchParams = {
         query: searchTerm,
         startIndex: 0,
-        maxResults: 12
+        maxResults: 12,
       };
 
       component.onSubmit();
@@ -175,7 +176,9 @@ describe('SearchFormComponent', () => {
       component.searchForm.get('searchTerm')?.setValue('valid search');
       fixture.detectChanges();
 
-      const buttonText = fixture.debugElement.query(By.css('.search-button')).nativeElement.textContent.trim();
+      const buttonText = fixture.debugElement
+        .query(By.css('.search-button'))
+        .nativeElement.textContent.trim();
       expect(buttonText).toContain('Searching...');
     });
 
@@ -184,7 +187,9 @@ describe('SearchFormComponent', () => {
       component.searchForm.get('searchTerm')?.setValue('valid search');
       fixture.detectChanges();
 
-      const buttonText = fixture.debugElement.query(By.css('.search-button')).nativeElement.textContent.trim();
+      const buttonText = fixture.debugElement
+        .query(By.css('.search-button'))
+        .nativeElement.textContent.trim();
       expect(buttonText).toContain('Search Books');
     });
   });
@@ -246,7 +251,9 @@ describe('SearchFormComponent', () => {
       const errorElement = fixture.debugElement.query(By.css('.error-message'));
 
       if (errorElement) {
-        expect(searchInput.nativeElement.getAttribute('aria-describedby')).toContain('search-error');
+        expect(searchInput.nativeElement.getAttribute('aria-describedby')).toContain(
+          'search-error',
+        );
       }
     });
   });

@@ -8,21 +8,38 @@
     <span class="spacer"></span>
 
     <!-- Performance Dashboard Link -->
-    <button mat-icon-button routerLink="/performance" aria-label="View performance dashboard"
-      title="Performance Dashboard">
+    <button
+      mat-icon-button
+      routerLink="/performance"
+      aria-label="View performance dashboard"
+      title="Performance Dashboard"
+    >
       <mat-icon>speed</mat-icon>
     </button>
 
     <!-- Reading Center Link -->
-    <button mat-icon-button routerLink="/reading-center" aria-label="View reading center" title="Reading Center">
+    <button
+      mat-icon-button
+      routerLink="/reading-center"
+      aria-label="View reading center"
+      title="Reading Center"
+    >
       <mat-icon>dashboard</mat-icon>
     </button>
 
     <!-- Favorites Toggle -->
-    <button mat-icon-button class="favorites-toggle" [class.active]="isShowingFavorites" (click)="toggleFavoritesView()"
-      [attr.aria-label]="isShowingFavorites ? 'Show all books' : 'Show favorites'" data-cy="favorites-toggle">
+    <button
+      mat-icon-button
+      class="favorites-toggle"
+      [class.active]="isShowingFavorites"
+      (click)="toggleFavoritesView()"
+      [attr.aria-label]="isShowingFavorites ? 'Show all books' : 'Show favorites'"
+      data-cy="favorites-toggle"
+    >
       <mat-icon>{{ isShowingFavorites ? 'favorite' : 'favorite_border' }}</mat-icon>
-      <span class="favorites-badge" *ngIf="favoritesCount > 0" data-cy="favorites-count">{{ favoritesCount }}</span>
+      <span class="favorites-badge" *ngIf="favoritesCount > 0" data-cy="favorites-count">{{
+        favoritesCount
+      }}</span>
     </button>
 
     <!-- Filters Toggle -->
@@ -56,42 +73,66 @@
         Search through millions of books by title, author, ISBN, or keywords.
       </p>
 
-      <app-search-form [isLoading]="isLoading" (searchSubmitted)="onSearchSubmitted($event)"
-        (searchCleared)="onSearchCleared()">
+      <app-search-form
+        [isLoading]="isLoading"
+        (searchSubmitted)="onSearchSubmitted($event)"
+        (searchCleared)="onSearchCleared()"
+      >
       </app-search-form>
     </div>
   </section>
 
   <!-- Favorites View -->
-  <section class="favorites-section" *ngIf="isShowingFavorites" aria-label="Favorite books" data-cy="favorites-view">
+  <section
+    class="favorites-section"
+    *ngIf="isShowingFavorites"
+    aria-label="Favorite books"
+    data-cy="favorites-view"
+  >
     <div class="favorites-header">
       <h2>Your Favorite Books</h2>
       <mat-form-field appearance="outline" class="favorites-search">
         <mat-label>Search favorites</mat-label>
-        <input matInput [(ngModel)]="favoritesSearchTerm" (ngModelChange)="updateFilteredFavorites()"
-          placeholder="Search your favorites..." data-cy="favorites-search">
+        <input
+          matInput
+          [(ngModel)]="favoritesSearchTerm"
+          (ngModelChange)="updateFilteredFavorites()"
+          placeholder="Search your favorites..."
+          data-cy="favorites-search"
+        />
         <mat-icon matPrefix>search</mat-icon>
       </mat-form-field>
     </div>
 
     <div class="favorites-content">
-      <div *ngIf="filteredFavorites.length === 0 && favorites.length === 0" class="no-favorites"
-        data-cy="no-favorites-message">
+      <div
+        *ngIf="filteredFavorites.length === 0 && favorites.length === 0"
+        class="no-favorites"
+        data-cy="no-favorites-message"
+      >
         <mat-icon class="no-favorites-icon">favorite_border</mat-icon>
         <h3>No favorite books yet</h3>
         <p>Books you favorite will appear here for quick access.</p>
       </div>
 
-      <div *ngIf="filteredFavorites.length === 0 && favorites.length > 0" class="no-search-results"
-        data-cy="no-search-results">
+      <div
+        *ngIf="filteredFavorites.length === 0 && favorites.length > 0"
+        class="no-search-results"
+        data-cy="no-search-results"
+      >
         <mat-icon class="no-results-icon">search_off</mat-icon>
         <h3>No favorites match your search</h3>
         <p>Try different keywords or browse all your favorites.</p>
       </div>
 
-      <app-book-list *ngIf="filteredFavorites.length > 0" [searchResult]="favoritesAsSearchResult" [isLoading]="false"
-        [favoriteBookIds]="favoriteBookIds" (bookSelected)="onBookSelected($event)"
-        (favoriteToggled)="onFavoriteToggled($event)">
+      <app-book-list
+        *ngIf="filteredFavorites.length > 0"
+        [searchResult]="favoritesAsSearchResult"
+        [isLoading]="false"
+        [favoriteBookIds]="favoriteBookIds"
+        (bookSelected)="onBookSelected($event)"
+        (favoriteToggled)="onFavoriteToggled($event)"
+      >
       </app-book-list>
     </div>
   </section>
@@ -106,9 +147,14 @@
         <p>Use the search box above to find books.</p>
       </div>
 
-      <app-book-list [searchResult]="searchResult" [isLoading]="isLoading" [hasError]="hasSearchError"
-        [favoriteBookIds]="favoriteBookIds" (bookSelected)="onBookSelected($event)"
-        (favoriteToggled)="onFavoriteToggled($event)">
+      <app-book-list
+        [searchResult]="searchResult"
+        [isLoading]="isLoading"
+        [hasError]="hasSearchError"
+        [favoriteBookIds]="favoriteBookIds"
+        (bookSelected)="onBookSelected($event)"
+        (favoriteToggled)="onFavoriteToggled($event)"
+      >
       </app-book-list>
     </div>
   </section>
@@ -117,9 +163,15 @@
   <div class="book-details-modal" [class.show]="showBookDetails" *ngIf="showBookDetails">
     <div class="modal-backdrop" (click)="onBookDetailsClose()"></div>
     <div class="modal-content">
-      <app-book-details [book]="selectedBook" [isLoading]="false" [hasError]="hasDetailsError"
-        (closed)="onBookDetailsClose()" (favoriteToggled)="onBookDetailsFavoriteToggled($event)"
-        (previewRequested)="onBookPreviewRequested($event)" (purchaseRequested)="onBookPurchaseRequested($event)">
+      <app-book-details
+        [book]="selectedBook"
+        [isLoading]="false"
+        [hasError]="hasDetailsError"
+        (closed)="onBookDetailsClose()"
+        (favoriteToggled)="onBookDetailsFavoriteToggled($event)"
+        (previewRequested)="onBookPreviewRequested($event)"
+        (purchaseRequested)="onBookPurchaseRequested($event)"
+      >
       </app-book-details>
     </div>
   </div>

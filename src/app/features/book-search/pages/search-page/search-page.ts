@@ -36,10 +36,10 @@ import { LoggerService } from '../../../../core/services/logger.service';
     MatDialogModule,
     SearchFormComponent,
     BookListComponent,
-    BookDetailsComponent
+    BookDetailsComponent,
   ],
   templateUrl: './search-page.html',
-  styleUrl: './search-page.scss'
+  styleUrl: './search-page.scss',
 })
 export class SearchPage implements OnInit {
   searchResult: BookSearchResult | null = null;
@@ -48,7 +48,7 @@ export class SearchPage implements OnInit {
   hasSearchError = false;
   hasDetailsError = false;
   currentSearchTerm = '';
-  favoriteBookIds: Set<string> = new Set();
+  favoriteBookIds = new Set<string>();
   selectedBook: Book | null = null;
   showBookDetails = false;
 
@@ -68,8 +68,8 @@ export class SearchPage implements OnInit {
     private dialog: MatDialog,
     private favoritesService: FavoritesService,
     private router: Router,
-    private logger: LoggerService
-  ) { }
+    private logger: LoggerService,
+  ) {}
 
   ngOnInit(): void {
     // Initialize favorites from service
@@ -94,7 +94,7 @@ export class SearchPage implements OnInit {
       hasMoreResults: false,
       currentPage: 1,
       itemsPerPage: this.filteredFavorites.length,
-      searchTimestamp: new Date()
+      searchTimestamp: new Date(),
     };
   }
 
@@ -116,7 +116,7 @@ export class SearchPage implements OnInit {
     if (this.currentSearchTerm) {
       const searchParams: BookSearchParams = {
         query: this.currentSearchTerm,
-        ...filters
+        ...filters,
       };
       this.onSearchSubmitted(searchParams);
     }
@@ -134,10 +134,11 @@ export class SearchPage implements OnInit {
       this.filteredFavorites = this.favorites;
     } else {
       const searchTerm = this.favoritesSearchTerm.toLowerCase();
-      this.filteredFavorites = this.favorites.filter(book =>
-        book.title.toLowerCase().includes(searchTerm) ||
-        book.authors?.some(author => author.toLowerCase().includes(searchTerm)) ||
-        book.description?.toLowerCase().includes(searchTerm)
+      this.filteredFavorites = this.favorites.filter(
+        (book) =>
+          book.title.toLowerCase().includes(searchTerm) ||
+          book.authors?.some((author) => author.toLowerCase().includes(searchTerm)) ||
+          book.description?.toLowerCase().includes(searchTerm),
       );
     }
   }
@@ -153,7 +154,7 @@ export class SearchPage implements OnInit {
     this.hasSearched = true;
     this.hasSearchError = false;
     this.currentSearchTerm = searchParams.query;
-    
+
     if (!searchParams.query.trim()) {
       this.logger.debug('Empty search query, resetting results');
       this.searchResult = null;
@@ -173,7 +174,7 @@ export class SearchPage implements OnInit {
         this.isLoading = false;
         this.hasSearchError = true;
         this.searchResult = null;
-      }
+      },
     });
   }
 
@@ -243,9 +244,9 @@ export class SearchPage implements OnInit {
           currentPage: 1,
           itemsPerPage: 20,
           hasMoreResults: false,
-          searchTimestamp: new Date()
+          searchTimestamp: new Date(),
         };
-      }
+      },
     });
   }
 
@@ -259,7 +260,7 @@ export class SearchPage implements OnInit {
       currentPage: 1,
       itemsPerPage: 20,
       hasMoreResults: false,
-      searchTimestamp: new Date()
+      searchTimestamp: new Date(),
     };
   }
 

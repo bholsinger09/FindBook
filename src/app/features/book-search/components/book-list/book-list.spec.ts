@@ -33,8 +33,8 @@ describe('BookListComponent', () => {
     webReaderLink: 'https://example.com/preview',
     imageLinks: {
       thumbnail: 'https://example.com/thumbnail.jpg',
-      smallThumbnail: 'https://example.com/small.jpg'
-    }
+      smallThumbnail: 'https://example.com/small.jpg',
+    },
   };
 
   const mockSearchResult: BookSearchResult = {
@@ -45,12 +45,12 @@ describe('BookListComponent', () => {
     books: [mockBook],
     hasMoreResults: false,
     searchTimestamp: new Date(),
-    appliedFilters: {}
+    appliedFilters: {},
   };
 
   beforeEach(async () => {
     const mockAccessibilityService = {
-      announce: jasmine.createSpy('announce')
+      announce: jasmine.createSpy('announce'),
     };
 
     await TestBed.configureTestingModule({
@@ -61,13 +61,10 @@ describe('BookListComponent', () => {
         MatIconModule,
         MatChipsModule,
         MatProgressSpinnerModule,
-        NoopAnimationsModule
+        NoopAnimationsModule,
       ],
-      providers: [
-        { provide: AccessibilityService, useValue: mockAccessibilityService }
-      ]
-    })
-      .compileComponents();
+      providers: [{ provide: AccessibilityService, useValue: mockAccessibilityService }],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(BookListComponent);
     component = fixture.componentInstance;
@@ -147,7 +144,9 @@ describe('BookListComponent', () => {
 
     it('should display book description', () => {
       const descriptionElement = fixture.debugElement.query(By.css('.book-description'));
-      expect(descriptionElement.nativeElement.textContent).toContain('A comprehensive guide to testing');
+      expect(descriptionElement.nativeElement.textContent).toContain(
+        'A comprehensive guide to testing',
+      );
     });
 
     it('should display book thumbnail', () => {

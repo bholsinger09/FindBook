@@ -22,16 +22,16 @@ import { OptimizedImageComponent } from '../../../../shared/components/optimized
     MatIconModule,
     MatChipsModule,
     MatProgressSpinnerModule,
-    OptimizedImageComponent
+    OptimizedImageComponent,
   ],
   templateUrl: './book-list.html',
-  styleUrls: ['./book-list.scss']
+  styleUrls: ['./book-list.scss'],
 })
 export class BookListComponent {
   @Input() searchResult: BookSearchResult | null = null;
   @Input() isLoading = false;
   @Input() hasError = false;
-  @Input() favoriteBookIds: Set<string> = new Set();
+  @Input() favoriteBookIds = new Set<string>();
 
   @Output() bookSelected = new EventEmitter<Book>();
   @Output() favoriteToggled = new EventEmitter<Book>();
@@ -41,7 +41,7 @@ export class BookListComponent {
   onViewDetails(book: Book): void {
     this.accessibilityService.announce(
       `Opening details for ${book.title} by ${book.authors?.join(', ') || 'Unknown Author'}`,
-      'polite'
+      'polite',
     );
     this.bookSelected.emit(book);
   }
@@ -50,10 +50,7 @@ export class BookListComponent {
     const isFavorite = this.isFavorite(book.id);
     const action = isFavorite ? 'removed from' : 'added to';
 
-    this.accessibilityService.announce(
-      `${book.title} ${action} favorites`,
-      'polite'
-    );
+    this.accessibilityService.announce(`${book.title} ${action} favorites`, 'polite');
 
     this.favoriteToggled.emit(book);
   }
@@ -82,7 +79,11 @@ export class BookListComponent {
   }
 
   getBookThumbnail(book: Book): string {
-    return book.imageLinks?.thumbnail || book.imageLinks?.smallThumbnail || '/assets/images/book-placeholder.png';
+    return (
+      book.imageLinks?.thumbnail ||
+      book.imageLinks?.smallThumbnail ||
+      '/assets/images/book-placeholder.png'
+    );
   }
 
   handleImageError(event: any): void {
@@ -102,7 +103,7 @@ export class BookListComponent {
     return book.authors?.join(', ') || 'Unknown Author';
   }
 
-  truncateDescription(description: string | undefined, maxLength: number = 200): string {
+  truncateDescription(description: string | undefined, maxLength = 200): string {
     if (!description) return 'No description available.';
     if (description.length <= maxLength) return description;
     return description.substring(0, maxLength).trim() + '...';
