@@ -11,6 +11,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../core/services/auth.service';
+import { LoggerService } from '../../core/services/logger.service';
 import { RegisterRequest } from '../../core/models/auth.model';
 import { TIMING } from '../../core/constants/app.constants';
 
@@ -417,6 +418,7 @@ export class RegisterComponent implements OnInit {
     private readonly fb = inject(FormBuilder);
     private readonly router = inject(Router);
     private readonly snackBar = inject(MatSnackBar);
+    private readonly logger = inject(LoggerService);
 
     protected readonly hidePassword = signal(true);
     protected readonly hideConfirmPassword = signal(true);
@@ -485,7 +487,7 @@ export class RegisterComponent implements OnInit {
                 }
             },
             error: (error) => {
-                console.error('Registration error:', error);
+                this.logger.auth('Registration failed', error);
                 this.snackBar.open(error.message || 'Registration failed', 'Close', {
                     duration: 5000,
                     panelClass: ['error-snackbar']

@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { LoggerService } from './logger.service';
 
 interface PerformanceMetric {
   name: string;
@@ -19,6 +20,7 @@ interface PerformanceSummary {
 })
 export class PerformanceService {
   private metrics: PerformanceMetric[] = [];
+  private logger = inject(LoggerService);
 
   // Mark the start of a performance measurement
   markStart(name: string): void {
@@ -51,7 +53,7 @@ export class PerformanceService {
           return duration;
         }
       } catch (error) {
-        console.warn('Performance measurement failed:', error);
+        this.logger.performance('Performance measurement failed', error);
       }
     }
     return 0;
@@ -72,7 +74,7 @@ export class PerformanceService {
 
     // Log performance metrics in development
     if (!this.isProduction()) {
-      console.log(`📊 Performance: ${name} = ${value}ms`);
+      this.logger.performance(`Performance: ${name}`, { duration: value, unit: 'ms' });
     }
   }
 
@@ -139,7 +141,7 @@ export class PerformanceService {
         clsObserver.observe({ entryTypes: ['layout-shift'] });
 
       } catch (error) {
-        console.warn('Failed to set up Core Web Vitals monitoring:', error);
+        this.logger.performance('Failed to set up Core Web Vitals monitoring', error);
       }
     }
   }

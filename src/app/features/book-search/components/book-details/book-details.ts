@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { Book } from '../../../../core/models';
 import { FavoritesService } from '../../../../core/services/favorites.service';
+import { LoggerService } from '../../../../core/services/logger.service';
 
 @Component({
   selector: 'app-book-details',
@@ -40,10 +41,13 @@ export class BookDetailsComponent implements OnInit {
   favoriteMessageText: string = '';
   favoriteMessageIcon: string = '';
 
-  constructor(private favoritesService: FavoritesService) { }
+  constructor(
+    private favoritesService: FavoritesService,
+    private logger: LoggerService
+  ) { }
 
   ngOnInit(): void {
-    console.log('BookDetails component initialized');
+    this.logger.component('BookDetails', 'component initialized');
     this.checkIfFavorite();
   }
 

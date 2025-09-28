@@ -18,6 +18,7 @@ import { BookService } from '../../../../core/services/book.service';
 import { FavoritesService } from '../../../../core/services/favorites.service';
 import { Book, BookSearchParams, BookSearchResult } from '../../../../core/models';
 import { Observable } from 'rxjs';
+import { LoggerService } from '../../../../core/services/logger.service';
 
 @Component({
   selector: 'app-search-page',
@@ -43,6 +44,7 @@ import { Observable } from 'rxjs';
 export class SearchPage implements OnInit {
   searchResult: BookSearchResult | null = null;
   isLoading = false;
+  hasSearched = false;
   hasSearchError = false;
   hasDetailsError = false;
   currentSearchTerm = '';
@@ -65,7 +67,8 @@ export class SearchPage implements OnInit {
     private bookService: BookService,
     private dialog: MatDialog,
     private favoritesService: FavoritesService,
-    private router: Router
+    private router: Router,
+    private logger: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -146,22 +149,27 @@ export class SearchPage implements OnInit {
   }
 
   onSearchSubmitted(searchParams: BookSearchParams): void {
-    this.isLoading = true;
+    this.logger.debug('Starting book search', { params: searchParams });
+    this.hasSearched = true;
     this.hasSearchError = false;
     this.currentSearchTerm = searchParams.query;
-    this.isShowingFavorites = false; // Exit favorites view when searching
+    
+    if (!searchParams.query.trim()) {
+      this.logger.debug('Empty search query, resetting results');
+      this.searchResult = null;
+      return;
+    }
 
-    // Combine with active filters
-    const finalParams = { ...searchParams, ...this.activeFilters };
-
-    this.bookService.searchBooks(finalParams).subscribe({
-      next: (result) => {
+    this.isLoading = true;
+    this.bookService.searchBooks(searchParams).subscribe({
+      next: (result: BookSearchResult) => {
+        this.logger.debug('Search completed successfully', { resultCount: result.books.length });
         this.searchResult = result;
         this.isLoading = false;
         this.hasSearchError = false;
       },
-      error: (error) => {
-        console.error('Search failed:', error);
+      error: (error: any) => {
+        this.logger.error('Search failed', error);
         this.isLoading = false;
         this.hasSearchError = true;
         this.searchResult = null;
@@ -201,12 +209,12 @@ export class SearchPage implements OnInit {
   }
 
   onBookPreviewRequested(book: Book): void {
-    console.log('Preview requested for book:', book.title);
+    this.logger.debug('Preview requested for book', { title: book.title });
     // The book details component handles opening the link
   }
 
   onBookPurchaseRequested(book: Book): void {
-    console.log('Purchase requested for book:', book.title);
+    this.logger.debug('Purchase requested for book', { title: book.title });
     // The book details component handles opening the link
   }
 
@@ -215,15 +223,15 @@ export class SearchPage implements OnInit {
     this.hasSearchError = false;
 
     this.bookService.getPopularBooks().subscribe({
-      next: (result) => {
+      next: (result: BookSearchResult) => {
         this.searchResult = result;
         this.isLoading = false;
         this.hasSearchError = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         // Only log non-503 errors to avoid console spam
         if (!error.message.includes('503') && !error.message.includes('temporarily unavailable')) {
-          console.error('Failed to load popular books:', error);
+          this.logger.error('Failed to load popular books', error);
         }
         this.isLoading = false;
         this.hasSearchError = true;

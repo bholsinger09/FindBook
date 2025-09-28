@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { LoggerService } from './logger.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ServiceWorkerService {
     private isOnline = navigator.onLine;
+    private logger = inject(LoggerService);
 
     constructor() {
         this.registerServiceWorker();
@@ -21,7 +23,7 @@ export class ServiceWorkerService {
                     scope: '/'
                 });
 
-                console.log('Service Worker registered successfully:', registration);
+                this.logger.serviceWorker('Service Worker registered successfully', { scope: registration.scope });
 
                 // Listen for updates
                 registration.addEventListener('updatefound', () => {
@@ -34,7 +36,7 @@ export class ServiceWorkerService {
                                     this.notifyUpdate();
                                 } else {
                                     // Content is cached for offline use
-                                    console.log('Content is cached for offline use.');
+                                    this.logger.serviceWorker('Content is cached for offline use');
                                 }
                             }
                         });
@@ -52,13 +54,13 @@ export class ServiceWorkerService {
     private setupOnlineStatusListener(): void {
         window.addEventListener('online', () => {
             this.isOnline = true;
-            console.log('Application is back online');
+            this.logger.serviceWorker('Application is back online');
             this.onOnlineStatusChange(true);
         });
 
         window.addEventListener('offline', () => {
             this.isOnline = false;
-            console.log('Application is offline');
+            this.logger.serviceWorker('Application is offline');
             this.onOnlineStatusChange(false);
         });
     }
@@ -115,10 +117,10 @@ export class ServiceWorkerService {
                 const syncManager = (registration as any).sync;
                 if (syncManager) {
                     await syncManager.register('background-sync');
-                    console.log('Background sync registered');
+                    this.logger.serviceWorker('Background sync registered');
                 }
             } catch (error) {
-                console.log('Background sync registration failed:', error);
+                this.logger.serviceWorker('Background sync registration failed', error);
             }
         }
     }
@@ -139,7 +141,7 @@ export class ServiceWorkerService {
                 const registration = await navigator.serviceWorker.getRegistration();
                 if (registration) {
                     await registration.update();
-                    console.log('Update check completed');
+                    this.logger.serviceWorker('Update check completed');
                 }
             } catch (error) {
                 console.error('Update check failed:', error);
@@ -159,7 +161,7 @@ export class ServiceWorkerService {
                     .map(name => caches.delete(name));
 
                 await Promise.all(deletePromises);
-                console.log('All caches cleared');
+                this.logger.serviceWorker('All caches cleared');
             } catch (error) {
                 console.error('Failed to clear cache:', error);
             }
@@ -205,7 +207,7 @@ export class ServiceWorkerService {
                     }
                 }
 
-                console.log(`Preloaded ${urls.length} resources`);
+                this.logger.serviceWorker(`Preloaded ${urls.length} resources`, { count: urls.length });
             } catch (error) {
                 console.error('Failed to preload resources:', error);
             }
