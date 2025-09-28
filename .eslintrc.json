@@ -1,93 +1,104 @@
 {
-  "root": true,
-  "ignorePatterns": [
-    "projects/**/*",
-    "dist/**/*",
-    "coverage/**/*",
-    "node_modules/**/*"
-  ],
-  "overrides": [
-    {
-      "files": [
-        "*.ts"
-      ],
-      "extends": [
-        "eslint:recommended",
-        "@typescript-eslint/recommended",
-        "@angular-eslint/recommended",
-        "@angular-eslint/template/process-inline-templates",
-        "prettier"
-      ],
-      "rules": {
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "type": "attribute",
-            "prefix": "app",
-            "style": "camelCase"
-          }
-        ],
-        "@angular-eslint/component-selector": [
-          "error",
-          {
-            "type": "element",
-            "prefix": "app",
-            "style": "kebab-case"
-          }
-        ],
-        "@typescript-eslint/no-unused-vars": [
-          "error",
-          {
-            "argsIgnorePattern": "^_"
-          }
-        ],
-        "@typescript-eslint/explicit-function-return-type": "warn",
-        "@typescript-eslint/no-explicit-any": "warn",
-        "@typescript-eslint/prefer-const": "error",
-        "no-console": [
-          "warn",
-          {
-            "allow": ["warn", "error"]
-          }
-        ],
-        "prefer-const": "error",
-        "no-var": "error",
-        "eqeqeq": ["error", "always"],
-        "curly": ["error", "all"],
-        "no-trailing-spaces": "error",
-        "no-multiple-empty-lines": [
-          "error",
-          {
-            "max": 2,
-            "maxEOF": 1
-          }
-        ]
-      }
-    },
-    {
-      "files": [
-        "*.html"
-      ],
-      "extends": [
-        "@angular-eslint/template/recommended",
-        "@angular-eslint/template/accessibility"
-      ],
-      "plugins": ["prettier"],
-      "rules": {
-        "@angular-eslint/template/click-events-have-key-events": "error",
-        "@angular-eslint/template/mouse-events-have-key-events": "error",
-        "@angular-eslint/template/no-autofocus": "error",
-        "@angular-eslint/template/no-positive-tabindex": "error"
-      }
-    },
-    {
-      "files": [
-        "*.spec.ts"
-      ],
-      "rules": {
-        "@typescript-eslint/no-explicit-any": "off",
-        "no-console": "off"
-      }
-    }
-  ]
+    "root": true,
+    "ignorePatterns": [
+        "projects/**/*",
+        "dist/**/*",
+        "coverage/**/*",
+        "node_modules/**/*"
+    ],
+    "overrides": [
+        {
+            "files": [
+                "*.ts"
+            ],
+            "extends": [
+                "eslint:recommended",
+                "@typescript-eslint/recommended",
+                "@angular-eslint/recommended",
+                "@angular-eslint/template/process-inline-templates",
+                "prettier"
+            ],
+            "rules": {
+                "@angular-eslint/directive-selector": [
+                    "error",
+                    {
+                        "type": "attribute",
+                        "prefix": "app",
+                        "style": "camelCase"
+                    }
+                ],
+                "@angular-eslint/component-selector": [
+                    "error",
+                    {
+                        "type": "element",
+                        "prefix": "app",
+                        "style": "kebab-case"
+                    }
+                ],
+                "@typescript-eslint/no-unused-vars": [
+                    "error",
+                    {
+                        "argsIgnorePattern": "^_"
+                    }
+                ],
+                "@typescript-eslint/explicit-function-return-type": "warn",
+                "@typescript-eslint/no-explicit-any": "warn",
+                "@typescript-eslint/prefer-const": "error",
+                "no-console": [
+                    "warn",
+                    {
+                        "allow": [
+                            "warn",
+                            "error"
+                        ]
+                    }
+                ],
+                "prefer-const": "error",
+                "no-var": "error",
+                "eqeqeq": [
+                    "error",
+                    "always"
+                ],
+                "curly": [
+                    "error",
+                    "all"
+                ],
+                "no-trailing-spaces": "error",
+                "no-multiple-empty-lines": [
+                    "error",
+                    {
+                        "max": 2,
+                        "maxEOF": 1
+                    }
+                ]
+            }
+        },
+        {
+            "files": [
+                "*.html"
+            ],
+            "extends": [
+                "@angular-eslint/template/recommended",
+                "@angular-eslint/template/accessibility"
+            ],
+            "plugins": [
+                "prettier"
+            ],
+            "rules": {
+                "@angular-eslint/template/click-events-have-key-events": "error",
+                "@angular-eslint/template/mouse-events-have-key-events": "error",
+                "@angular-eslint/template/no-autofocus": "error",
+                "@angular-eslint/template/no-positive-tabindex": "error"
+            }
+        },
+        {
+            "files": [
+                "*.spec.ts"
+            ],
+            "rules": {
+                "@typescript-eslint/no-explicit-any": "off",
+                "no-console": "off"
+            }
+        }
+    ]
 }

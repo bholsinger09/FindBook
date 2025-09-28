@@ -22,7 +22,7 @@ export class App implements OnInit {
     private accessibilityService: AccessibilityService,
     private serviceWorkerService: ServiceWorkerService,
     private logger: LoggerService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.logger.component('App', 'Application initialized');

@@ -69,7 +69,7 @@ export class SearchPage implements OnInit {
     private favoritesService: FavoritesService,
     private router: Router,
     private logger: LoggerService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Initialize favorites from service

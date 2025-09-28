@@ -44,7 +44,7 @@ export class BookDetailsComponent implements OnInit {
   constructor(
     private favoritesService: FavoritesService,
     private logger: LoggerService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.logger.component('BookDetails', 'component initialized');

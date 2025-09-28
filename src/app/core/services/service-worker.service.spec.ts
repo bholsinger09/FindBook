@@ -1,37 +1,46 @@
 import { TestBed } from '@angular/core/testing';
 import { ServiceWorkerService } from './service-worker.service';
+import { LoggerService } from './logger.service';
 
 describe('ServiceWorkerService', () => {
   let service: ServiceWorkerService;
+  let mockLoggerService: jasmine.SpyObj<LoggerService>;
 
   beforeEach(() => {
-    // Mock navigator.serviceWorker
+    // Create mock logger service
+    mockLoggerService = jasmine.createSpyObj('LoggerService', ['serviceWorker']);
+
+    // Mock navigator.serviceWorker with proper types
+    const mockRegistration = {
+      addEventListener: jasmine.createSpy('addEventListener'),
+      scope: '/',
+      installing: null,
+      waiting: null,
+      active: null,
+      update: jasmine.createSpy('update').and.returnValue(Promise.resolve()),
+      unregister: jasmine.createSpy('unregister'),
+    };
+
     Object.defineProperty(navigator, 'serviceWorker', {
       value: {
-        register: jasmine.createSpy('register').and.returnValue(
-          Promise.resolve({
-            addEventListener: jasmine.createSpy('addEventListener'),
-          }),
-        ),
-        getRegistration: jasmine.createSpy('getRegistration').and.returnValue(
-          Promise.resolve({
-            update: jasmine.createSpy('update'),
-            waiting: null,
-          }),
-        ),
+        register: jasmine.createSpy('register').and.returnValue(Promise.resolve(mockRegistration)),
+        getRegistration: jasmine.createSpy('getRegistration').and.returnValue(Promise.resolve(mockRegistration)),
         ready: Promise.resolve({
           sync: {
             register: jasmine.createSpy('syncRegister'),
           },
         }),
+        controller: null,
       },
       writable: true,
+      configurable: true,
     });
 
     // Mock navigator.onLine
     Object.defineProperty(navigator, 'onLine', {
       value: true,
       writable: true,
+      configurable: true,
     });
 
     // Mock caches API
@@ -48,6 +57,7 @@ describe('ServiceWorkerService', () => {
         ),
       },
       writable: true,
+      configurable: true,
     });
 
     // Mock navigator.storage
@@ -61,9 +71,22 @@ describe('ServiceWorkerService', () => {
         ),
       },
       writable: true,
+      configurable: true,
     });
 
-    TestBed.configureTestingModule({});
+    // Mock window.fetch
+    spyOn(window, 'fetch').and.returnValue(
+      Promise.resolve(new Response('test', { status: 200 }))
+    );
+
+    // Mock confirm
+    spyOn(window, 'confirm').and.returnValue(false);
+
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: LoggerService, useValue: mockLoggerService }
+      ]
+    });
     service = TestBed.inject(ServiceWorkerService);
   });
 
@@ -105,26 +128,26 @@ describe('ServiceWorkerService', () => {
 
     it('should update online status when going offline', () => {
       const offlineEvent = new Event('offline');
-      const consoleSpy = spyOn(console, 'log');
 
       window.dispatchEvent(offlineEvent);
 
       expect(service.online).toBe(false);
-      expect(consoleSpy).toHaveBeenCalledWith('Application is offline');
+      expect(mockLoggerService.serviceWorker).toHaveBeenCalledWith('Application is offline');
     });
 
     it('should update online status when coming back online', () => {
       const onlineEvent = new Event('online');
-      const consoleSpy = spyOn(console, 'log');
 
       // First go offline
-      service['isOnline'] = false;
-
+      Object.defineProperty(navigator, 'onLine', { value: false, writable: true, configurable: true });
+      service = TestBed.inject(ServiceWorkerService); // Reinject to reset state
+      
       // Then come back online
+      Object.defineProperty(navigator, 'onLine', { value: true, writable: true, configurable: true });
       window.dispatchEvent(onlineEvent);
 
       expect(service.online).toBe(true);
-      expect(consoleSpy).toHaveBeenCalledWith('Application is back online');
+      expect(mockLoggerService.serviceWorker).toHaveBeenCalledWith('Application is back online');
     });
   });
 
@@ -196,10 +219,10 @@ describe('ServiceWorkerService', () => {
       };
       ((window as any).caches.open as jasmine.Spy).and.returnValue(Promise.resolve(mockCache));
 
-      // Mock fetch
-      const mockResponse = new Response('test');
-      Object.defineProperty(mockResponse, 'ok', { value: true });
-      spyOn(window, 'fetch').and.returnValue(Promise.resolve(mockResponse));
+      // Reset the fetch spy for this test
+      (window.fetch as jasmine.Spy).and.returnValue(
+        Promise.resolve(new Response('test', { status: 200 }))
+      );
 
       const urls = ['https://example.com/resource1.js', 'https://example.com/resource2.css'];
 
@@ -217,7 +240,9 @@ describe('ServiceWorkerService', () => {
       ((window as any).caches.open as jasmine.Spy).and.returnValue(Promise.resolve(mockCache));
 
       const consoleWarnSpy = spyOn(console, 'warn');
-      spyOn(window, 'fetch').and.returnValue(Promise.reject(new Error('Fetch failed')));
+      
+      // Reset the fetch spy to return a failure
+      (window.fetch as jasmine.Spy).and.returnValue(Promise.reject(new Error('Fetch failed')));
 
       const urls = ['https://example.com/failing-resource.js'];
 
@@ -240,15 +265,20 @@ describe('ServiceWorkerService', () => {
         value: Promise.resolve({
           sync: mockSyncManager,
         }),
+        configurable: true,
       });
 
-      await service['triggerBackgroundSync']();
+      // Trigger background sync by going online
+      const onlineEvent = new Event('online');
+      window.dispatchEvent(onlineEvent);
+
+      // Wait for async operations to complete
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       expect(mockSyncManager.register).toHaveBeenCalledWith('background-sync');
     });
 
     it('should handle sync registration errors', async () => {
-      const consoleSpy = spyOn(console, 'log');
       const mockError = new Error('Sync failed');
 
       Object.defineProperty(navigator.serviceWorker, 'ready', {
@@ -257,28 +287,50 @@ describe('ServiceWorkerService', () => {
             register: jasmine.createSpy('register').and.returnValue(Promise.reject(mockError)),
           },
         }),
+        configurable: true,
       });
 
-      await service['triggerBackgroundSync']();
+      // Trigger background sync by going online
+      const onlineEvent = new Event('online');
+      window.dispatchEvent(onlineEvent);
 
-      expect(consoleSpy).toHaveBeenCalledWith('Background sync registration failed:', mockError);
+      // Wait for async operations to complete
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      expect(mockLoggerService.serviceWorker).toHaveBeenCalledWith('Background sync registration failed', mockError);
     });
   });
 
   describe('Service Worker Support Detection', () => {
     it('should handle environments without service worker support', () => {
-      // Remove service worker support
+      // Remove service worker support temporarily
+      const originalServiceWorker = navigator.serviceWorker;
       Object.defineProperty(navigator, 'serviceWorker', {
         value: undefined,
         writable: true,
+        configurable: true,
       });
 
-      // This should not throw an error
-      expect(() => {
-        TestBed.resetTestingModule();
-        TestBed.configureTestingModule({});
-        service = TestBed.inject(ServiceWorkerService);
-      }).not.toThrow();
+      try {
+        // This should not throw an error
+        expect(() => {
+          TestBed.resetTestingModule();
+          TestBed.configureTestingModule({
+            providers: [
+              { provide: LoggerService, useValue: mockLoggerService }
+            ]
+          });
+          const testService = TestBed.inject(ServiceWorkerService);
+          expect(testService).toBeTruthy();
+        }).not.toThrow();
+      } finally {
+        // Restore service worker support
+        Object.defineProperty(navigator, 'serviceWorker', {
+          value: originalServiceWorker,
+          writable: true,
+          configurable: true,
+        });
+      }
     });
   });
 });
