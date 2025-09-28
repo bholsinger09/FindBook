@@ -17,7 +17,8 @@ module.exports = async (req, res) => {
     try {
         const { username, email, password, confirmPassword, firstName, lastName, acceptTerms } = req.body;
 
-        console.log('Registration data received:', { username, email, firstName, lastName, acceptTerms });
+        // Log registration attempt (without sensitive data)
+        console.log('Registration attempt for user:', { username, email, acceptTerms });
 
         // Validation
         if (!username || !email || !password || !confirmPassword || !acceptTerms) {

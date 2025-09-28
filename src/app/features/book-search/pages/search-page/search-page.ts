@@ -177,14 +177,12 @@ export class SearchPage implements OnInit {
   }
 
   onBookSelected(book: Book): void {
-    console.log('Book selected:', book);
     // Navigate to dedicated book details page
     this.router.navigate(['/book', book.id]);
   }
 
   onFavoriteToggled(book: Book): void {
     this.favoritesService.toggleFavorite(book);
-    console.log('Favorites updated. Total count:', this.favoritesService.getFavoritesCount());
 
     // Update filtered favorites if we're in favorites view
     if (this.isShowingFavorites) {

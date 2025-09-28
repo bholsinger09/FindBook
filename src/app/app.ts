@@ -4,6 +4,8 @@ import { PerformanceService } from './core/services/performance.service';
 import { AccessibilityService } from './services/accessibility.service';
 import { ServiceWorkerService } from './core/services/service-worker.service';
 import { AccessibilityToolbarComponent } from './components/accessibility-toolbar/accessibility-toolbar.component';
+import { environment } from '../environments/environment';
+import { TIMING } from './core/constants/app.constants';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +23,9 @@ export class App implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log('App component initialized');
+    if (!environment.production) {
+      console.log('App component initialized');
+    }
 
     // Initialize performance monitoring
     this.performanceService.monitorCoreWebVitals();
@@ -30,14 +34,18 @@ export class App implements OnInit {
     this.accessibilityService.announce('FindBook application loaded', 'polite');
 
     // Service worker is automatically initialized in constructor
-    console.log('Service Worker initialized for offline functionality');
+    if (!environment.production) {
+      console.log('Service Worker initialized for offline functionality');
+    }
 
     // Log performance summary after 5 seconds (for demo purposes)
-    setTimeout(() => {
-      const summary = this.performanceService.getPerformanceSummary();
-      if (Object.keys(summary).length > 0) {
-        console.log('📊 Performance Summary:', summary);
-      }
-    }, 5000);
+    if (environment.enablePerformanceLogging && !environment.production) {
+      setTimeout(() => {
+        const summary = this.performanceService.getPerformanceSummary();
+        if (Object.keys(summary).length > 0) {
+          console.log('📊 Performance Summary:', summary);
+        }
+      }, TIMING.PERFORMANCE_SUMMARY_DELAY);
+    }
   }
 }

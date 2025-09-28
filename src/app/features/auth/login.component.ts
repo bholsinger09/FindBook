@@ -12,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../core/services/auth.service';
 import { LoginRequest } from '../../core/models/auth.model';
+import { TIMING } from '../../core/constants/app.constants';
 
 @Component({
     selector: 'app-login',
@@ -119,7 +120,7 @@ import { LoginRequest } from '../../core/models/auth.model';
                 type="button" 
                 mat-stroked-button 
                 class="social-button google-button full-width"
-                (click)="signInWithGoogle()"
+                (click)="onGoogleSignIn()"
                 [disabled]="authService.isLoading()"
               >
                 <mat-icon>account_circle</mat-icon>
@@ -334,7 +335,7 @@ export class LoginComponent implements OnInit {
         this.authService.login(credentials).subscribe({
             next: (response) => {
                 if (response.success) {
-                    this.snackBar.open('Login successful!', 'Close', { duration: 3000 });
+                    this.snackBar.open('Login successful!', 'Close', { duration: TIMING.SNACKBAR_DURATION });
 
                     // Redirect to stored URL or dashboard
                     const redirectUrl = sessionStorage.getItem('findbook_redirect_url') || '/dashboard';
@@ -356,9 +357,10 @@ export class LoginComponent implements OnInit {
         this.hidePassword.set(!this.hidePassword());
     }
 
-    protected signInWithGoogle(): void {
-        // TODO: Implement Google OAuth
-        this.snackBar.open('Google Sign-In coming soon!', 'Close', { duration: 3000 });
+    onGoogleSignIn(): void {
+        // Google OAuth implementation would go here
+        // For now, show a message that it's coming soon
+        this.snackBar.open('Google Sign-In coming soon!', 'Close', { duration: TIMING.SNACKBAR_DURATION });
     }
 
     protected isFieldInvalid(fieldName: string): boolean {

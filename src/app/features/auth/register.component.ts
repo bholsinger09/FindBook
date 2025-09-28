@@ -12,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../core/services/auth.service';
 import { RegisterRequest } from '../../core/models/auth.model';
+import { TIMING } from '../../core/constants/app.constants';
 
 // Custom validator for password confirmation
 export function passwordMatchValidator(control: AbstractControl): { [key: string]: any } | null {
@@ -502,8 +503,9 @@ export class RegisterComponent implements OnInit {
     }
 
     protected signUpWithGoogle(): void {
-        // TODO: Implement Google OAuth
-        this.snackBar.open('Google Sign-Up coming soon!', 'Close', { duration: 3000 });
+        // Google OAuth implementation would go here
+        // For now, show a message that it's coming soon
+        this.snackBar.open('Google Sign-Up coming soon!', 'Close', { duration: TIMING.SNACKBAR_DURATION });
     }
 
     protected isFieldInvalid(fieldName: string): boolean {

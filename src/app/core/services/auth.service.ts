@@ -31,7 +31,7 @@ export class AuthService {
     private readonly http = inject(HttpClient);
     private readonly router = inject(Router);
 
-    private readonly API_BASE_URL = environment.authApiUrl || 'http://localhost:8080/api';
+    private readonly API_BASE_URL = environment.authApiUrl || '/api';
     private readonly TOKEN_KEY = 'findbook_token';
     private readonly REFRESH_TOKEN_KEY = 'findbook_refresh_token';
     private readonly USER_KEY = 'findbook_user';
