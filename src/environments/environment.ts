@@ -1,6 +1,6 @@
 export const environment = {
     production: false,
-    googleBooksApiUrl: 'https://www.googleapis.com/books/v1',
+    googleBooksApiUrl: 'https://DISABLED-ENVIRONMENT.com/books/v1', // Disabled to prevent API calls
     authApiUrl: 'http://localhost:8000/api',
     enablePerformanceLogging: true,
     version: '1.0.0',

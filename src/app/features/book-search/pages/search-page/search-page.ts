@@ -69,7 +69,6 @@ export class SearchPage implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('SearchPage component initialized');
     // Initialize favorites from service
     this.loadFavorites();
 

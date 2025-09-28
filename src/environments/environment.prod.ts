@@ -1,7 +1,7 @@
 export const environment = {
     production: true,
-    googleBooksApiUrl: 'https://www.googleapis.com/books/v1',
-    authApiUrl: 'https://findbook-2c2serbs3-ben-holsingers-projects.vercel.app/api',
+    googleBooksApiUrl: 'https://DISABLED-ENVIRONMENT.com/books/v1', // Disabled to prevent API calls
+    authApiUrl: '/api', // Use relative URL to bypass Vercel auth protection
     enablePerformanceLogging: false,
     version: '1.0.0',
     apiTimeout: 10000,

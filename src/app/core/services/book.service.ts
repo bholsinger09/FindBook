@@ -19,7 +19,7 @@ import { PerformanceService } from './performance.service';
 export class BookService {
     private readonly apiBaseUrl = 'https://DISABLED-API.com/books/v1'; // Disabled to prevent console errors
     private readonly defaultMaxResults = 20;
-    
+
     // Feature flag to disable API calls when external service is unreliable
     private readonly enableExternalApiCalls = false; // Set to false to prevent console errors
 
@@ -32,14 +32,14 @@ export class BookService {
      * Search for books using Google Books API
      */
     searchBooks(searchParams: BookSearchParams): Observable<BookSearchResult> {
-        // Return empty result if external API calls are disabled
+        // Feature flag to disable external API calls
         if (!this.enableExternalApiCalls) {
             return of({
                 books: [],
                 totalItems: 0,
                 query: searchParams.query,
                 currentPage: 1,
-                itemsPerPage: searchParams.maxResults || this.defaultMaxResults,
+                itemsPerPage: 20,
                 hasMoreResults: false,
                 searchTimestamp: new Date()
             });
@@ -285,7 +285,7 @@ export class BookService {
         } else {
             // Server-side error
             errorMessage += `Error Code: ${error.status}\nMessage: ${error.message}`;
-            
+
             // Don't spam console with 503 errors (service unavailable) - these are temporary
             if (error.status === 503) {
                 shouldLogToConsole = false;
@@ -296,7 +296,7 @@ export class BookService {
         if (shouldLogToConsole) {
             console.error(errorMessage);
         }
-        
+
         return throwError(() => new Error(errorMessage));
     }
 }

@@ -19,9 +19,9 @@ const STATIC_ASSETS = [
     '/assets/images/book-placeholder.png',
 ];
 
-// API endpoints to cache
+// API endpoints to cache - DISABLED to prevent console errors
 const CACHEABLE_API_PATTERNS = [
-    /^https:\/\/www\.googleapis\.com\/books\/v1\/volumes/,
+    // /^https:\/\/www\.googleapis\.com\/books\/v1\/volumes/, // DISABLED
 ];
 
 // Image URLs to cache
@@ -85,7 +85,7 @@ self.addEventListener('activate', (event) => {
 });
 
 /**
- * Fetch event - Implement caching strategies
+ * Fetch event - Intercept network requests
  */
 self.addEventListener('fetch', (event) => {
     const { request } = event;
