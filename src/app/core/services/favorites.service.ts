@@ -15,12 +15,19 @@ export interface FavoriteBook {
 })
 export class FavoritesService {
   private readonly STORAGE_KEY = 'findbook-favorites';
+  private readonly DB_NAME = 'FindBookDB';
+  private readonly DB_STORE = 'favorites';
   private favoritesSubject = new BehaviorSubject<FavoriteBook[]>([]);
+  private offlineQueue: FavoriteBook[] = [];
+  private useIndexedDB = false;
 
   public favorites$ = this.favoritesSubject.asObservable();
 
   constructor() {
-    this.loadFavoritesFromStorage();
+    // Detect if IndexedDB is available and use it for large lists
+    this.useIndexedDB = typeof window !== 'undefined' && 'indexedDB' in window;
+    this.loadFavorites();
+    window.addEventListener('online', () => this.syncOfflineQueue());
   }
 
   /**
@@ -49,12 +56,9 @@ export class FavoritesService {
    */
   addToFavorites(book: Book): void {
     const currentFavorites = this.getFavorites();
-
-    // Check if already favorited
     if (this.isFavorite(book.id)) {
       return;
     }
-
     const favoriteBook: FavoriteBook = {
       id: book.id,
       title: book.title,
@@ -62,9 +66,14 @@ export class FavoritesService {
       imageUrl: book.imageLinks?.thumbnail?.replace('http:', 'https:'),
       addedDate: new Date(),
     };
-
     const updatedFavorites = [favoriteBook, ...currentFavorites];
     this.updateFavorites(updatedFavorites);
+    // If offline, queue the change for sync
+    if (!navigator.onLine) {
+      this.offlineQueue.push(favoriteBook);
+    } else {
+      this.saveFavoriteToDB(favoriteBook);
+    }
   }
 
   /**
@@ -74,6 +83,12 @@ export class FavoritesService {
     const currentFavorites = this.getFavorites();
     const updatedFavorites = currentFavorites.filter((fav) => fav.id !== bookId);
     this.updateFavorites(updatedFavorites);
+    if (navigator.onLine) {
+      this.removeFavoriteFromDB(bookId);
+    } else {
+      // Queue removal for offline sync
+      this.offlineQueue.push({ id: bookId, title: '', authors: [], addedDate: new Date() });
+    }
   }
 
   /**
@@ -96,6 +111,9 @@ export class FavoritesService {
    */
   clearAllFavorites(): void {
     this.updateFavorites([]);
+    if (navigator.onLine) {
+      this.clearFavoritesFromDB();
+    }
   }
 
   /**
@@ -178,7 +196,11 @@ export class FavoritesService {
 
   private updateFavorites(favorites: FavoriteBook[]): void {
     this.favoritesSubject.next(favorites);
-    this.saveFavoritesToStorage(favorites);
+    if (this.useIndexedDB) {
+      this.saveFavoritesToDB(favorites);
+    } else {
+      this.saveFavoritesToStorage(favorites);
+    }
   }
 
   private loadFavoritesFromStorage(): void {
@@ -186,7 +208,6 @@ export class FavoritesService {
       const stored = localStorage.getItem(this.STORAGE_KEY);
       if (stored) {
         const favorites = JSON.parse(stored) as FavoriteBook[];
-        // Convert addedDate strings back to Date objects
         const processedFavorites = favorites.map((fav) => ({
           ...fav,
           addedDate: new Date(fav.addedDate),
@@ -195,9 +216,113 @@ export class FavoritesService {
       }
     } catch (error) {
       console.error('Failed to load favorites from storage:', error);
-      // Continue with empty favorites if storage fails
       this.favoritesSubject.next([]);
     }
+
+  }
+
+  private loadFavorites(): void {
+    if (this.useIndexedDB) {
+      this.loadFavoritesFromDB();
+    } else {
+      this.loadFavoritesFromStorage();
+    }
+  }
+
+  // IndexedDB support
+  private openDB(): Promise<IDBDatabase> {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.DB_NAME, 1);
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        if (!db.objectStoreNames.contains(this.DB_STORE)) {
+          db.createObjectStore(this.DB_STORE, { keyPath: 'id' });
+        }
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  private async loadFavoritesFromDB(): Promise<void> {
+    try {
+      const db = await this.openDB();
+      const tx = db.transaction(this.DB_STORE, 'readonly');
+      const store = tx.objectStore(this.DB_STORE);
+      const request = store.getAll();
+      request.onsuccess = () => {
+        const favorites = request.result as FavoriteBook[];
+        this.favoritesSubject.next(favorites);
+      };
+      request.onerror = () => {
+        console.error('Failed to load favorites from IndexedDB:', request.error);
+        this.favoritesSubject.next([]);
+      };
+    } catch (error) {
+      console.error('IndexedDB error:', error);
+      this.favoritesSubject.next([]);
+    }
+  }
+
+  private async saveFavoritesToDB(favorites: FavoriteBook[]): Promise<void> {
+    try {
+      const db = await this.openDB();
+      const tx = db.transaction(this.DB_STORE, 'readwrite');
+      const store = tx.objectStore(this.DB_STORE);
+      // Clear store first
+      store.clear();
+      for (const fav of favorites) {
+        store.put(fav);
+      }
+    } catch (error) {
+      console.error('Failed to save favorites to IndexedDB:', error);
+    }
+  }
+
+  private async saveFavoriteToDB(fav: FavoriteBook): Promise<void> {
+    try {
+      const db = await this.openDB();
+      const tx = db.transaction(this.DB_STORE, 'readwrite');
+      const store = tx.objectStore(this.DB_STORE);
+      store.put(fav);
+    } catch (error) {
+      console.error('Failed to save favorite to IndexedDB:', error);
+    }
+  }
+
+  private async removeFavoriteFromDB(bookId: string): Promise<void> {
+    try {
+      const db = await this.openDB();
+      const tx = db.transaction(this.DB_STORE, 'readwrite');
+      const store = tx.objectStore(this.DB_STORE);
+      store.delete(bookId);
+    } catch (error) {
+      console.error('Failed to remove favorite from IndexedDB:', error);
+    }
+  }
+
+  private async clearFavoritesFromDB(): Promise<void> {
+    try {
+      const db = await this.openDB();
+      const tx = db.transaction(this.DB_STORE, 'readwrite');
+      const store = tx.objectStore(this.DB_STORE);
+      store.clear();
+    } catch (error) {
+      console.error('Failed to clear favorites from IndexedDB:', error);
+    }
+  }
+
+  private async syncOfflineQueue(): Promise<void> {
+    if (!this.offlineQueue.length) return;
+    for (const fav of this.offlineQueue) {
+      if (fav.title) {
+        await this.saveFavoriteToDB(fav);
+      } else {
+        await this.removeFavoriteFromDB(fav.id);
+      }
+    }
+    this.offlineQueue = [];
+    this.loadFavorites();
   }
 
   private saveFavoritesToStorage(favorites: FavoriteBook[]): void {

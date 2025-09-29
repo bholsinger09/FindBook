@@ -12,10 +12,10 @@ const IMAGE_CACHE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 // Performance monitoring
 let performanceMetrics = {
-  cacheHits: 0,
-  cacheMisses: 0,
-  networkRequests: 0,
-  backgroundSyncs: 0
+    cacheHits: 0,
+    cacheMisses: 0,
+    networkRequests: 0,
+    backgroundSyncs: 0
 };
 
 // Background sync queue
@@ -47,18 +47,18 @@ const CACHEABLE_IMAGE_PATTERNS = [
  * Advanced caching strategy with performance tracking
  */
 function trackCachePerformance(type) {
-  performanceMetrics[type]++;
-  // Send metrics to main thread periodically
-  if (performanceMetrics.cacheHits % 50 === 0) {
-    self.clients.matchAll().then(clients => {
-      clients.forEach(client => {
-        client.postMessage({
-          type: 'CACHE_METRICS',
-          data: performanceMetrics
+    performanceMetrics[type]++;
+    // Send metrics to main thread periodically
+    if (performanceMetrics.cacheHits % 50 === 0) {
+        self.clients.matchAll().then(clients => {
+            clients.forEach(client => {
+                client.postMessage({
+                    type: 'CACHE_METRICS',
+                    data: performanceMetrics
+                });
+            });
         });
-      });
-    });
-  }
+    }
 }
 
 /**
@@ -75,10 +75,10 @@ self.addEventListener('install', (event) => {
                     console.log('[ServiceWorker] Caching static assets');
                     return cache.addAll(STATIC_ASSETS);
                 }),
-            
+
             // Initialize background sync
             self.registration.sync?.register('background-sync-books'),
-            
+
             // Set up push notification subscription
             self.registration.pushManager?.getSubscription()
                 .then(subscription => {
@@ -87,12 +87,12 @@ self.addEventListener('install', (event) => {
                     }
                 })
         ])
-        .then(() => {
-            console.log('[ServiceWorker] Enhanced PWA setup completed');
-            return self.skipWaiting();
-        })
-        .catch((error) => {
-            console.error('[ServiceWorker] Failed to set up enhanced PWA:', error);
+            .then(() => {
+                console.log('[ServiceWorker] Enhanced PWA setup completed');
+                return self.skipWaiting();
+            })
+            .catch((error) => {
+                console.error('[ServiceWorker] Failed to set up enhanced PWA:', error);
             })
     );
 });
@@ -415,7 +415,7 @@ function getOfflineFallbackHTML() {
  */
 self.addEventListener('sync', (event) => {
     console.log('[ServiceWorker] Background sync triggered:', event.tag);
-    
+
     if (event.tag === 'background-sync-books') {
         event.waitUntil(syncBookActions());
     } else if (event.tag === 'background-sync-favorites') {
@@ -431,10 +431,10 @@ self.addEventListener('sync', (event) => {
 async function syncBookActions() {
     try {
         console.log('[ServiceWorker] Syncing book actions');
-        
+
         // Get queued actions from IndexedDB or local storage
         const queuedActions = await getQueuedActions('books');
-        
+
         for (const action of queuedActions) {
             try {
                 await processBookAction(action);
@@ -444,7 +444,7 @@ async function syncBookActions() {
                 console.error('[ServiceWorker] Failed to sync book action:', error);
             }
         }
-        
+
         // Notify clients of successful sync
         notifyClients('BOOKS_SYNCED', { count: queuedActions.length });
     } catch (error) {
@@ -458,9 +458,9 @@ async function syncBookActions() {
 async function syncFavoriteActions() {
     try {
         console.log('[ServiceWorker] Syncing favorite actions');
-        
+
         const queuedActions = await getQueuedActions('favorites');
-        
+
         for (const action of queuedActions) {
             try {
                 await processFavoriteAction(action);
@@ -469,7 +469,7 @@ async function syncFavoriteActions() {
                 console.error('[ServiceWorker] Failed to sync favorite action:', error);
             }
         }
-        
+
         notifyClients('FAVORITES_SYNCED', { count: queuedActions.length });
     } catch (error) {
         console.error('[ServiceWorker] Favorites sync failed:', error);
@@ -482,9 +482,9 @@ async function syncFavoriteActions() {
 async function syncUserPreferences() {
     try {
         console.log('[ServiceWorker] Syncing user preferences');
-        
+
         const queuedPreferences = await getQueuedActions('preferences');
-        
+
         for (const pref of queuedPreferences) {
             try {
                 await processPreferenceUpdate(pref);
@@ -493,7 +493,7 @@ async function syncUserPreferences() {
                 console.error('[ServiceWorker] Failed to sync preference:', error);
             }
         }
-        
+
         notifyClients('PREFERENCES_SYNCED', { count: queuedPreferences.length });
     } catch (error) {
         console.error('[ServiceWorker] Preferences sync failed:', error);
@@ -543,9 +543,9 @@ self.addEventListener('push', (event) => {
  */
 self.addEventListener('notificationclick', (event) => {
     console.log('[ServiceWorker] Notification clicked:', event.action);
-    
+
     event.notification.close();
-    
+
     if (event.action === 'view') {
         // Open the app to the relevant page
         event.waitUntil(
@@ -567,7 +567,7 @@ self.addEventListener('notificationclick', (event) => {
  */
 self.addEventListener('notificationclose', (event) => {
     console.log('[ServiceWorker] Notification closed:', event.notification.tag);
-    
+
     // Track notification engagement
     trackNotificationEvent('close', event.notification.tag);
 });

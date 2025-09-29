@@ -22,6 +22,7 @@ import {
     SocialAuthRequest,
     SocialAuthResponse,
 } from '../models/auth.model';
+import { PerformanceService } from './performance.service';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -30,6 +31,7 @@ import { environment } from '../../../environments/environment';
 export class AuthService {
     private readonly http = inject(HttpClient);
     private readonly router = inject(Router);
+    private readonly performanceService = inject(PerformanceService);
 
     private readonly API_BASE_URL = environment.authApiUrl || '/api';
     private readonly TOKEN_KEY = 'findbook_token';
@@ -89,14 +91,18 @@ export class AuthService {
      */
     login(credentials: LoginRequest): Observable<LoginResponse> {
         this.setLoading(true);
-
+        this.performanceService.markStart('auth-login');
         return this.http.post<LoginResponse>(`${this.API_BASE_URL}/auth/login`, credentials).pipe(
             tap((response) => {
+                this.performanceService.markEnd('auth-login');
                 if (response.success && response.data) {
                     this.handleAuthSuccess(response.data);
                 }
             }),
-            catchError((error) => this.handleAuthError(error)),
+            catchError((error) => {
+                this.performanceService.markEnd('auth-login');
+                return this.handleAuthError(error);
+            }),
             finalize(() => this.setLoading(false)),
         );
     }
@@ -106,14 +112,18 @@ export class AuthService {
      */
     register(userData: RegisterRequest): Observable<RegisterResponse> {
         this.setLoading(true);
-
+        this.performanceService.markStart('auth-register');
         return this.http.post<RegisterResponse>(`${this.API_BASE_URL}/auth/register`, userData).pipe(
             tap((response) => {
+                this.performanceService.markEnd('auth-register');
                 if (response.success && response.data) {
                     this.handleAuthSuccess(response.data);
                 }
             }),
-            catchError((error) => this.handleAuthError(error)),
+            catchError((error) => {
+                this.performanceService.markEnd('auth-register');
+                return this.handleAuthError(error);
+            }),
             finalize(() => this.setLoading(false)),
         );
     }
@@ -161,6 +171,9 @@ export class AuthService {
     /**
      * Refresh access token using refresh token
      */
+    /**
+     * Enhanced refresh token logic: rotation, reuse detection, improved error handling, optional HttpOnly cookie support
+     */
     refreshToken(): Observable<RefreshTokenResponse> {
         const refreshToken = this.authState().refreshToken;
 
@@ -168,24 +181,42 @@ export class AuthService {
             return throwError(() => new Error('No refresh token available'));
         }
 
+        // Optionally, support HttpOnly cookie-based refresh
+        const useCookie = false; // Set to true if backend supports HttpOnly cookie
         const request: RefreshTokenRequest = { refreshToken };
 
-        return this.http.post<RefreshTokenResponse>(`${this.API_BASE_URL}/auth/refresh`, request).pipe(
+        this.performanceService.markStart('auth-refresh-token');
+        return this.http.post<RefreshTokenResponse>(`${this.API_BASE_URL}/auth/refresh`, useCookie ? {} : request, {
+            withCredentials: useCookie,
+        }).pipe(
             tap((response) => {
+                this.performanceService.markEnd('auth-refresh-token');
                 if (response.success && response.data) {
+                    // Refresh token rotation: store new token, invalidate old
                     const currentState = this.authState();
                     this.updateAuthState({
                         ...currentState,
                         token: response.data.token,
                         refreshToken: response.data.refreshToken,
                     });
-
                     this.storeToken(response.data.token);
                     this.storeRefreshToken(response.data.refreshToken);
                     this.scheduleTokenRefresh(response.data.token);
+                } else if (response.error && typeof response.error === 'string' && response.error.includes('REFRESH_TOKEN_REUSED')) {
+                    // Token reuse detected: possible theft, force logout
+                    this.clearAuthData();
+                    this.router.navigate(['/auth/login']);
                 }
             }),
             catchError((error) => {
+                this.performanceService.markEnd('auth-refresh-token');
+                // Detect refresh token reuse or invalidation
+                if (error?.error?.type === 'REFRESH_TOKEN_REUSED' || error?.status === 401) {
+                    // Security: force logout and clear all tokens
+                    this.clearAuthData();
+                    this.router.navigate(['/auth/login']);
+                    return throwError(() => new Error('Session expired or token reuse detected. Please log in again.'));
+                }
                 this.clearAuthData();
                 this.router.navigate(['/auth/login']);
                 return throwError(() => error);
