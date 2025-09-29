@@ -25,7 +25,7 @@ export class App implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.logger.component('App', 'Application initialized');
+    // this.logger.component('App', 'Application initialized'); // Commented out to reduce console noise
 
     // Initialize performance monitoring
     this.performanceService.monitorCoreWebVitals();
@@ -34,7 +34,7 @@ export class App implements OnInit {
     this.accessibilityService.announce('FindBook application loaded', 'polite');
 
     // Service worker is automatically initialized in constructor
-    this.logger.serviceWorker('Service Worker initialized for offline functionality');
+    // this.logger.serviceWorker('Service Worker initialized for offline functionality'); // Commented out to reduce console noise
 
     // Log performance summary after delay
     if (environment.enablePerformanceLogging) {
