@@ -1,6 +1,6 @@
 # 📚 FindBook - Discover Your Next Great Read
 
-![FindBook Banner](https://img.shields.io/badge/Angular-19-red?style=for-the-badge&logo=angular) ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?style=for-the-badge&logo=typescript) ![Material Design](https://img.shields.io/badge/Material_Design-20-blue?style=for-the-badge&logo=material-design) ![Bundle Size](https://img.shields.io/badge/Bundle_Size-161KB_gzipped-green?style=for-the-badge) ![Tests](https://img.shields.io/badge/Unit_Tests-88/88_Passing-green?style=for-the-badge)
+![FindBook Banner](https://img.shields.io/badge/Angular-19-red?style=for-the-badge&logo=angular) ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?style=for-the-badge&logo=typescript) ![Material Design](https://img.shields.io/badge/Material_Design-20-blue?style=for-the-badge&logo=material-design) ![Bundle Size](https://img.shields.io/badge/Bundle_Size-161KB_gzipped-green?style=for-the-badge) ![Tests](https://img.shields.io/badge/Unit_Tests-268/268_Passing-green?style=for-the-badge)
 
 > A modern, performance-optimized Angular application for discovering and exploring books using the Google Books API. Built with best practices, comprehensive testing, accessibility features, and professional-grade optimizations.
 
@@ -14,12 +14,17 @@
 
 ## ✨ Recent Updates
 
+### **Test Coverage Improvements** *(September 2025)*
+- ✅ **268 unit tests passing** - Comprehensive test suite with 52.3% statement coverage
+- ✅ **Major component testing** - ReadingCenter (16 tests) and AccessibilityDashboard (29 tests) 
+- ✅ **Testing best practices** - Proper service mocking, RouterTestingModule setup, and Safari auto-close
+- ✅ **Test reliability** - Resolved localStorage conflicts and async testing patterns
+- ✅ **Accessibility enhancements** - WCAG 2.1 AA compliance with comprehensive testing
+
 ### **Code Quality Improvements** *(September 2025)*
-- ✅ **All 88 unit tests passing** - Complete test suite coverage with Jasmine/Karma
-- ✅ **Manual code refinement** - Enhanced formatting, consistency, and maintainability across 40+ files  
-- ✅ **Accessibility enhancements** - WCAG 2.1 AA compliance with CDK A11y integration
 - ✅ **Production build optimized** - 647KB initial bundle (161KB gzipped) with effective lazy loading
 - ✅ **Platform compatibility fixes** - Resolved service injection issues for cross-browser support
+- ✅ **Manual code refinement** - Enhanced formatting, consistency, and maintainability across 40+ files
 
 ---
 
@@ -34,7 +39,7 @@ FindBook is a sophisticated single-page application that demonstrates modern Ang
 - **📱 Responsive Design**: Mobile-first approach with Material Design components
 - **⚡ Performance Optimized**: Lazy loading, virtual scrolling, and optimized bundle sizes
 - **📊 Performance Monitoring**: Real-time Core Web Vitals tracking and dashboard
-- **🧪 Comprehensive Testing**: 88 passing unit tests with Jasmine/Karma and E2E tests with Cypress
+- **🧪 Comprehensive Testing**: 268 passing unit tests with 52.3% coverage and E2E tests with Cypress
 - **♿ Accessibility Ready**: WCAG 2.1 AA compliance, ARIA labels, keyboard navigation, and screen reader support
 
 ---
@@ -58,7 +63,10 @@ FindBook is a sophisticated single-page application that demonstrates modern Ang
 - **Core Web Vitals** - Real-time performance monitoring
 
 ### **Testing & Quality Assurance**
-- **Jasmine/Karma** - 88 passing unit tests with comprehensive coverage
+- **Jasmine/Karma** - 268 passing unit tests with comprehensive coverage
+- **Test Coverage** - 52.3% statements, 38.56% branches, 45.72% functions, 53.44% lines  
+- **Component Testing** - ReadingCenter, AccessibilityDashboard, Auth components, and more
+- **Service Mocking** - Comprehensive service layer testing with proper isolation
 - **Cypress** - End-to-end testing with comprehensive scenarios
 - **Test-Driven Development** - TDD methodology throughout
 
@@ -127,10 +135,12 @@ npm run build:analyze       # Build with bundle analysis
 
 # Testing
 npm test                    # Unit tests (watch mode)
-npm run test:unit           # Unit tests (single run)
+npm test -- --no-watch     # Unit tests (single run, Safari auto-close)
 npm run e2e                 # E2E tests (headless)
 npm run e2e:open            # E2E tests (interactive)
-npm run test:all            # Run all tests
+
+# Test specific components
+ng test --include="**/component-name.spec.ts" --no-watch --browsers=Safari
 
 # Code Quality
 npm run lint                # Lint TypeScript and templates
@@ -142,17 +152,28 @@ npm run format              # Format code with Prettier
 ## 🧪 Testing Strategy
 
 ### Unit Testing with Jasmine/Karma
-- **Coverage Target**: 85%+ code coverage
-- **Test Categories**: Components, Services, Pipes, Guards
-- **Mocking Strategy**: Comprehensive service mocks and fixtures
-- **CI Integration**: Automated testing on every commit
+- **Current Coverage**: 52.3% statements, 38.56% branches, 45.72% functions, 53.44% lines
+- **268 Passing Tests**: Comprehensive test suite across components, services, and utilities
+- **Test Categories**: Components, Services, Pipes, Guards, and Integration tests
+- **Testing Highlights**:
+  - **ReadingCenter Component**: 16 comprehensive tests covering navigation, data management, and service integration
+  - **AccessibilityDashboard Component**: 29 tests covering accessibility features, testing automation, and report generation
+  - **Auth Components**: Registration and login form validation testing
+  - **Service Layer**: Comprehensive mocking and isolated testing patterns
+- **Best Practices**: RouterTestingModule setup, proper async testing, and Safari auto-close with `--no-watch` flag
 
 ```bash
-# Run unit tests
-npm run test:unit
+# Run unit tests (watch mode)
+npm test
+
+# Run unit tests (single run with Safari auto-close)
+npm test -- --no-watch --browsers=Safari
+
+# Run specific component tests
+ng test --include="**/component-name.component.spec.ts" --no-watch
 
 # Generate coverage report
-npm test -- --code-coverage
+npm test -- --code-coverage --no-watch
 ```
 
 ### E2E Testing with Cypress
@@ -168,24 +189,47 @@ npm run e2e
 # Run E2E tests (interactive)
 npm run e2e:open
 
-# Run both test suites
-npm run test:all
+# Run unit tests only
+npm test -- --no-watch
 ```
 
 ### Test Files Structure
 ```
+src/app/
+├── components/
+│   ├── accessibility-dashboard/
+│   │   ├── accessibility-dashboard.component.ts
+│   │   └── accessibility-dashboard.component.spec.ts  # 29 tests
+│   └── accessibility-toolbar/
+│       └── accessibility-toolbar.component.spec.ts
+├── features/
+│   ├── auth/
+│   │   ├── login.component.spec.ts
+│   │   └── register.component.spec.ts                 # Form validation tests
+│   ├── book-search/
+│   │   └── **/*.spec.ts                              # Search components
+│   └── reading-center/
+│       └── reading-center.component.spec.ts          # 16 comprehensive tests
+├── shared/
+│   └── **/*.spec.ts                                  # Shared component tests
+└── core/
+    └── services/                                     # Service layer tests
+
 cypress/
 ├── e2e/                    # E2E test specifications
 ├── fixtures/               # Test data and mocks
 ├── support/                # Custom commands and utilities
 └── cypress.config.ts       # Cypress configuration
 
-src/
-├── app/
-│   ├── **/*.spec.ts       # Unit test files
-│   └── testing/           # Test utilities and mocks
-└── karma.conf.js          # Karma configuration
+karma.conf.js              # Karma configuration with Safari setup
 ```
+
+### Testing Best Practices
+- **Safari Auto-Close**: Use `--no-watch` flag for single-run mode
+- **Service Mocking**: Comprehensive jasmine.SpyObj usage for service isolation
+- **RouterTestingModule**: Proper router dependency injection for component tests
+- **Async Testing**: setTimeout and Promise handling in tests
+- **LocalStorage Mocking**: Avoiding conflicts in storage-dependent tests
 
 ---
 
