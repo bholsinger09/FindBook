@@ -9,6 +9,7 @@ import {
 import { Observable, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +27,11 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   }
 
   private checkAuth(url: string): Observable<boolean> {
+    // If auth is disabled in environment, allow access to all routes
+    if (!environment.features.enableAuth) {
+      return of(true);
+    }
+
     if (this.authService.isAuthenticated()) {
       return of(true);
     }
@@ -47,6 +53,11 @@ export class GuestGuard implements CanActivate {
   private readonly router = inject(Router);
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    // If auth is disabled in environment, allow access to all routes
+    if (!environment.features.enableAuth) {
+      return of(true);
+    }
+
     if (!this.authService.isAuthenticated()) {
       return of(true);
     }
@@ -65,6 +76,11 @@ export class RoleGuard implements CanActivate {
   private readonly router = inject(Router);
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    // If auth is disabled in environment, allow access to all routes
+    if (!environment.features.enableAuth) {
+      return of(true);
+    }
+
     const requiredRoles = route.data['roles'] as string[];
 
     if (!requiredRoles || requiredRoles.length === 0) {

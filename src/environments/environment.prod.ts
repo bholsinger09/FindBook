@@ -6,7 +6,7 @@ export const environment = {
     version: '1.0.0',
     apiTimeout: 10000,
     features: {
-        enableAuth: true, // Re-enabled for full-stack deployment
+        enableAuth: true, // Re-enabled for demo purposes with mock authentication
         enableSocialAuth: false, // Keep disabled for now
         enableOfflineSync: true,
         enableAnalytics: true,

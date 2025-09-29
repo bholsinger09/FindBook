@@ -4,13 +4,14 @@ import { PerformanceService } from './core/services/performance.service';
 import { AccessibilityService } from './services/accessibility.service';
 import { ServiceWorkerService } from './core/services/service-worker.service';
 import { AccessibilityToolbarComponent } from './components/accessibility-toolbar/accessibility-toolbar.component';
+import { UserMenuComponent } from './shared/components/user-menu/user-menu.component';
 import { environment } from '../environments/environment';
 import { TIMING } from './core/constants/app.constants';
 import { LoggerService } from './core/services/logger.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, AccessibilityToolbarComponent],
+  imports: [RouterOutlet, AccessibilityToolbarComponent, UserMenuComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

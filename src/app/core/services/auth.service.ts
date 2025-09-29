@@ -92,6 +92,12 @@ export class AuthService {
     login(credentials: LoginRequest): Observable<LoginResponse> {
         this.setLoading(true);
         this.performanceService.markStart('auth-login');
+
+        // Use mock authentication for static deployments (no backend API)
+        if (this.shouldUseMockAuth()) {
+            return this.mockLogin(credentials);
+        }
+
         return this.http.post<LoginResponse>(`${this.API_BASE_URL}/auth/login`, credentials).pipe(
             tap((response) => {
                 this.performanceService.markEnd('auth-login');
@@ -108,16 +114,139 @@ export class AuthService {
     }
 
     /**
+     * Determine if mock authentication should be used
+     * Used for static deployments without backend API
+     */
+    private shouldUseMockAuth(): boolean {
+        // Use mock auth if auth is disabled, or if we're in production (static deployment)
+        return !environment.features.enableAuth || environment.production;
+    }
+    private mockLogin(credentials: LoginRequest): Observable<LoginResponse> {
+        return timer(1000).pipe( // Simulate network delay
+            map(() => {
+                this.performanceService.markEnd('auth-login');
+
+                // Simple validation - accept any email/password combination
+                if (credentials.email && credentials.password) {
+                    const mockUser: User = {
+                        id: 1,
+                        email: credentials.email,
+                        username: credentials.email.split('@')[0],
+                        firstName: credentials.email.split('@')[0],
+                        lastName: 'User',
+                        roles: ['user'],
+                        preferences: {
+                            theme: 'light',
+                            language: 'en',
+                            booksPerPage: 12,
+                            defaultSortBy: 'relevance',
+                            emailNotifications: true,
+                            favoriteGenres: [],
+                        },
+                        createdAt: new Date().toISOString(),
+                        lastLoginAt: new Date().toISOString(),
+                    };
+
+                    const mockAuthData = {
+                        user: mockUser,
+                        token: 'mock-jwt-token-' + Date.now(),
+                        refreshToken: 'mock-refresh-token-' + Date.now(),
+                        expiresIn: 3600,
+                    };
+
+                    const mockResponse: LoginResponse = {
+                        success: true,
+                        data: mockAuthData,
+                        message: 'Login successful (demo mode)',
+                    };
+
+                    this.handleAuthSuccess(mockAuthData);
+                    return mockResponse;
+                } else {
+                    throw new Error('Invalid credentials');
+                }
+            }),
+            catchError((error) => {
+                this.performanceService.markEnd('auth-login');
+                return this.handleAuthError(error);
+            }),
+            finalize(() => this.setLoading(false)),
+        );
+    }
+
+    /**
      * Register new user account
      */
     register(userData: RegisterRequest): Observable<RegisterResponse> {
         this.setLoading(true);
         this.performanceService.markStart('auth-register');
+
+        // Use mock registration for static deployments
+        if (this.shouldUseMockAuth()) {
+            return this.mockRegister(userData);
+        }
+
         return this.http.post<RegisterResponse>(`${this.API_BASE_URL}/auth/register`, userData).pipe(
             tap((response) => {
                 this.performanceService.markEnd('auth-register');
                 if (response.success && response.data) {
                     this.handleAuthSuccess(response.data);
+                }
+            }),
+            catchError((error) => {
+                this.performanceService.markEnd('auth-register');
+                return this.handleAuthError(error);
+            }),
+            finalize(() => this.setLoading(false)),
+        );
+    }
+
+    /**
+     * Mock registration for demo purposes in static deployments
+     */
+    private mockRegister(userData: RegisterRequest): Observable<RegisterResponse> {
+        return timer(1500).pipe( // Simulate network delay (slightly longer for registration)
+            map(() => {
+                this.performanceService.markEnd('auth-register');
+
+                // Simple validation - accept any valid registration data
+                if (userData.email && userData.password && userData.firstName && userData.lastName) {
+                    const mockUser: User = {
+                        id: Date.now(), // Use timestamp for unique ID
+                        email: userData.email,
+                        username: userData.email.split('@')[0],
+                        firstName: userData.firstName,
+                        lastName: userData.lastName,
+                        roles: ['user'],
+                        preferences: {
+                            theme: 'light',
+                            language: 'en',
+                            booksPerPage: 12,
+                            defaultSortBy: 'relevance',
+                            emailNotifications: true,
+                            favoriteGenres: [],
+                        },
+                        createdAt: new Date().toISOString(),
+                        lastLoginAt: new Date().toISOString(),
+                    };
+
+                    const mockAuthData = {
+                        user: mockUser,
+                        token: 'mock-jwt-token-' + Date.now(),
+                        refreshToken: 'mock-refresh-token-' + Date.now(),
+                        expiresIn: 3600,
+                    };
+
+                    const mockResponse: RegisterResponse = {
+                        success: true,
+                        data: mockAuthData,
+                        message: 'Registration successful (demo mode)',
+                    };
+
+                    this.handleAuthSuccess(mockAuthData);
+                    return mockResponse;
+                } else {
+                    throw new Error('Invalid registration data');
                 }
             }),
             catchError((error) => {

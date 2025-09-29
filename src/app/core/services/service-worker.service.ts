@@ -24,8 +24,8 @@ export class ServiceWorkerService {
     private async registerServiceWorker(): Promise<void> {
         if ('serviceWorker' in navigator) {
             try {
-                const registration = await navigator.serviceWorker.register('/sw.js', {
-                    scope: '/',
+                const registration = await navigator.serviceWorker.register('./sw.js', {
+                    scope: './',
                 });
 
                 this.logger.serviceWorker('Service Worker registered successfully', {
@@ -39,8 +39,10 @@ export class ServiceWorkerService {
                         newWorker.addEventListener('statechange', () => {
                             if (newWorker.state === 'installed') {
                                 if (navigator.serviceWorker.controller) {
-                                    // New content is available
-                                    this.notifyUpdate();
+                                    // New content is available - skip waiting and activate immediately
+                                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                    this.logger.serviceWorker('Service worker updated, reloading page...');
+                                    setTimeout(() => window.location.reload(), 1000);
                                 } else {
                                     // Content is cached for offline use
                                     this.logger.serviceWorker('Content is cached for offline use');

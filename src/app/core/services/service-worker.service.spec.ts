@@ -113,7 +113,7 @@ describe('ServiceWorkerService', () => {
 
   describe('Service Worker Registration', () => {
     it('should register service worker on initialization', () => {
-      expect(navigator.serviceWorker.register).toHaveBeenCalledWith('/sw.js', { scope: '/' });
+      expect(navigator.serviceWorker.register).toHaveBeenCalledWith('./sw.js', { scope: './' });
     });
 
     it('should handle registration errors gracefully', async () => {
