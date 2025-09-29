@@ -55,22 +55,16 @@ export class WebVitalsService {
     private async loadWebVitalsLibrary(): Promise<void> {
         try {
             // Try to load web-vitals library if available
-            const webVitals = await import('web-vitals').catch(() => null);
+            const { onCLS, onFCP, onINP, onLCP, onTTFB } = await import('web-vitals');
 
-            if (webVitals) {
-                const { getCLS, getFID, getFCP, getLCP, getTTFB } = webVitals;
-
-                // Store the functions for later use
-                (window as any).webVitalsFunctions = {
-                    getCLS,
-                    getFID,
-                    getFCP,
-                    getLCP,
-                    getTTFB
-                };
-            } else {
-                throw new Error('web-vitals not available');
-            }
+            // Store the functions for later use
+            (window as any).webVitalsFunctions = {
+                onCLS,
+                onFCP,
+                onINP,
+                onLCP,
+                onTTFB
+            };
         } catch (error) {
             console.warn('Web Vitals library not available, using fallback metrics');
             this.setupFallbackMetrics();
@@ -82,27 +76,27 @@ export class WebVitalsService {
         if (!vitals) return;
 
         // Track Largest Contentful Paint
-        vitals.getLCP((metric: any) => {
+        vitals.onLCP((metric: any) => {
             this.recordVital('LCP', metric.value);
         });
 
-        // Track First Input Delay
-        vitals.getFID((metric: any) => {
-            this.recordVital('FID', metric.value);
+        // Track Interaction to Next Paint (replaces FID)
+        vitals.onINP((metric: any) => {
+            this.recordVital('INP', metric.value);
         });
 
         // Track Cumulative Layout Shift
-        vitals.getCLS((metric: any) => {
+        vitals.onCLS((metric: any) => {
             this.recordVital('CLS', metric.value);
         });
 
         // Track First Contentful Paint
-        vitals.getFCP((metric: any) => {
+        vitals.onFCP((metric: any) => {
             this.recordVital('FCP', metric.value);
         });
 
         // Track Time to First Byte
-        vitals.getTTFB((metric: any) => {
+        vitals.onTTFB((metric: any) => {
             this.recordVital('TTFB', metric.value);
         });
     }
