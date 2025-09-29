@@ -17,23 +17,33 @@ import { PerformanceService } from './performance.service';
     providedIn: 'root',
 })
 export class BookService {
+    private readonly SEARCH_CACHE_STORAGE_KEY = 'findbook-search-cache';
+    private readonly BOOK_CACHE_STORAGE_KEY = 'findbook-book-cache';
     private readonly apiBaseUrl = 'https://DISABLED-API.com/books/v1'; // Disabled to prevent console errors
     private readonly defaultMaxResults = 20;
 
     // Feature flag to disable API calls when external service is unreliable
     private readonly enableExternalApiCalls = false; // Set to false to prevent console errors
 
+    private bookCache = new Map<string, { book: Book; timestamp: number }>();
+    private searchCache = new Map<string, { result: BookSearchResult; timestamp: number }>();
+    private readonly CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
     constructor(
         private http: HttpClient,
         private performanceService: PerformanceService,
-    ) { }
+    ) {
+        this.loadPersistentCaches();
+    }
 
     /**
      * Search for books using Google Books API
      */
     searchBooks(searchParams: BookSearchParams): Observable<BookSearchResult> {
+        this.performanceService.markStart('book-search');
         // Feature flag to disable external API calls
         if (!this.enableExternalApiCalls) {
+            this.performanceService.markEnd('book-search');
             return of({
                 books: [],
                 totalItems: 0,
@@ -45,13 +55,35 @@ export class BookService {
             });
         }
 
+        // Simple cache key based on query and params
+        const cacheKey = JSON.stringify(searchParams);
+        const cached = this.searchCache.get(cacheKey);
+        if (cached && Date.now() - cached.timestamp < this.CACHE_TTL_MS) {
+            this.performanceService.markEnd('book-search');
+            return of(cached.result);
+        } else if (cached) {
+            // Expired cache
+            this.searchCache.delete(cacheKey);
+            this.savePersistentCaches();
+        }
+
         const params = this.buildSearchParams(searchParams);
-        this.performanceService.markStart('book-search');
 
         return this.http.get<GoogleBooksApiResponse>(`${this.apiBaseUrl}/volumes`, { params }).pipe(
             tap(() => this.performanceService.markEnd('book-search')),
-            map((response) => this.transformGoogleBooksResponse(response, searchParams)),
-            catchError((error) => this.handleError(error, 'Failed to search books')),
+            map((response) => {
+                const result = this.transformGoogleBooksResponse(response, searchParams);
+                this.searchCache.set(cacheKey, { result, timestamp: Date.now() });
+                this.savePersistentCaches();
+                return result;
+            }),
+            catchError((error, caught) => {
+                this.performanceService.markEnd('book-search');
+                if (error.status === 0 || error.status === 503) {
+                    return caught.pipe();
+                }
+                return this.handleError(error, 'Failed to search books');
+            }),
         );
     }
 
@@ -59,8 +91,10 @@ export class BookService {
      * Get a specific book by ID
      */
     getBookById(id: string): Observable<Book> {
+        this.performanceService.markStart('book-details');
         // Return mock book if external API calls are disabled
         if (!this.enableExternalApiCalls) {
+            this.performanceService.markEnd('book-details');
             const mockBook: Book = {
                 id: id,
                 title: 'Book temporarily unavailable',
@@ -84,13 +118,42 @@ export class BookService {
             return of(mockBook);
         }
 
-        this.performanceService.markStart('book-details');
+        // In-memory cache for book details
+        const cached = this.bookCache.get(id);
+        if (cached && Date.now() - cached.timestamp < this.CACHE_TTL_MS) {
+            this.performanceService.markEnd('book-details');
+            return of(cached.book);
+        } else if (cached) {
+            // Expired cache
+            this.bookCache.delete(id);
+            this.savePersistentCaches();
+        }
 
         return this.http.get<GoogleBooksVolumeItem>(`${this.apiBaseUrl}/volumes/${id}`).pipe(
             tap(() => this.performanceService.markEnd('book-details')),
-            map((item) => this.transformVolumeItem(item)),
-            catchError((error) => this.handleError(error, 'Book not found')),
+            map((item) => {
+                const book = this.transformVolumeItem(item);
+                this.bookCache.set(id, { book, timestamp: Date.now() });
+                this.savePersistentCaches();
+                return book;
+            }),
+            catchError((error, caught) => {
+                this.performanceService.markEnd('book-details');
+                if (error.status === 0 || error.status === 503) {
+                    return caught.pipe();
+                }
+                return this.handleError(error, 'Book not found');
+            }),
         );
+    }
+    /**
+     * Invalidate all caches (manual or on demand)
+     */
+    invalidateCaches(): void {
+        this.bookCache.clear();
+        this.searchCache.clear();
+        this.savePersistentCaches();
+        // ...existing code...
     }
 
     /**
@@ -298,12 +361,55 @@ export class BookService {
                 shouldLogToConsole = false;
                 errorMessage = 'Google Books API temporarily unavailable';
             }
+            // Friendly message for network errors
+            if (error.status === 0) {
+                errorMessage = 'Network error: Please check your internet connection.';
+            }
         }
 
         if (shouldLogToConsole) {
             console.error(errorMessage);
         }
 
+        // Optionally, could notify user via a toast/snackbar here
+
         return throwError(() => new Error(errorMessage));
     }
+
+    /**
+     * Load caches from localStorage on service init
+     */
+    private loadPersistentCaches(): void {
+        try {
+            const searchCacheRaw = localStorage.getItem(this.SEARCH_CACHE_STORAGE_KEY);
+            if (searchCacheRaw) {
+                const parsed = JSON.parse(searchCacheRaw);
+                Object.entries(parsed).forEach(([key, value]) => {
+                    this.searchCache.set(key, value as { result: BookSearchResult; timestamp: number });
+                });
+            }
+            const bookCacheRaw = localStorage.getItem(this.BOOK_CACHE_STORAGE_KEY);
+            if (bookCacheRaw) {
+                const parsed = JSON.parse(bookCacheRaw);
+                Object.entries(parsed).forEach(([key, value]) => {
+                    this.bookCache.set(key, value as { book: Book; timestamp: number });
+                });
+            }
+        } catch (e) {
+            // Ignore cache load errors
+        }
+    }
+
+    /**
+     * Save caches to localStorage
+     */
+    private savePersistentCaches(): void {
+        try {
+            localStorage.setItem(this.SEARCH_CACHE_STORAGE_KEY, JSON.stringify(Object.fromEntries(this.searchCache)));
+            localStorage.setItem(this.BOOK_CACHE_STORAGE_KEY, JSON.stringify(Object.fromEntries(this.bookCache)));
+        } catch (e) {
+            // Ignore cache save errors
+        }
+    }
 }
+
