@@ -82,6 +82,23 @@ describe('ServiceWorkerService', () => {
     // Mock confirm
     spyOn(window, 'confirm').and.returnValue(false);
 
+    // Mock test environment detection to allow service worker registration in tests
+    Object.defineProperty(window, '__karma__', {
+      value: undefined,
+      writable: true,
+      configurable: true,
+    });
+    Object.defineProperty(window, 'jasmine', {
+      value: undefined,
+      writable: true,
+      configurable: true,
+    });
+    Object.defineProperty(window, 'describe', {
+      value: undefined,
+      writable: true,
+      configurable: true,
+    });
+
     TestBed.configureTestingModule({
       providers: [
         { provide: LoggerService, useValue: mockLoggerService }
