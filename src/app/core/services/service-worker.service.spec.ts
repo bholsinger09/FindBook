@@ -141,7 +141,7 @@ describe('ServiceWorkerService', () => {
       // First go offline
       Object.defineProperty(navigator, 'onLine', { value: false, writable: true, configurable: true });
       service = TestBed.inject(ServiceWorkerService); // Reinject to reset state
-      
+
       // Then come back online
       Object.defineProperty(navigator, 'onLine', { value: true, writable: true, configurable: true });
       window.dispatchEvent(onlineEvent);
@@ -240,7 +240,7 @@ describe('ServiceWorkerService', () => {
       ((window as any).caches.open as jasmine.Spy).and.returnValue(Promise.resolve(mockCache));
 
       const consoleWarnSpy = spyOn(console, 'warn');
-      
+
       // Reset the fetch spy to return a failure
       (window.fetch as jasmine.Spy).and.returnValue(Promise.reject(new Error('Fetch failed')));
 

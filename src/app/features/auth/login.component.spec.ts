@@ -24,7 +24,7 @@ describe('LoginComponent', () => {
   beforeEach(async () => {
     const errorSignal = signal(null);
     const loadingSignal = signal(false);
-    
+
     mockAuthService = jasmine.createSpyObj('AuthService', ['login'], {
       error: errorSignal,
       isLoading: loadingSignal
@@ -65,7 +65,7 @@ describe('LoginComponent', () => {
     const passwordInput = fixture.nativeElement.querySelector('input[type="password"]');
     const submitButton = fixture.nativeElement.querySelector('button[type="submit"]');
     const rememberMeCheckbox = fixture.nativeElement.querySelector('mat-checkbox');
-    
+
     expect(emailInput).toBeTruthy();
     expect(passwordInput).toBeTruthy();
     expect(submitButton).toBeTruthy();
@@ -80,15 +80,15 @@ describe('LoginComponent', () => {
   it('should enable submit button when form is valid', () => {
     const emailInput = fixture.nativeElement.querySelector('input[type="email"]');
     const passwordInput = fixture.nativeElement.querySelector('input[type="password"]');
-    
+
     emailInput.value = 'test@example.com';
     emailInput.dispatchEvent(new Event('input'));
-    
+
     passwordInput.value = 'validpassword';
     passwordInput.dispatchEvent(new Event('input'));
-    
+
     fixture.detectChanges();
-    
+
     const submitButton = fixture.nativeElement.querySelector('button[type="submit"]');
     expect(submitButton.disabled).toBeFalsy();
   });
@@ -118,36 +118,36 @@ describe('LoginComponent', () => {
         }
       }
     };
-    
+
     mockAuthService.login.and.returnValue(of(mockResponse));
-    
+
     const emailInput = fixture.nativeElement.querySelector('input[type="email"]');
     const passwordInput = fixture.nativeElement.querySelector('input[type="password"]');
-    
+
     emailInput.value = 'test@example.com';
     emailInput.dispatchEvent(new Event('input'));
-    
+
     passwordInput.value = 'validpassword';
     passwordInput.dispatchEvent(new Event('input'));
-    
+
     fixture.detectChanges();
-    
+
     const form = fixture.nativeElement.querySelector('form');
     form.dispatchEvent(new Event('submit'));
-    
+
     expect(mockAuthService.login).toHaveBeenCalled();
   });
 
   it('should show validation errors for empty fields', () => {
     const emailInput = fixture.nativeElement.querySelector('input[type="email"]');
     const passwordInput = fixture.nativeElement.querySelector('input[type="password"]');
-    
+
     // Trigger validation by making fields dirty and touched
     emailInput.dispatchEvent(new Event('blur'));
     passwordInput.dispatchEvent(new Event('blur'));
-    
+
     fixture.detectChanges();
-    
+
     const errors = fixture.nativeElement.querySelectorAll('mat-error');
     expect(errors.length).toBeGreaterThan(0);
   });
@@ -161,12 +161,12 @@ describe('LoginComponent', () => {
   it('should toggle password visibility when button is clicked', () => {
     const passwordInput = fixture.nativeElement.querySelector('input[type="password"]');
     const toggleButton = fixture.nativeElement.querySelector('button[matSuffix]');
-    
+
     expect(passwordInput.type).toBe('password');
-    
+
     toggleButton.click();
     fixture.detectChanges();
-    
+
     // Note: The actual type change happens through Angular binding
     // We can test the method was called by checking the icon changes
     const icon = toggleButton.querySelector('mat-icon');
@@ -182,7 +182,7 @@ describe('LoginComponent', () => {
   it('should have links to register and forgot password', () => {
     const registerLink = fixture.nativeElement.querySelector('a[routerLink="/auth/register"]');
     const forgotPasswordLink = fixture.nativeElement.querySelector('a[routerLink="/auth/forgot-password"]');
-    
+
     expect(registerLink).toBeTruthy();
     expect(forgotPasswordLink).toBeTruthy();
   });
@@ -197,7 +197,7 @@ describe('LoginComponent', () => {
   // it('should handle Google sign-in click', () => {
   //   // Call the method directly
   //   component.onGoogleSignIn();
-    
+
   //   // Verify MatSnackBar was called with correct parameters
   //   expect(mockSnackBar.open).toHaveBeenCalledWith(
   //     'Google Sign-In coming soon!',
@@ -211,10 +211,10 @@ describe('LoginComponent', () => {
   //   // Update the loading signal
   //   mockAuthService.isLoading.set(true);
   //   fixture.detectChanges();
-    
+
   //   const spinner = fixture.nativeElement.querySelector('mat-spinner');
   //   const submitButton = fixture.nativeElement.querySelector('button[type="submit"]');
-    
+
   //   expect(spinner).toBeTruthy();
   //   expect(submitButton.disabled).toBeTruthy();
   // });
@@ -222,7 +222,7 @@ describe('LoginComponent', () => {
   // it('should display error message when AuthService has error', () => {
   //   mockAuthService.error.set('Invalid credentials');
   //   fixture.detectChanges();
-    
+
   //   const errorMessage = fixture.nativeElement.querySelector('.error-message');
   //   expect(errorMessage).toBeTruthy();
   //   expect(errorMessage.textContent).toContain('Invalid credentials');
@@ -243,7 +243,7 @@ describe('LoginComponent', () => {
       const emailInput = fixture.nativeElement.querySelector('input[type="email"]');
       emailInput.dispatchEvent(new Event('blur'));
       fixture.detectChanges();
-      
+
       const errorElement = fixture.nativeElement.querySelector('mat-error');
       if (errorElement) {
         expect(errorElement.getAttribute('id') || errorElement.getAttribute('aria-describedby')).toBeTruthy();
