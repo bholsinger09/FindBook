@@ -1,0 +1,501 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router, ActivatedRoute } from '@angular/router';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
+import { signal } from '@angular/core';
+import { of } from 'rxjs';
+
+import { ReadingCenterComponent } from './reading-center.component';
+import { BookService } from '../../core/services/book.service';
+import { FavoritesService } from '../../core/services/favorites.service';
+import { Book } from '../../core/models';
+
+describe('ReadingCenterComponent', () => {
+  let component: ReadingCenterComponent;
+  let fixture: ComponentFixture<ReadingCenterComponent>;
+  let mockBookService: jasmine.SpyObj<BookService>;
+  let mockFavoritesService: jasmine.SpyObj<FavoritesService>;
+  let router: Router;
+
+  const mockBook: Book = {
+    id: 'test-book-1',
+    title: 'Test Book',
+    authors: ['Test Author'],
+    description: 'Test description',
+    imageLinks: {
+      thumbnail: 'https://example.com/thumbnail.jpg',
+      smallThumbnail: 'https://example.com/small.jpg'
+    },
+    categories: ['Fiction'],
+    publishedDate: '2023-01-01',
+    pageCount: 300,
+    language: 'en',
+    publisher: 'Test Publisher'
+  };
+
+  beforeEach(async () => {
+    const favoritesSignal = signal([]);
+    
+    mockBookService = jasmine.createSpyObj('BookService', ['searchBooks']);
+    mockFavoritesService = jasmine.createSpyObj('FavoritesService', ['toggleFavorite', 'getFavorites'], {
+      favorites: favoritesSignal
+    });
+
+    mockBookService.searchBooks.and.returnValue(of({ 
+      books: [mockBook], 
+      totalItems: 1,
+      query: 'test',
+      currentPage: 1,
+      itemsPerPage: 10,
+      hasMoreResults: false,
+      searchTimestamp: new Date()
+    }));
+    mockFavoritesService.getFavorites.and.returnValue([]);
+
+    await TestBed.configureTestingModule({
+      imports: [ReadingCenterComponent, BrowserAnimationsModule, RouterTestingModule],
+      providers: [
+        { provide: BookService, useValue: mockBookService },
+        { provide: FavoritesService, useValue: mockFavoritesService }
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(ReadingCenterComponent);
+    component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    spyOn(router, 'navigate');
+    
+    fixture.detectChanges();
+  });
+
+  describe('Component Initialization', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+
+    it('should initialize with default values', () => {
+      expect(component.favoriteCount()).toBe(0);
+      expect(component.searchHistoryCount()).toBe(0);
+      expect(component.readingListCount()).toBe(0);
+      expect(component.selectedStatus()).toBe('want-to-read');
+    });
+
+    it('should load favorites on init', () => {
+      const favoriteBook = { 
+        ...mockBook, 
+        authors: mockBook.authors || [],
+        addedDate: new Date() 
+      };
+      mockFavoritesService.getFavorites.and.returnValue([favoriteBook]);
+      spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify([mockBook]));
+      
+      component.ngOnInit();
+      
+      expect(component.favoriteCount()).toBe(1);
+    });
+
+    it('should load search history on init', () => {
+      const mockHistory = [
+        { id: '1', query: 'test', timestamp: new Date(), resultCount: 5 }
+      ];
+      spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(mockHistory));
+      
+      component.ngOnInit();
+      
+      expect(component.searchHistoryCount()).toBe(1);
+      expect(component.searchHistory()).toEqual(mockHistory);
+    });
+
+    it('should load reading list on init', () => {
+      const mockReadingList = [
+        {
+          id: '1',
+          book: mockBook,
+          status: 'currently-reading' as const,
+          dateAdded: new Date()
+        }
+      ];
+      spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(mockReadingList));
+      
+      component.ngOnInit();
+      
+      expect(component.readingListCount()).toBe(1);
+      expect(component.readingList()).toEqual(mockReadingList);
+    });
+  });
+
+  describe('Data Loading and Error Handling', () => {
+    it('should handle localStorage parsing errors gracefully', () => {
+      spyOn(localStorage, 'getItem').and.returnValue('invalid-json');
+      
+      expect(() => component.ngOnInit()).not.toThrow();
+      expect(component.favoriteCount()).toBe(1); // From mocked service
+    });
+
+    it('should handle missing localStorage data', () => {
+      spyOn(localStorage, 'getItem').and.returnValue(null);
+      
+      component.ngOnInit();
+      
+      expect(component.favoriteCount()).toBe(1); // From mocked service
+      expect(component.searchHistoryCount()).toBe(0);
+      expect(component.readingListCount()).toBe(0);
+    });
+
+    it('should load recommendations on init', () => {
+      // Set up favorites in localStorage to trigger recommendations
+      spyOn(localStorage, 'getItem').and.callFake((key: string) => {
+        if (key === 'favorites') return JSON.stringify([mockBook]);
+        return null;
+      });
+      
+      component.ngOnInit();
+      
+      expect(mockBookService.searchBooks).toHaveBeenCalled();
+    });
+
+    it('should handle recommendation loading errors', () => {
+      mockBookService.searchBooks.and.throwError('API Error');
+      spyOn(localStorage, 'getItem').and.callFake((key: string) => {
+        if (key === 'favorites') return JSON.stringify([mockBook]);
+        return null;
+      });
+      
+      expect(() => component.ngOnInit()).not.toThrow();
+    });
+  });
+
+  describe('Search History Management', () => {
+    beforeEach(() => {
+      component.ngOnInit();
+    });
+
+    it('should repeat search when called', () => {
+      const historyItem = {
+        id: '1',
+        query: 'test query',
+        timestamp: new Date(),
+        resultCount: 5
+      };
+
+      component.repeatSearch(historyItem);
+
+      expect(router.navigate).toHaveBeenCalledWith(['/search'], {
+        queryParams: { q: 'test query' }
+      });
+    });
+
+    it('should clear search history', () => {
+      spyOn(localStorage, 'removeItem');
+      component.searchHistory.set([
+        { id: '1', query: 'test', timestamp: new Date(), resultCount: 5 }
+      ]);
+      component.searchHistoryCount.set(1);
+
+      component.clearSearchHistory();
+
+      expect(component.searchHistory()).toEqual([]);
+      expect(component.searchHistoryCount()).toBe(0);
+      expect(localStorage.removeItem).toHaveBeenCalledWith('search-history');
+    });
+
+    it('should track search history items by id', () => {
+      const historyItem = {
+        id: 'test-id',
+        query: 'test',
+        timestamp: new Date(),
+        resultCount: 5
+      };
+
+      const result = component.trackByHistoryId(0, historyItem);
+
+      expect(result).toBe('test-id');
+    });
+  });
+
+  describe('Reading List Management', () => {
+    const mockReadingItem = {
+      id: '1',
+      book: mockBook,
+      status: 'currently-reading' as const,
+      dateAdded: new Date()
+    };
+
+    beforeEach(() => {
+      component.ngOnInit();
+    });
+
+    it('should filter reading list by status', () => {
+      component.readingList.set([
+        mockReadingItem,
+        {
+          id: '2',
+          book: { ...mockBook, id: 'book-2' },
+          status: 'completed' as const,
+          dateAdded: new Date()
+        }
+      ]);
+
+      component.selectedStatus.set('currently-reading');
+
+      const filtered = component.filteredReadingList();
+      expect(filtered.length).toBe(1);
+      expect(filtered[0].status).toBe('currently-reading');
+    });
+
+    it('should get status count', () => {
+      component.readingList.set([mockReadingItem]);
+
+      const count = component.getStatusCount('currently-reading');
+
+      expect(count).toBe(1);
+    });
+
+    it('should get selected status label', () => {
+      component.selectedStatus.set('currently-reading');
+
+      const label = component.getSelectedStatusLabel();
+
+      expect(label).toBe('currently reading');
+    });
+
+    it('should get status label', () => {
+      expect(component.getStatusLabel('completed')).toBe('Completed');
+      expect(component.getStatusLabel('currently-reading')).toBe('Currently Reading');
+      expect(component.getStatusLabel('want-to-read')).toBe('Want to Read');
+    });
+
+    it('should get status chip color', () => {
+      expect(component.getStatusChipColor('completed')).toBe('primary');
+      expect(component.getStatusChipColor('currently-reading')).toBe('accent');
+      expect(component.getStatusChipColor('want-to-read')).toBe('warn');
+    });
+
+    it('should track reading list items by id', () => {
+      const result = component.trackByReadingId(0, mockReadingItem);
+
+      expect(result).toBe('1');
+    });
+  });
+
+  describe('Book Operations', () => {
+    beforeEach(() => {
+      component.ngOnInit();
+    });
+
+    it('should view book details', () => {
+      component.viewBookDetails(mockBook);
+
+      expect(router.navigate).toHaveBeenCalledWith(['/book', 'test-book-1']);
+    });
+
+    it('should toggle favorite', () => {
+      component.toggleFavorite(mockBook);
+
+      expect(mockFavoritesService.toggleFavorite).toHaveBeenCalledWith(mockBook);
+    });
+
+    it('should check if book is favorite', () => {
+      // Note: This returns false in the current implementation
+      const result = component.isFavorite('test-book-1');
+
+      expect(result).toBe(false);
+    });
+
+    it('should get book thumbnail with priority', () => {
+      const result = component.getBookThumbnail(mockBook);
+
+      expect(result).toBe('https://example.com/thumbnail.jpg');
+    });
+
+    it('should get book thumbnail fallback', () => {
+      const bookWithoutThumbnail = { ...mockBook, imageLinks: {} };
+
+      const result = component.getBookThumbnail(bookWithoutThumbnail);
+
+      expect(result).toBe('/assets/book-placeholder.svg');
+    });
+
+    it('should get book authors', () => {
+      const result = component.getBookAuthors(mockBook);
+
+      expect(result).toBe('Test Author');
+    });
+
+    it('should handle missing authors', () => {
+      const bookWithoutAuthors = { ...mockBook, authors: undefined };
+
+      const result = component.getBookAuthors(bookWithoutAuthors);
+
+      expect(result).toBe('Unknown Author');
+    });
+
+    it('should track books by id', () => {
+      const result = component.trackByBookId(0, mockBook);
+
+      expect(result).toBe('test-book-1');
+    });
+  });
+
+  describe('Data Export', () => {
+    beforeEach(() => {
+      component.ngOnInit();
+    });
+
+    it('should export data', () => {
+      const mockFavorites = [mockBook];
+      const mockHistory = [{ id: '1', query: 'test', timestamp: new Date(), resultCount: 5 }];
+      const mockReadingList = [{
+        id: '1',
+        book: mockBook,
+        status: 'want-to-read' as const,
+        dateAdded: new Date()
+      }];
+
+      spyOn(localStorage, 'getItem').and.callFake((key: string) => {
+        switch (key) {
+          case 'favorites': return JSON.stringify(mockFavorites);
+          case 'search-history': return JSON.stringify(mockHistory);
+          case 'reading-list': return JSON.stringify(mockReadingList);
+          default: return null;
+        }
+      });
+
+      // Mock DOM elements and URL methods
+      const mockLink = {
+        href: '',
+        download: '',
+        click: jasmine.createSpy('click')
+      };
+      spyOn(document, 'createElement').and.returnValue(mockLink as any);
+      spyOn(URL, 'createObjectURL').and.returnValue('mock-url');
+      spyOn(URL, 'revokeObjectURL');
+
+      component.exportData();
+
+      expect(document.createElement).toHaveBeenCalledWith('a');
+      expect(mockLink.download).toBe('findbook-data.json');
+      expect(mockLink.click).toHaveBeenCalled();
+      expect(URL.revokeObjectURL).toHaveBeenCalledWith('mock-url');
+    });
+  });
+
+  describe('Utility Methods', () => {
+    it('should format dates relative to now', () => {
+      const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      
+      const result = component.formatDate(yesterday);
+      
+      // The exact result depends on the Intl.RelativeTimeFormat implementation
+      expect(typeof result).toBe('string');
+    });
+
+    it('should get stored data with fallback', () => {
+      spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(['test']));
+      
+      const result = component['getStoredData']('test-key', [] as string[]);
+      
+      expect(result).toEqual(['test']);
+    });
+
+    it('should handle getStoredData parse errors', () => {
+      spyOn(localStorage, 'getItem').and.returnValue('invalid-json');
+      
+      const result = component['getStoredData']('test-key', ['default']);
+      
+      expect(result).toEqual(['default']);
+    });
+  });
+
+  describe('Template Integration', () => {
+    beforeEach(() => {
+      component.ngOnInit();
+      fixture.detectChanges();
+    });
+
+    it('should display component title', () => {
+      const titleElement = fixture.nativeElement.querySelector('h1');
+      
+      expect(titleElement.textContent.trim()).toContain('Reading Center');
+    });
+
+    it('should display stats correctly', () => {
+      component.favoriteCount.set(5);
+      component.searchHistoryCount.set(3);
+      component.readingListCount.set(7);
+      fixture.detectChanges();
+
+      const statNumbers = fixture.nativeElement.querySelectorAll('.stat-number');
+      expect(statNumbers[0].textContent.trim()).toBe('5');
+      expect(statNumbers[1].textContent.trim()).toBe('3');
+      expect(statNumbers[2].textContent.trim()).toBe('7');
+    });
+
+    it('should handle empty search history', () => {
+      component.searchHistory.set([]);
+      fixture.detectChanges();
+
+      const emptyState = fixture.nativeElement.querySelector('.empty-state');
+      expect(emptyState).toBeTruthy();
+      expect(emptyState.textContent).toContain('No search history yet');
+    });
+
+    it('should display search history items', () => {
+      const mockHistory = [
+        {
+          id: '1',
+          query: 'Test Query',
+          timestamp: new Date(),
+          resultCount: 5,
+          category: 'Fiction'
+        }
+      ];
+      component.searchHistory.set(mockHistory);
+      fixture.detectChanges();
+
+      const historyItems = fixture.nativeElement.querySelectorAll('.history-item');
+      expect(historyItems.length).toBe(1);
+      expect(historyItems[0].textContent).toContain('Test Query');
+    });
+  });
+
+  describe('Accessibility', () => {
+    beforeEach(() => {
+      component.ngOnInit();
+      fixture.detectChanges();
+    });
+
+    it('should have proper ARIA labels', () => {
+      const mainElement = fixture.nativeElement.querySelector('[role="main"]');
+      const titleElement = fixture.nativeElement.querySelector('#reading-center-title');
+      
+      expect(mainElement.getAttribute('aria-labelledby')).toBe('reading-center-title');
+      expect(titleElement).toBeTruthy();
+    });
+
+    it('should have accessible button labels', () => {
+      const actionButtons = fixture.nativeElement.querySelectorAll('button[aria-label]');
+      
+      expect(actionButtons.length).toBeGreaterThan(0);
+      actionButtons.forEach((button: Element) => {
+        expect(button.getAttribute('aria-label')).toBeTruthy();
+      });
+    });
+  });
+
+  describe('Error Scenarios', () => {
+    it('should handle missing book data gracefully', () => {
+      const incompleteBook = { id: 'test' } as Book;
+      
+      expect(() => component.getBookThumbnail(incompleteBook)).not.toThrow();
+      expect(() => component.getBookAuthors(incompleteBook)).not.toThrow();
+      expect(() => component.viewBookDetails(incompleteBook)).not.toThrow();
+    });
+
+    it('should handle localStorage access errors', () => {
+      spyOn(localStorage, 'getItem').and.throwError('Storage error');
+      
+      expect(() => component.ngOnInit()).not.toThrow();
+    });
+  });
+});
