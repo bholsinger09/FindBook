@@ -150,7 +150,7 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "karmaConfig": "karma.conf.js",
-            "browsers": "Safari",
+            "browsers": "ChromeHeadless",
             "codeCoverage": true,
             "assets": [
               {

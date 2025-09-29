@@ -1,52 +1,52 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>FindBook - Discover Your Next Great Read</title>
-    <meta name="description" content="A modern Angular application for discovering books" />
-    <base href="/FindBook/" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
-    <!-- Redirect script for GitHub Pages SPA routing -->
-    <script>
-      // Simple redirect to index.html for SPA routing
-      var l = window.location;
-      var path = l.pathname;
+<head>
+  <meta charset="utf-8" />
+  <title>FindBook - Discover Your Next Great Read</title>
+  <meta name="description" content="A modern Angular application for discovering books" />
+  <base href="/FindBook/" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
-      // If we're on GitHub Pages with a base href, redirect to index.html
-      if (path.startsWith('/FindBook/')) {
-        // Extract the route part after /FindBook/
-        var route = path.substring('/FindBook/'.length);
-        if (route) {
-          // Redirect to index.html with the route as a query parameter
-          l.replace('/FindBook/?/' + route + l.search + l.hash);
-        } else {
-          // Redirect to index.html for the root
-          l.replace('/FindBook/' + l.search + l.hash);
-        }
+  <!-- Redirect script for GitHub Pages SPA routing -->
+  <script>
+    // Simple redirect to index.html for SPA routing
+    var l = window.location;
+    var path = l.pathname;
+
+    // If we're on GitHub Pages with a base href, redirect to index.html
+    if (path.startsWith('/FindBook/')) {
+      // Extract the route part after /FindBook/
+      var route = path.substring('/FindBook/'.length);
+      if (route) {
+        // Redirect to index.html with the route as a query parameter
+        l.replace('/FindBook/?/' + route + l.search + l.hash);
       } else {
-        // Fallback for other cases
+        // Redirect to index.html for the root
         l.replace('/FindBook/' + l.search + l.hash);
       }
-    </script>
-  </head>
+    } else {
+      // Fallback for other cases
+      l.replace('/FindBook/' + l.search + l.hash);
+    }
+  </script>
+</head>
 
-  <body>
-    <!-- Loading message while redirecting -->
-    <div
-      style="
+<body>
+  <!-- Loading message while redirecting -->
+  <div style="
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
         font-family: Arial, sans-serif;
-      "
-    >
-      <div style="text-align: center">
-        <h2>Loading FindBook...</h2>
-        <p>Redirecting to the application...</p>
-      </div>
+      ">
+    <div style="text-align: center">
+      <h2>Loading FindBook...</h2>
+      <p>Redirecting to the application...</p>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>

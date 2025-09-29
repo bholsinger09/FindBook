@@ -7,16 +7,16 @@ import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
-  selector: 'app-user-menu',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatMenuModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDividerModule,
-  ],
-  template: `
+    selector: 'app-user-menu',
+    standalone: true,
+    imports: [
+        CommonModule,
+        MatMenuModule,
+        MatButtonModule,
+        MatIconModule,
+        MatDividerModule,
+    ],
+    template: `
     <!-- Only show when user is authenticated (works with both real and mock auth) -->
     @if (authService.isAuthenticated()) {
       <button
@@ -45,7 +45,7 @@ import { AuthService } from '../../../core/services/auth.service';
       </mat-menu>
     }
   `,
-  styles: [`
+    styles: [`
     .user-menu-button {
       margin-left: 8px;
     }
@@ -87,18 +87,18 @@ import { AuthService } from '../../../core/services/auth.service';
   `],
 })
 export class UserMenuComponent {
-  protected readonly authService = inject(AuthService);
+    protected readonly authService = inject(AuthService);
 
-  protected readonly user = computed(() => this.authService.user());
-  protected readonly userDisplayName = computed(() => {
-    const user = this.user();
-    if (user?.firstName && user?.lastName) {
-      return `${user.firstName} ${user.lastName}`;
+    protected readonly user = computed(() => this.authService.user());
+    protected readonly userDisplayName = computed(() => {
+        const user = this.user();
+        if (user?.firstName && user?.lastName) {
+            return `${user.firstName} ${user.lastName}`;
+        }
+        return user?.username || user?.email?.split('@')[0] || 'User';
+    });
+
+    protected logout(): void {
+        this.authService.logout().subscribe();
     }
-    return user?.username || user?.email?.split('@')[0] || 'User';
-  });
-
-  protected logout(): void {
-    this.authService.logout().subscribe();
-  }
 }
